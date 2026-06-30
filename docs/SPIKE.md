@@ -51,7 +51,7 @@ dotnet run --project src/EventPlatform.PrintRelay.Spike -- print-html `
 
 | Check | How to verify |
 |---|---|
-| No print dialog | Run `print-test`; only WebView2 `PrintAsync` is used — no `ShellExecute` print verb |
+| No print dialog | Run `print-test`; only WebView2 `PrintAsync` is used — no `ShellExecute` print verb. **Microsoft Print to PDF** uses `PrintToPdfAsync` and writes `spike-print-*.pdf` in the current directory (silent `PrintAsync` hangs on that driver). |
 | Named printer | `--printer` must match an entry from `list-printers`; default printer is not used silently |
 | CR80 dimensions | Fixture uses `@page { size: 85.6mm 54mm; }` aligned with platform `cr80` preset |
 | Background/colour | `ShouldPrintBackgrounds = true`; CSS includes `print-color-adjust: exact` |

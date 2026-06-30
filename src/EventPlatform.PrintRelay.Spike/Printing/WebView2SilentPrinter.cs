@@ -6,50 +6,36 @@ namespace EventPlatform.PrintRelay.Spike.Printing;
 
 public sealed class WebView2SilentPrinter : IDisposable
 {
-    private readonly Form _hostForm;
-    private readonly WebView2 _webView;
-    private bool _initialized;
+    private readonly Thread _uiThread;
+    private readonly ManualResetEventSlim _loopReady = new(false);
+    private readonly ManualResetEventSlim _webviewReady = new(false);
+    private Form? _hostForm;
+    private WebView2? _webView;
+    private Exception? _startupException;
+    private bool _disposed;
 
     public WebView2SilentPrinter()
     {
-        _hostForm = new Form
+        _uiThread = new Thread(RunMessageLoop)
         {
-            ShowInTaskbar = false,
-            WindowState = FormWindowState.Minimized,
-            Opacity = 0,
-            Width = 1,
-            Height = 1,
+            IsBackground = true,
+            Name = "WebView2SpikeUi",
         };
+        _uiThread.SetApartmentState(ApartmentState.STA);
+        _uiThread.Start();
 
-        _webView = new WebView2
+        _loopReady.Wait();
+        _webviewReady.Wait();
+
+        if (_startupException is not null)
         {
-            Dock = DockStyle.Fill,
-        };
-
-        _hostForm.Controls.Add(_webView);
-    }
-
-    public async Task InitializeAsync(CancellationToken cancellationToken = default)
-    {
-        if (_initialized)
-        {
-            return;
+            throw new InvalidOperationException(
+                "Failed to initialize WebView2.",
+                _startupException);
         }
-
-        _hostForm.CreateControl();
-
-        var environment = await CoreWebView2Environment
-            .CreateAsync()
-            .ConfigureAwait(true);
-
-        await _webView
-            .EnsureCoreWebView2Async(environment)
-            .ConfigureAwait(true);
-
-        _initialized = true;
     }
 
-    public async Task PrintHtmlAsync(
+    public Task PrintHtmlAsync(
         string html,
         string printerName,
         CancellationToken cancellationToken = default)
@@ -57,48 +43,13 @@ public sealed class WebView2SilentPrinter : IDisposable
         ArgumentException.ThrowIfNullOrWhiteSpace(html);
         ArgumentException.ThrowIfNullOrWhiteSpace(printerName);
 
-        await InitializeAsync(cancellationToken).ConfigureAwait(true);
-
-        var navigationCompleted = new TaskCompletionSource<bool>(
-            TaskCreationOptions.RunContinuationsAsynchronously);
-
-        void Handler(object? sender, CoreWebView2NavigationCompletedEventArgs args)
-        {
-            _webView.CoreWebView2!.NavigationCompleted -= Handler;
-            navigationCompleted.TrySetResult(args.IsSuccess);
-        }
-
-        _webView.CoreWebView2!.NavigationCompleted += Handler;
-        _webView.CoreWebView2.NavigateToString(html);
-
-        var navigationSucceeded = await navigationCompleted.Task.ConfigureAwait(true);
-
-        if (!navigationSucceeded)
-        {
-            throw new InvalidOperationException("Failed to load badge HTML in WebView2.");
-        }
-
-        var settings = _webView.CoreWebView2.Environment.CreatePrintSettings();
-        settings.PrinterName = printerName;
-        settings.ShouldPrintBackgrounds = true;
-        settings.ShouldPrintHeaderAndFooter = false;
-        settings.MarginTop = 0;
-        settings.MarginBottom = 0;
-        settings.MarginLeft = 0;
-        settings.MarginRight = 0;
-
-        var status = await _webView.CoreWebView2
-            .PrintAsync(settings)
-            .ConfigureAwait(true);
-
-        if (status != CoreWebView2PrintStatus.Succeeded)
-        {
-            throw new InvalidOperationException(
-                $"WebView2 print failed with status: {status}.");
-        }
+        return InvokeAsync(() => PrintLoadedContentAsync(
+            navigate: webView => webView.CoreWebView2!.NavigateToString(html),
+            printerName,
+            cancellationToken));
     }
 
-    public async Task PrintUriAsync(
+    public Task PrintUriAsync(
         string uri,
         string printerName,
         CancellationToken cancellationToken = default)
@@ -106,7 +57,133 @@ public sealed class WebView2SilentPrinter : IDisposable
         ArgumentException.ThrowIfNullOrWhiteSpace(uri);
         ArgumentException.ThrowIfNullOrWhiteSpace(printerName);
 
-        await InitializeAsync(cancellationToken).ConfigureAwait(true);
+        return InvokeAsync(() => PrintLoadedContentAsync(
+            navigate: webView => webView.CoreWebView2!.Navigate(uri),
+            printerName,
+            cancellationToken));
+    }
+
+    public void Dispose()
+    {
+        if (_disposed)
+        {
+            return;
+        }
+
+        _disposed = true;
+
+        if (_hostForm is { IsDisposed: false })
+        {
+            try
+            {
+                _hostForm.Invoke(_hostForm.Close);
+            }
+            catch (ObjectDisposedException)
+            {
+            }
+        }
+
+        _uiThread.Join(TimeSpan.FromSeconds(10));
+        _loopReady.Dispose();
+        _webviewReady.Dispose();
+    }
+
+    private void RunMessageLoop()
+    {
+        try
+        {
+            ApplicationConfiguration.Initialize();
+
+            _hostForm = new Form
+            {
+                ShowInTaskbar = false,
+                WindowState = FormWindowState.Minimized,
+                Opacity = 0,
+                Width = 1,
+                Height = 1,
+            };
+
+            _webView = new WebView2
+            {
+                Dock = DockStyle.Fill,
+            };
+
+            _hostForm.Controls.Add(_webView);
+            _hostForm.Shown += OnFormShown;
+            _loopReady.Set();
+
+            Application.Run(_hostForm);
+        }
+        catch (Exception ex)
+        {
+            _startupException = ex;
+            _loopReady.Set();
+            _webviewReady.Set();
+        }
+    }
+
+    private async void OnFormShown(object? sender, EventArgs e)
+    {
+        if (_hostForm is null || _webView is null)
+        {
+            _startupException = new InvalidOperationException("WebView2 host was not created.");
+            _webviewReady.Set();
+            return;
+        }
+
+        _hostForm.Shown -= OnFormShown;
+
+        try
+        {
+            var environment = await CoreWebView2Environment
+                .CreateAsync()
+                .ConfigureAwait(true);
+
+            await _webView
+                .EnsureCoreWebView2Async(environment)
+                .ConfigureAwait(true);
+        }
+        catch (Exception ex)
+        {
+            _startupException = ex;
+        }
+        finally
+        {
+            _webviewReady.Set();
+        }
+    }
+
+    private Task InvokeAsync(Func<Task> action)
+    {
+        ObjectDisposedException.ThrowIf(_disposed, this);
+
+        var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        _hostForm!.BeginInvoke(new Action(async () =>
+        {
+            try
+            {
+                await action().ConfigureAwait(true);
+                tcs.SetResult();
+            }
+            catch (Exception ex)
+            {
+                tcs.SetException(ex);
+            }
+        }));
+
+        return tcs.Task;
+    }
+
+    private async Task PrintLoadedContentAsync(
+        Action<WebView2> navigate,
+        string printerName,
+        CancellationToken cancellationToken)
+    {
+        if (_webView?.CoreWebView2 is null)
+        {
+            throw new InvalidOperationException("WebView2 is not ready.");
+        }
 
         var navigationCompleted = new TaskCompletionSource<bool>(
             TaskCreationOptions.RunContinuationsAsynchronously);
@@ -117,24 +194,49 @@ public sealed class WebView2SilentPrinter : IDisposable
             navigationCompleted.TrySetResult(args.IsSuccess);
         }
 
-        _webView.CoreWebView2!.NavigationCompleted += Handler;
-        _webView.CoreWebView2.Navigate(uri);
+        _webView.CoreWebView2.NavigationCompleted += Handler;
+        navigate(_webView);
 
-        var navigationSucceeded = await navigationCompleted.Task.ConfigureAwait(true);
+        var navigationSucceeded = await navigationCompleted.Task
+            .WaitAsync(cancellationToken)
+            .ConfigureAwait(true);
 
         if (!navigationSucceeded)
         {
-            throw new InvalidOperationException($"Failed to load URI in WebView2: {uri}");
+            throw new InvalidOperationException("Failed to load badge HTML in WebView2.");
         }
 
         var settings = _webView.CoreWebView2.Environment.CreatePrintSettings();
-        settings.PrinterName = printerName;
         settings.ShouldPrintBackgrounds = true;
         settings.ShouldPrintHeaderAndFooter = false;
         settings.MarginTop = 0;
         settings.MarginBottom = 0;
         settings.MarginLeft = 0;
         settings.MarginRight = 0;
+
+        if (IsPrintToPdfDriver(printerName))
+        {
+            var outputPath = Path.Combine(
+                Directory.GetCurrentDirectory(),
+                $"spike-print-{DateTime.Now:yyyyMMdd-HHmmss}.pdf");
+
+            settings.PrinterName = printerName;
+
+            var pdfResult = await _webView.CoreWebView2
+                .PrintToPdfAsync(outputPath, settings)
+                .ConfigureAwait(true);
+
+            if (!pdfResult)
+            {
+                throw new InvalidOperationException(
+                    $"WebView2 failed to save PDF via \"{printerName}\".");
+            }
+
+            Console.WriteLine($"Saved PDF to: {outputPath}");
+            return;
+        }
+
+        settings.PrinterName = printerName;
 
         var status = await _webView.CoreWebView2
             .PrintAsync(settings)
@@ -147,11 +249,8 @@ public sealed class WebView2SilentPrinter : IDisposable
         }
     }
 
-    public void Dispose()
-    {
-        _webView.Dispose();
-        _hostForm.Dispose();
-    }
+    private static bool IsPrintToPdfDriver(string printerName) =>
+        printerName.Contains("print to pdf", StringComparison.OrdinalIgnoreCase);
 }
 
 public static class InstalledPrinters

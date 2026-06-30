@@ -78,7 +78,10 @@ internal static class Program
         var query = Uri.EscapeDataString(deskName);
         var uri = $"{fixtureUri}?desk={query}";
 
+        Console.WriteLine("Starting WebView2...");
         using var printer = new WebView2SilentPrinter();
+
+        Console.WriteLine("Loading CR80 test badge...");
         await printer.PrintUriAsync(uri, printerName).ConfigureAwait(true);
 
         Console.WriteLine($"Printed CR80 test badge to \"{printerName}\".");
@@ -97,7 +100,10 @@ internal static class Program
 
         var html = await File.ReadAllTextAsync(filePath).ConfigureAwait(true);
 
+        Console.WriteLine("Starting WebView2...");
         using var printer = new WebView2SilentPrinter();
+
+        Console.WriteLine($"Loading HTML from \"{filePath}\"...");
         await printer.PrintHtmlAsync(html, printerName).ConfigureAwait(true);
 
         Console.WriteLine($"Printed HTML from \"{filePath}\" to \"{printerName}\".");
