@@ -1,4 +1,5 @@
 using System.Drawing.Printing;
+using EventPlatform.PrintRelay.Core;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 
@@ -206,13 +207,7 @@ public sealed class WebView2SilentPrinter : IDisposable
             throw new InvalidOperationException("Failed to load badge HTML in WebView2.");
         }
 
-        var settings = _webView.CoreWebView2.Environment.CreatePrintSettings();
-        settings.ShouldPrintBackgrounds = true;
-        settings.ShouldPrintHeaderAndFooter = false;
-        settings.MarginTop = 0;
-        settings.MarginBottom = 0;
-        settings.MarginLeft = 0;
-        settings.MarginRight = 0;
+        var settings = CreateCr80PrintSettings(_webView.CoreWebView2.Environment);
 
         if (IsPrintToPdfDriver(printerName))
         {
@@ -251,6 +246,23 @@ public sealed class WebView2SilentPrinter : IDisposable
 
     private static bool IsPrintToPdfDriver(string printerName) =>
         printerName.Contains("print to pdf", StringComparison.OrdinalIgnoreCase);
+
+    private static CoreWebView2PrintSettings CreateCr80PrintSettings(
+        CoreWebView2Environment environment)
+    {
+        var settings = environment.CreatePrintSettings();
+        settings.ShouldPrintBackgrounds = true;
+        settings.ShouldPrintHeaderAndFooter = false;
+        settings.MarginTop = 0;
+        settings.MarginBottom = 0;
+        settings.MarginLeft = 0;
+        settings.MarginRight = 0;
+        settings.MediaSize = CoreWebView2PrintMediaSize.Custom;
+        settings.PageWidth = RelayConstants.Cr80WidthInches;
+        settings.PageHeight = RelayConstants.Cr80HeightInches;
+        settings.ScaleFactor = 1.0;
+        return settings;
+    }
 }
 
 public static class InstalledPrinters
