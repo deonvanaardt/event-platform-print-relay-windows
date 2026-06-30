@@ -17,6 +17,11 @@
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />
   </ItemGroup>
 
+  <!-- WebView2 NuGet references WPF assemblies even in WinForms-only apps. -->
+  <ItemGroup>
+    <Reference Remove="Microsoft.Web.WebView2.Wpf" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\EventPlatform.PrintRelay.Core\EventPlatform.PrintRelay.Core.csproj" />
   </ItemGroup>
