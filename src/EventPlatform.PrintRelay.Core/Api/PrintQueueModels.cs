@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 namespace EventPlatform.PrintRelay.Core.Api;
@@ -8,7 +9,7 @@ public sealed record PendingPrintJobsResponse
     public required IReadOnlyList<PrintQueuePendingJob> Jobs { get; init; }
 }
 
-public sealed record PrintQueueJobResponse
+public record PrintQueueJobResponse
 {
     [JsonPropertyName("id")]
     public required string Id { get; init; }
