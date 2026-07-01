@@ -13,6 +13,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />
+    <PackageReference Include="PdfiumPrinter" Version="1.4.1" />
+    <PackageReference Include="bblanchon.PDFium.Win32" Version="130.0.6721" />
+  </ItemGroup>
+
+  <!-- WebView2 NuGet references WPF assemblies even in WinForms-only apps. -->
+  <ItemGroup>
+    <Reference Remove="Microsoft.Web.WebView2.Wpf" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\EventPlatform.PrintRelay.Core\EventPlatform.PrintRelay.Core.csproj" />
   </ItemGroup>
 

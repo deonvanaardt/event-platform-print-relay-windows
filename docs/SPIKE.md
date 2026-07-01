@@ -6,6 +6,8 @@ The spike currently uses an **A5** test fixture (`148mm × 210mm`) for office-pa
 
 Tray UI, MSI packaging, and code signing are **out of scope** until this gate passes.
 
+**Status:** Gate 3 **passed** (2026-07-01). Next work: Sprint 1 in [`SPRINT.md`](../SPRINT.md) — W-01-S03 schema CI, then M1 staging integration ([`docs/STAGING_INTEGRATION.md`](STAGING_INTEGRATION.md)).
+
 ## Prerequisites
 
 - Windows 10 (1803+) or Windows 11 x64

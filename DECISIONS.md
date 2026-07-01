@@ -36,6 +36,14 @@ Chronological record of **implementation-time** decisions for the Windows print 
 
 <!-- Add entries above this line, newest first. -->
 
+## 2026-07-01 — App CR80 print path + hidden host for poll loop (S06)
+
+**Status:** accepted  
+**Context:** W-01-S06 needs end-to-end staging print of server `badge_html` after setup. Spike uses A5 for Gate 3 regression; production must default to CR80 per backlog acceptance. Tray UI ships in S07.  
+**Decision:** Copy Spike `WebView2SilentPrinter` + `PdfSpooler` into App with CR80 `CreatePrintSettings` / host viewport. `BadgeHtmlPrintJobProcessor` implements `IPrintJobProcessor`; missing `badge_html` uses `PrintJobMessages.MissingBadgeHtml` (PRD §8.3). `RelayHostForm` (hidden, no taskbar) keeps the process alive while `PrintRelayPollLoop` runs on a thread-pool task. Spike unchanged as A5 regression CLI.  
+**Alternatives considered:** Shared printing library project — rejected (scope). `CoreWebView2.PrintAsync` only — rejected (Gate 3 Pdfium path retained). Tray host in S06 — rejected (S07 scope).  
+**Consequences:** `App/Printing/`, `App/Polling/BadgeHtmlPrintJobProcessor.cs`, `RelayHostForm.cs`, `PrintJobMessages.cs`; manual staging sign-off per `docs/STAGING_INTEGRATION.md`.
+
 ## 2026-07-01 — Setup wizard in WinForms App; validation in Core
 
 **Status:** accepted  

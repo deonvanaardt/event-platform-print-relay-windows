@@ -13,6 +13,9 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 
 ### Added
 
+- App production print path: `WebView2SilentPrinter` (CR80 default), `PdfSpooler`, `BadgeHtmlPrintJobProcessor`, hidden `RelayHostForm`; poll loop runs after setup (W-01-S06)
+- `PrintJobMessages` operator-safe failure text for missing `badge_html` and printer errors (W-01-S06)
+- xUnit tests for `PrintJobMessages` (W-01-S06)
 - `EventPlatform.PrintRelay.App` WinForms setup wizard: paste `DESK-` code, validate via pending poll, printer dropdown, persist to `%AppData%`; skip wizard when settings complete (W-01-S05)
 - `SetupCodeValidation` with PRD operator-safe error messages; `RelaySettingsExtensions.IsComplete` (W-01-S05)
 - xUnit tests for setup validation, settings completeness, and settings store round-trip (W-01-S05)
@@ -23,7 +26,6 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 
 ### Not yet built
 
-- Staging E2E — print `badge_html` (W-01-S06)
 - System tray UI (W-01-S07)
 - Settings + diagnostics (W-01-S08)
 - Signed MSI + CI release (W-01-S09)
