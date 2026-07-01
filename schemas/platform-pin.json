@@ -1,0 +1,11 @@
+{
+  "platform_repo": "deonvanaardt/event-management-platform",
+  "commit_sha": "b851b028d148c29444c5ea9092fa61799dedae40",
+  "pinned_at": "2026-07-01",
+  "schema_paths": [
+    "schemas/pending-job.response.json",
+    "schemas/badge-render-input.json",
+    "schemas/desk-setup-code.v1.json"
+  ],
+  "notes": "Bump commit_sha when platform changes print-relay contracts (PRD §26). Re-copy schemas/ and run contract tests before release."
+}

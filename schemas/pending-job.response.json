@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.emp.dev/print-relay/pending-job.response.json",
+  "title": "PrintQueuePendingResponse",
+  "description": "Response body from GET /api/print-queue/pending.",
+  "type": "object",
+  "required": ["jobs"],
+  "additionalProperties": false,
+  "properties": {
+    "jobs": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/pendingJob"
+      }
+    }
+  },
+  "definitions": {
+    "pendingJob": {
+      "type": "object",
+      "required": [
+        "id",
+        "status",
+        "desk_id",
+        "event_id",
+        "registration_id",
+        "idempotency_key",
+        "is_reprint",
+        "created_at",
+        "badge_document",
+        "badge_html"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "status": {
+          "type": "string",
+          "enum": ["queued"]
+        },
+        "desk_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "event_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "registration_id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "idempotency_key": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "is_reprint": {
+          "type": "boolean"
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "badge_document": {
+          "$ref": "badge-render-input.json"
+        },
+        "badge_html": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "^<!DOCTYPE html",
+          "description": "Print-ready HTML from renderBadgeDocument(..., { mode: 'print' })."
+        }
+      }
+    }
+  }
+}

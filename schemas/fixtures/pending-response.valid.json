@@ -1,0 +1,93 @@
+{
+  "jobs": [
+    {
+      "id": "77777777-7777-4777-8777-777777777777",
+      "status": "queued",
+      "desk_id": "44444444-4444-4444-8444-444444444444",
+      "event_id": "33333333-3333-4333-8333-333333333333",
+      "registration_id": "55555555-5555-4555-8555-555555555555",
+      "idempotency_key": "66666666-6666-4666-8666-666666666666",
+      "is_reprint": false,
+      "created_at": "2026-06-27T12:00:00.000Z",
+      "badge_document": {
+        "template": {
+          "canvas_config": {
+            "format": {
+              "id": "a6-landscape",
+              "name": "A6 Landscape",
+              "physicalWidth": 148,
+              "physicalHeight": 105,
+              "safeZone": 3,
+              "sides": [
+                {
+                  "id": "front",
+                  "label": "Front",
+                  "widthMm": 148,
+                  "heightMm": 105,
+                  "offsetX": 0,
+                  "offsetY": 0
+                }
+              ]
+            },
+            "elements": [
+              {
+                "id": "default-full-name",
+                "type": "text",
+                "sideId": "front",
+                "x": 24,
+                "y": 28,
+                "width": 100,
+                "height": 7.6000000000000005,
+                "rotation": 0,
+                "locked": false,
+                "props": {
+                  "content": "{{full_name}}",
+                  "fontFamily": "system-ui, sans-serif",
+                  "fontSize": 18,
+                  "fontWeight": 700,
+                  "color": "#111827",
+                  "align": "center",
+                  "verticalAlign": "middle",
+                  "lineHeight": 1.2
+                }
+              },
+              {
+                "id": "default-registration-qr",
+                "type": "qr",
+                "sideId": "front",
+                "x": 62,
+                "y": 72,
+                "width": 24,
+                "height": 24,
+                "rotation": 0,
+                "locked": false,
+                "props": {
+                  "dataField": "registration_qr",
+                  "errorCorrection": "M",
+                  "foreground": "#000000",
+                  "background": "#ffffff"
+                }
+              }
+            ],
+            "guides": [],
+            "background": {
+              "front": {
+                "color": "#ffffff"
+              }
+            }
+          }
+        },
+        "data": {
+          "full_name": "Ada Lovelace",
+          "company": "Analytical Engines Ltd",
+          "job_title": "Mathematician",
+          "ticket_type": "Standard pass",
+          "attendee_type": "Delegate",
+          "event_name": "Sample Conference 2026",
+          "qr_image_data_url": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg=="
+        }
+      },
+      "badge_html": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n<title>Badge</title>\n<style>\n@page {\n  size: 148mm 105mm;\n  margin: 0;\n}\n\n* {\n  box-sizing: border-box;\n}\n\nhtml, body {\n  margin: 0;\n  padding: 0;\n}\n\n\n  body {\n    margin: 0;\n    padding: 0;\n  }\n\n.badge-sheet {\n  position: relative;\n  width: 148mm;\n  height: 105mm;\n  margin: 0;\n  overflow: hidden;\n  font-family: system-ui, -apple-system, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif;\n  color: #111827;\n}\n\n.badge-side {\n  position: absolute;\n  overflow: hidden;\n}\n\n@media print {\n  html, body {\n    margin: 0;\n    padding: 0;\n  }\n\n  .badge-screen-wrapper {\n    box-shadow: none;\n    background: transparent;\n  }\n\n  body {\n    background: transparent;\n  }\n\n  .badge-sheet,\n  .badge-side {\n    print-color-adjust: exact;\n    -webkit-print-color-adjust: exact;\n  }\n}\n</style>\n</head>\n<body>\n<div class=\"badge-sheet\"><div class=\"badge-side\" style=\"left:0mm;top:0mm;width:148mm;height:105mm;background-color:#ffffff\"><div style=\"position:absolute;left:24mm;top:28mm;width:100mm;height:7.6000000000000005mm;display:flex;flex-direction:column;justify-content:center;overflow:hidden;\"><div style=\"font-family:system-ui, sans-serif;font-size:18pt;font-weight:700;color:#111827;line-height:1.2;text-align:center;white-space:normal;overflow-wrap:break-word;word-wrap:break-word;width:100%\">Ada Lovelace</div></div><div style=\"position:absolute;left:62mm;top:72mm;width:24mm;height:24mm;\"><img src=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==\" alt=\"QR code\" style=\"display:block;width:100%;height:100%;object-fit:contain\" /></div></div></div>\n</body>\n</html>"
+    }
+  ]
+}
