@@ -31,56 +31,61 @@ internal sealed class SetupWizardForm : Form
         MaximizeBox = false;
         MinimizeBox = false;
         StartPosition = FormStartPosition.CenterScreen;
-        ClientSize = new Size(480, 280);
+        AutoScaleMode = AutoScaleMode.Font;
+        ClientSize = new Size(520, 380);
+        MinimumSize = new Size(520, 380);
 
         _step1Panel = new Panel
         {
             Dock = DockStyle.Fill,
+            Padding = new Padding(16),
         };
 
         var step1Title = new Label
         {
             Text = "Paste your desk setup code",
             AutoSize = true,
-            Location = new Point(16, 16),
+            Dock = DockStyle.Top,
             Font = new Font(Font, FontStyle.Bold),
+            Padding = new Padding(0, 0, 0, 12),
+        };
+
+        _continueButton = new Button
+        {
+            Text = "Continue",
+            AutoSize = true,
+            MinimumSize = new Size(96, 32),
+        };
+        _continueButton.Click += ContinueButton_Click;
+
+        var step1Footer = CreateButtonFooter(_continueButton);
+
+        _errorLabel = new Label
+        {
+            AutoSize = true,
+            ForeColor = Color.DarkRed,
+            Dock = DockStyle.Top,
+            MaximumSize = new Size(460, 0),
+            Padding = new Padding(0, 0, 0, 8),
+            Visible = false,
         };
 
         _setupCodeTextBox = new TextBox
         {
             Multiline = true,
             ScrollBars = ScrollBars.Vertical,
-            Location = new Point(16, 48),
-            Size = new Size(448, 140),
-            Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+            Dock = DockStyle.Fill,
         };
 
-        _errorLabel = new Label
-        {
-            AutoSize = true,
-            ForeColor = Color.DarkRed,
-            Location = new Point(16, 196),
-            MaximumSize = new Size(448, 0),
-            Visible = false,
-        };
-
-        _continueButton = new Button
-        {
-            Text = "Continue",
-            Location = new Point(368, 232),
-            Size = new Size(96, 32),
-            Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
-        };
-        _continueButton.Click += ContinueButton_Click;
-
-        _step1Panel.Controls.Add(step1Title);
         _step1Panel.Controls.Add(_setupCodeTextBox);
         _step1Panel.Controls.Add(_errorLabel);
-        _step1Panel.Controls.Add(_continueButton);
+        _step1Panel.Controls.Add(step1Footer);
+        _step1Panel.Controls.Add(step1Title);
 
         _step2Panel = new Panel
         {
             Dock = DockStyle.Fill,
+            Padding = new Padding(16),
             Visible = false,
         };
 
@@ -88,56 +93,86 @@ internal sealed class SetupWizardForm : Form
         {
             Text = "Select printer",
             AutoSize = true,
-            Location = new Point(16, 16),
+            Dock = DockStyle.Top,
             Font = new Font(Font, FontStyle.Bold),
+            Padding = new Padding(0, 0, 0, 12),
+        };
+
+        _finishButton = new Button
+        {
+            Text = "Finish",
+            AutoSize = true,
+            MinimumSize = new Size(96, 32),
+        };
+        _finishButton.Click += FinishButton_Click;
+
+        var step2Footer = CreateButtonFooter(_finishButton);
+
+        var step2Body = new Panel
+        {
+            Dock = DockStyle.Fill,
         };
 
         var deskNameCaption = new Label
         {
             Text = "Desk:",
             AutoSize = true,
-            Location = new Point(16, 52),
+            Location = new Point(0, 0),
         };
 
         _deskNameLabel = new Label
         {
             AutoSize = true,
-            Location = new Point(56, 52),
+            Location = new Point(48, 0),
         };
 
         var printerCaption = new Label
         {
             Text = "Printer:",
             AutoSize = true,
-            Location = new Point(16, 88),
+            Location = new Point(0, 36),
         };
 
         _printerComboBox = new ComboBox
         {
             DropDownStyle = ComboBoxStyle.DropDownList,
-            Location = new Point(16, 112),
-            Size = new Size(448, 28),
+            Location = new Point(0, 60),
             Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
+            Width = 460,
         };
 
-        _finishButton = new Button
-        {
-            Text = "Finish",
-            Location = new Point(368, 232),
-            Size = new Size(96, 32),
-            Anchor = AnchorStyles.Bottom | AnchorStyles.Right,
-        };
-        _finishButton.Click += FinishButton_Click;
+        step2Body.Controls.Add(deskNameCaption);
+        step2Body.Controls.Add(_deskNameLabel);
+        step2Body.Controls.Add(printerCaption);
+        step2Body.Controls.Add(_printerComboBox);
 
+        _step2Panel.Controls.Add(step2Body);
+        _step2Panel.Controls.Add(step2Footer);
         _step2Panel.Controls.Add(step2Title);
-        _step2Panel.Controls.Add(deskNameCaption);
-        _step2Panel.Controls.Add(_deskNameLabel);
-        _step2Panel.Controls.Add(printerCaption);
-        _step2Panel.Controls.Add(_printerComboBox);
-        _step2Panel.Controls.Add(_finishButton);
 
         Controls.Add(_step1Panel);
         Controls.Add(_step2Panel);
+    }
+
+    private static Panel CreateButtonFooter(Button button)
+    {
+        var footer = new Panel
+        {
+            Dock = DockStyle.Bottom,
+            Height = 48,
+            Padding = new Padding(0, 8, 0, 0),
+        };
+
+        var buttonBar = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            FlowDirection = FlowDirection.RightToLeft,
+            WrapContents = false,
+        };
+        buttonBar.Controls.Add(button);
+        footer.Controls.Add(buttonBar);
+
+        return footer;
     }
 
     private async void ContinueButton_Click(object? sender, EventArgs e)
