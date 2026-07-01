@@ -32,15 +32,31 @@ internal sealed class SetupWizardForm : Form
         MinimizeBox = false;
         StartPosition = FormStartPosition.CenterScreen;
         AutoScaleMode = AutoScaleMode.Font;
-        ClientSize = new Size(520, 380);
-        MinimumSize = new Size(520, 380);
+        ClientSize = new Size(560, 400);
+        MinimumSize = new Size(560, 400);
 
-        _step1Panel = new Panel
+        _step1Panel = CreateStepPanel();
+        _step2Panel = CreateStepPanel(visible: false);
+
+        BuildStep1();
+        BuildStep2();
+
+        Controls.Add(_step1Panel);
+        Controls.Add(_step2Panel);
+    }
+
+    private static Panel CreateStepPanel(bool visible = true)
+    {
+        return new Panel
         {
             Dock = DockStyle.Fill,
             Padding = new Padding(16),
+            Visible = visible,
         };
+    }
 
+    private void BuildStep1()
+    {
         var step1Title = new Label
         {
             Text = "Paste your desk setup code",
@@ -65,7 +81,6 @@ internal sealed class SetupWizardForm : Form
             AutoSize = true,
             ForeColor = Color.DarkRed,
             Dock = DockStyle.Top,
-            MaximumSize = new Size(460, 0),
             Padding = new Padding(0, 0, 0, 8),
             Visible = false,
         };
@@ -81,14 +96,10 @@ internal sealed class SetupWizardForm : Form
         _step1Panel.Controls.Add(_errorLabel);
         _step1Panel.Controls.Add(step1Footer);
         _step1Panel.Controls.Add(step1Title);
+    }
 
-        _step2Panel = new Panel
-        {
-            Dock = DockStyle.Fill,
-            Padding = new Padding(16),
-            Visible = false,
-        };
-
+    private void BuildStep2()
+    {
         var step2Title = new Label
         {
             Text = "Select printer",
@@ -108,50 +119,61 @@ internal sealed class SetupWizardForm : Form
 
         var step2Footer = CreateButtonFooter(_finishButton);
 
-        var step2Body = new Panel
+        var step2Body = new TableLayoutPanel
         {
             Dock = DockStyle.Fill,
+            ColumnCount = 2,
+            RowCount = 3,
+            AutoSize = false,
         };
+        step2Body.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 72));
+        step2Body.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100f));
+        step2Body.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        step2Body.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+        step2Body.RowStyles.Add(new RowStyle(SizeType.Absolute, 32));
 
         var deskNameCaption = new Label
         {
             Text = "Desk:",
             AutoSize = true,
-            Location = new Point(0, 0),
+            Anchor = AnchorStyles.Left,
+            Margin = new Padding(0, 0, 8, 12),
         };
 
         _deskNameLabel = new Label
         {
             AutoSize = true,
-            Location = new Point(48, 0),
+            Anchor = AnchorStyles.Left,
+            Margin = new Padding(0, 0, 0, 12),
         };
 
         var printerCaption = new Label
         {
             Text = "Printer:",
             AutoSize = true,
-            Location = new Point(0, 36),
+            Anchor = AnchorStyles.Left,
+            Margin = new Padding(0, 0, 8, 8),
         };
 
         _printerComboBox = new ComboBox
         {
             DropDownStyle = ComboBoxStyle.DropDownList,
-            Location = new Point(0, 60),
-            Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right,
-            Width = 460,
+            Dock = DockStyle.Fill,
+            Margin = new Padding(0, 0, 0, 8),
+            IntegralHeight = false,
         };
 
-        step2Body.Controls.Add(deskNameCaption);
-        step2Body.Controls.Add(_deskNameLabel);
-        step2Body.Controls.Add(printerCaption);
-        step2Body.Controls.Add(_printerComboBox);
+        step2Body.Controls.Add(deskNameCaption, 0, 0);
+        step2Body.Controls.Add(_deskNameLabel, 1, 0);
+        step2Body.Controls.Add(printerCaption, 0, 1);
+        step2Body.SetColumnSpan(printerCaption, 2);
+        step2Body.Controls.Add(_printerComboBox, 0, 2);
+        step2Body.SetColumnSpan(_printerComboBox, 2);
 
         _step2Panel.Controls.Add(step2Body);
         _step2Panel.Controls.Add(step2Footer);
         _step2Panel.Controls.Add(step2Title);
-
-        Controls.Add(_step1Panel);
-        Controls.Add(_step2Panel);
+        _step2Panel.Resize += (_, _) => UpdatePrinterComboBoxLayout();
     }
 
     private static Panel CreateButtonFooter(Button button)
@@ -173,6 +195,18 @@ internal sealed class SetupWizardForm : Form
         footer.Controls.Add(buttonBar);
 
         return footer;
+    }
+
+    private void UpdatePrinterComboBoxLayout()
+    {
+        var availableWidth = _step2Panel.ClientSize.Width - _step2Panel.Padding.Horizontal;
+        if (availableWidth <= 0)
+        {
+            return;
+        }
+
+        _printerComboBox.Width = availableWidth;
+        _printerComboBox.DropDownWidth = availableWidth;
     }
 
     private async void ContinueButton_Click(object? sender, EventArgs e)
@@ -265,6 +299,7 @@ internal sealed class SetupWizardForm : Form
 
         _step1Panel.Visible = false;
         _step2Panel.Visible = true;
+        UpdatePrinterComboBoxLayout();
     }
 
     private void ShowStep1()
@@ -284,6 +319,9 @@ internal sealed class SetupWizardForm : Form
     {
         _errorLabel.Text = message;
         _errorLabel.Visible = true;
+        _errorLabel.MaximumSize = new Size(
+            _step1Panel.ClientSize.Width - _step1Panel.Padding.Horizontal,
+            0);
     }
 
     private void ClearError()
