@@ -9,7 +9,7 @@ Signed Windows desktop app for silent badge printing at check-in desks. Polls th
 
 | Milestone | State |
 |---|---|
-| **Spike** — WebView2 silent CR80 fixture print | Scaffolded (`EventPlatform.PrintRelay.Spike`) |
+| **Spike** — WebView2 silent fixture print (Gate 3) | **Passed** — A5 physical sign-off; CR80 fixture retained for badge-stock validation |
 | M1 — Setup wizard + staging poll + `badge_html` | Not started |
 | M2 — Tray UI, settings, diagnostics | Not started |
 | M3 — Signed MSI + CI release | Not started |
