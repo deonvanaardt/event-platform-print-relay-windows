@@ -55,7 +55,7 @@ dotnet run --project src/EventPlatform.PrintRelay.Spike -- print-html `
 | Named printer | `--printer` must match an entry from `list-printers`; default printer is not used silently |
 | CR80 dimensions | Fixture uses `@page { size: 85.6mm 54mm; }` aligned with platform `cr80` preset |
 | Background/colour | `ShouldPrintBackgrounds = true`; CSS includes `print-color-adjust: exact` |
-| Physical sign-off | Repeat on a USB/network badge printer before customer deployment |
+| Physical sign-off | Repeat on a USB/network badge printer before customer deployment. Set the Windows printer driver paper/label size to **86×54 mm (CR80)** in *Printer properties → Preferences*. ZPL-only thermal drivers may print blank pages with HTML — use a driver that supports Windows GDI/HTML printing. |
 
 ## Next milestone (M1)
 

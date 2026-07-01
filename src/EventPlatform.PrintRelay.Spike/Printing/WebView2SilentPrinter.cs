@@ -207,6 +207,9 @@ public sealed class WebView2SilentPrinter : IDisposable
             throw new InvalidOperationException("Failed to load badge HTML in WebView2.");
         }
 
+        ConfigureWebViewForCr80Layout();
+        await WaitForDocumentReadyAsync(_webView.CoreWebView2).ConfigureAwait(true);
+
         var settings = CreateCr80PrintSettings(_webView.CoreWebView2.Environment);
 
         if (IsPrintToPdfDriver(printerName))
@@ -232,6 +235,9 @@ public sealed class WebView2SilentPrinter : IDisposable
         }
 
         settings.PrinterName = printerName;
+        settings.PageRanges = "1";
+
+        Console.WriteLine($"Printing to \"{printerName}\" ({RelayConstants.Cr80WidthMm}mm x {RelayConstants.Cr80HeightMm}mm)...");
 
         var status = await _webView.CoreWebView2
             .PrintAsync(settings)
@@ -262,6 +268,31 @@ public sealed class WebView2SilentPrinter : IDisposable
         settings.PageHeight = RelayConstants.Cr80HeightInches;
         settings.ScaleFactor = 1.0;
         return settings;
+    }
+
+    private void ConfigureWebViewForCr80Layout()
+    {
+        var widthPx = (int)Math.Round(RelayConstants.Cr80WidthInches * 96);
+        var heightPx = (int)Math.Round(RelayConstants.Cr80HeightInches * 96);
+
+        _hostForm!.Size = new Size(widthPx, heightPx);
+        _webView!.Size = new Size(widthPx, heightPx);
+    }
+
+    private static async Task WaitForDocumentReadyAsync(CoreWebView2 webView)
+    {
+        await webView.ExecuteScriptAsync(
+            """
+            (async () => {
+                if (document.fonts && document.fonts.ready) {
+                    await document.fonts.ready;
+                }
+
+                await new Promise(resolve =>
+                    requestAnimationFrame(() => requestAnimationFrame(resolve)));
+            })();
+            """)
+            .ConfigureAwait(true);
     }
 }
 
