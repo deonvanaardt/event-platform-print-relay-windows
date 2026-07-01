@@ -12,8 +12,8 @@ After Gate 3 spike sign-off, ship contract validation in CI and the first end-to
 ## In scope (Sprint 1)
 
 - [x] **W-01-S03** — JSON Schema pinning + contract tests
-- [ ] **W-01-S04** — Poll loop + job lifecycle
-- [ ] **W-01-S05** — Setup wizard (M1)
+- [x] **W-01-S04** — Poll loop + job lifecycle
+- [x] **W-01-S05** — Setup wizard (M1)
 - [ ] **W-01-S06** — Print `badge_html` from staging
 
 ## Stretch (if time remains)
@@ -36,6 +36,8 @@ _(none — update this when you start a story)_
 - **W-01-S01** — Repo scaffold + Core library
 - **W-01-S02** — WebView2 silent print spike (Gate 3 passed)
 - **W-01-S03** — JSON Schema pinning + contract tests
+- **W-01-S04** — Poll loop + job lifecycle
+- **W-01-S05** — Setup wizard (M1)
 
 ## Out of scope this sprint
 

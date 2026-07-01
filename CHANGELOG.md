@@ -13,13 +13,16 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 
 ### Added
 
+- `EventPlatform.PrintRelay.App` WinForms setup wizard: paste `DESK-` code, validate via pending poll, printer dropdown, persist to `%AppData%`; skip wizard when settings complete (W-01-S05)
+- `SetupCodeValidation` with PRD operator-safe error messages; `RelaySettingsExtensions.IsComplete` (W-01-S05)
+- xUnit tests for setup validation, settings completeness, and settings store round-trip (W-01-S05)
+- `PrintRelayPollLoop` with `IPrintJobProcessor`, sequential `created_at` job processing, complete/fail lifecycle, connectivity backoff, and per-job failure isolation (W-01-S04)
+- xUnit poll loop tests: ordering, lifecycle, backoff, auth vs connectivity, crash isolation (W-01-S04)
 - Pinned platform JSON Schema under `schemas/` with `platform-pin.json` commit SHA (W-01-S03)
 - xUnit contract tests validate fixtures and reject invalid samples; CI runs via existing `core-tests` job (W-01-S03)
 
 ### Not yet built
 
-- Poll loop + complete/fail lifecycle (W-01-S04)
-- Setup wizard — paste `DESK-` code (W-01-S05)
 - Staging E2E — print `badge_html` (W-01-S06)
 - System tray UI (W-01-S07)
 - Settings + diagnostics (W-01-S08)
