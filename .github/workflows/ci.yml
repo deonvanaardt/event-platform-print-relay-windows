@@ -20,7 +20,7 @@ jobs:
         run: dotnet restore EventPlatform.PrintRelay.sln
 
       - name: Test
-        run: dotnet test tests/EventPlatform.PrintRelay.Core.Tests/EventPlatform.PrintRelay.Core.Tests.csproj -c Release --no-restore
+        run: dotnet test tests/EventPlatform.PrintRelay.Core.Tests/EventPlatform.PrintRelay.Core.Tests.csproj -c Release --no-restore --verbosity normal
 
   spike-build:
     runs-on: windows-latest

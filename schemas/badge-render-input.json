@@ -1,0 +1,505 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.emp.dev/print-relay/badge-render-input.json",
+  "title": "BadgeRenderInput",
+  "description": "Structured badge payload stored on print jobs as badge_document. Windows relay receives this but prints badge_html only.",
+  "type": "object",
+  "required": ["template", "data"],
+  "additionalProperties": false,
+  "properties": {
+    "template": {
+      "$ref": "#/definitions/badgeRenderTemplate"
+    },
+    "data": {
+      "$ref": "#/definitions/badgePrintData"
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["screen", "print"]
+    },
+    "options": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "sideId": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  },
+  "definitions": {
+    "badgeRenderTemplate": {
+      "type": "object",
+      "required": ["canvas_config"],
+      "additionalProperties": false,
+      "properties": {
+        "canvas_config": {
+          "$ref": "#/definitions/canvasConfig"
+        }
+      }
+    },
+    "canvasConfig": {
+      "type": "object",
+      "required": ["format", "elements", "guides", "background"],
+      "additionalProperties": false,
+      "properties": {
+        "format": {
+          "$ref": "#/definitions/badgeFormat"
+        },
+        "elements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/canvasElement"
+          }
+        },
+        "guides": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/guideObject"
+          }
+        },
+        "background": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "color": {
+                "type": "string"
+              },
+              "imageUrl": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "badgeFormat": {
+      "type": "object",
+      "required": ["id", "name", "physicalWidth", "physicalHeight", "sides"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "physicalWidth": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "physicalHeight": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "sides": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/definitions/badgeSide"
+          }
+        },
+        "foldLine": {
+          "$ref": "#/definitions/foldLine"
+        },
+        "bleed": {
+          "type": "number",
+          "minimum": 0
+        },
+        "safeZone": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "badgeSide": {
+      "type": "object",
+      "required": ["id", "label", "widthMm", "heightMm", "offsetX", "offsetY"],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "widthMm": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "heightMm": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "offsetX": {
+          "type": "number"
+        },
+        "offsetY": {
+          "type": "number"
+        },
+        "rotation": {
+          "type": "integer",
+          "enum": [0, 90, 180, 270]
+        }
+      }
+    },
+    "foldLine": {
+      "type": "object",
+      "required": ["axis", "positionMm"],
+      "additionalProperties": false,
+      "properties": {
+        "axis": {
+          "type": "string",
+          "enum": ["horizontal", "vertical"]
+        },
+        "positionMm": {
+          "type": "number"
+        }
+      }
+    },
+    "canvasElement": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "sideId",
+        "x",
+        "y",
+        "width",
+        "height",
+        "rotation",
+        "locked",
+        "props"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "type": "string",
+          "enum": ["text", "image", "qr", "shape", "barcode"]
+        },
+        "sideId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "width": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "height": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "rotation": {
+          "type": "number"
+        },
+        "locked": {
+          "type": "boolean"
+        },
+        "props": {
+          "oneOf": [
+            {
+              "$ref": "#/definitions/textProps"
+            },
+            {
+              "$ref": "#/definitions/imageProps"
+            },
+            {
+              "$ref": "#/definitions/qrProps"
+            },
+            {
+              "$ref": "#/definitions/shapeProps"
+            }
+          ]
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "text"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "$ref": "#/definitions/textProps"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "image"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "$ref": "#/definitions/imageProps"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "qr"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "$ref": "#/definitions/qrProps"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "shape"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "props": {
+                "$ref": "#/definitions/shapeProps"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "textProps": {
+      "type": "object",
+      "required": [
+        "content",
+        "fontFamily",
+        "fontSize",
+        "fontWeight",
+        "color",
+        "align",
+        "verticalAlign",
+        "lineHeight"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "content": {
+          "type": "string"
+        },
+        "fontFamily": {
+          "type": "string"
+        },
+        "fontSize": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "fontWeight": {
+          "type": "integer",
+          "enum": [400, 600, 700]
+        },
+        "color": {
+          "type": "string"
+        },
+        "align": {
+          "type": "string",
+          "enum": ["left", "center", "right"]
+        },
+        "verticalAlign": {
+          "type": "string",
+          "enum": ["top", "middle", "bottom"]
+        },
+        "lineHeight": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        }
+      }
+    },
+    "imageProps": {
+      "type": "object",
+      "required": ["src", "objectFit"],
+      "additionalProperties": false,
+      "properties": {
+        "src": {
+          "type": "string"
+        },
+        "objectFit": {
+          "type": "string",
+          "enum": ["contain", "cover", "fill"]
+        }
+      }
+    },
+    "qrProps": {
+      "type": "object",
+      "required": ["dataField", "errorCorrection", "foreground", "background"],
+      "additionalProperties": false,
+      "properties": {
+        "dataField": {
+          "type": "string",
+          "const": "registration_qr"
+        },
+        "errorCorrection": {
+          "type": "string",
+          "enum": ["L", "M", "H"]
+        },
+        "foreground": {
+          "type": "string"
+        },
+        "background": {
+          "type": "string"
+        }
+      }
+    },
+    "shapeProps": {
+      "type": "object",
+      "required": ["shape", "fill", "stroke", "strokeWidth"],
+      "additionalProperties": false,
+      "properties": {
+        "shape": {
+          "type": "string",
+          "enum": ["rectangle", "circle", "line"]
+        },
+        "fill": {
+          "type": "string"
+        },
+        "stroke": {
+          "type": "string"
+        },
+        "strokeWidth": {
+          "type": "number",
+          "minimum": 0
+        },
+        "cornerRadius": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    },
+    "guideObject": {
+      "type": "object",
+      "required": [
+        "id",
+        "type",
+        "axis",
+        "positionMm",
+        "sideId",
+        "color",
+        "dashPattern",
+        "locked"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "type": {
+          "type": "string",
+          "enum": ["cut-line", "fold-line", "safe-zone", "bleed"]
+        },
+        "axis": {
+          "type": "string",
+          "enum": ["horizontal", "vertical"]
+        },
+        "positionMm": {
+          "type": "number"
+        },
+        "sideId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "color": {
+          "type": "string"
+        },
+        "dashPattern": {
+          "type": "array",
+          "items": {
+            "type": "number",
+            "minimum": 0
+          }
+        },
+        "label": {
+          "type": "string"
+        },
+        "locked": {
+          "type": "boolean"
+        }
+      }
+    },
+    "badgePrintData": {
+      "type": "object",
+      "required": ["full_name", "qr_image_data_url"],
+      "additionalProperties": false,
+      "properties": {
+        "full_name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "first_name": {
+          "type": ["string", "null"]
+        },
+        "last_name": {
+          "type": ["string", "null"]
+        },
+        "company": {
+          "type": ["string", "null"]
+        },
+        "job_title": {
+          "type": ["string", "null"]
+        },
+        "ticket_type": {
+          "type": ["string", "null"]
+        },
+        "attendee_type": {
+          "type": ["string", "null"]
+        },
+        "event_name": {
+          "type": ["string", "null"]
+        },
+        "event_logo_url": {
+          "type": ["string", "null"]
+        },
+        "custom_1": {
+          "type": ["string", "null"]
+        },
+        "custom_2": {
+          "type": ["string", "null"]
+        },
+        "custom_3": {
+          "type": ["string", "null"]
+        },
+        "qr_image_data_url": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Pre-encoded QR image data URL; renderer embeds only."
+        }
+      }
+    }
+  }
+}

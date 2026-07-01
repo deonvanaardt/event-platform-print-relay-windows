@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.emp.dev/print-relay/desk-setup-code.v1.json",
+  "title": "DeskSetupCodePayloadV1",
+  "description": "Decoded JSON payload inside a DESK- setup code (after Base64url decode). Wire format: DESK-<base64url(JSON)>.",
+  "type": "object",
+  "required": ["v", "secret", "api_url", "desk_name"],
+  "additionalProperties": false,
+  "properties": {
+    "v": {
+      "type": "integer",
+      "const": 1,
+      "description": "Setup code format version. Breaking changes increment v."
+    },
+    "secret": {
+      "type": "string",
+      "pattern": "^relay_",
+      "minLength": 7,
+      "description": "Full relay secret shown once in admin (relay_ prefix + random bytes)."
+    },
+    "api_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Platform origin used for print queue API calls (no path)."
+    },
+    "desk_name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable desk label for relay UI."
+    }
+  }
+}
