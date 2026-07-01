@@ -1,6 +1,6 @@
 {
   "platform_repo": "deonvanaardt/event-management-platform",
-  "commit_sha": "b851b028d148c29444c5ea9092fa61799dedae40",
+  "commit_sha": "306cc0693d80f9a5db524edba1b8a986174d1d04",
   "pinned_at": "2026-07-01",
   "schema_paths": [
     "schemas/pending-job.response.json",
