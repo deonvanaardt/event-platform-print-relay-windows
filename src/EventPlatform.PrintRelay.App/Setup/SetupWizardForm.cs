@@ -12,12 +12,12 @@ internal sealed class SetupWizardForm : Form
 
     private readonly Panel _step1Panel;
     private readonly Panel _step2Panel;
-    private readonly TextBox _setupCodeTextBox;
-    private readonly Label _errorLabel;
-    private readonly Button _continueButton;
-    private readonly Label _deskNameLabel;
-    private readonly ComboBox _printerComboBox;
-    private readonly Button _finishButton;
+    private TextBox _setupCodeTextBox = null!;
+    private Label _errorLabel = null!;
+    private Button _continueButton = null!;
+    private Label _deskNameLabel = null!;
+    private ComboBox _printerComboBox = null!;
+    private Button _finishButton = null!;
 
     private DeskSetupCodePayload? _validatedPayload;
 
