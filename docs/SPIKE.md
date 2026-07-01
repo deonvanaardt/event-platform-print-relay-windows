@@ -1,6 +1,8 @@
 # WebView2 silent-print spike (Gate 3)
 
-Pre-coding gate **3** from `docs/PRINT_RELAY_WINDOWS_PRD.md` §12: prove silent printing of CR80 fixture HTML to a **named** printer with **no system dialog**.
+Pre-coding gate **3** from `docs/PRINT_RELAY_WINDOWS_PRD.md` §12: prove silent printing of fixture HTML to a **named** printer with **no system dialog**.
+
+The spike currently uses an **A5** test fixture (`148mm × 210mm`) for office-paper validation. Production badges remain **CR80** (`85.6mm × 54mm`); see `Fixtures/test-badge-cr80.html` when CR80 stock is available.
 
 Tray UI, MSI packaging, and code signing are **out of scope** until this gate passes.
 
@@ -31,13 +33,15 @@ List installed printers:
 dotnet run --project src/EventPlatform.PrintRelay.Spike -- list-printers
 ```
 
-Print bundled CR80 test fixture (no dialog):
+Print bundled A5 test fixture (no dialog):
 
 ```powershell
 dotnet run --project src/EventPlatform.PrintRelay.Spike -- print-test `
   --printer "Microsoft Print to PDF" `
   --desk-name "Main entrance"
 ```
+
+Set the printer driver paper size to **A5** in *Printer properties → Preferences* when testing on physical paper.
 
 Print arbitrary HTML (e.g. `badge_html` saved from staging):
 
@@ -51,11 +55,11 @@ dotnet run --project src/EventPlatform.PrintRelay.Spike -- print-html `
 
 | Check | How to verify |
 |---|---|
-| No print dialog | Run `print-test`; badge HTML is rendered to CR80 PDF, then sent to the printer. **Microsoft Print to PDF** writes `spike-print-*.pdf` in the current directory. |
+| No print dialog | Run `print-test`; badge HTML is rendered to A5 PDF, then sent to the printer. **Microsoft Print to PDF** writes `spike-print-*.pdf` in the current directory. |
 | Named printer | `--printer` must match an entry from `list-printers`; default printer is not used silently |
-| CR80 dimensions | Fixture uses `@page { size: 85.6mm 54mm; }` aligned with platform `cr80` preset |
+| Page dimensions | Fixture uses `@page { size: 148mm 210mm; }` (A5). Production uses CR80 — see `test-badge-cr80.html`. |
 | Background/colour | `ShouldPrintBackgrounds = true`; CSS includes `print-color-adjust: exact` |
-| Physical sign-off | Repeat on a USB/network badge printer before customer deployment. Set the Windows printer driver paper/label size to **86×54 mm (CR80)** in *Printer properties → Preferences*. ZPL-only thermal drivers may print blank pages with HTML — use a driver that supports Windows GDI/HTML printing. |
+| Physical sign-off | Repeat on a USB/network printer with **A5** loaded (or CR80 badge stock when available). ZPL-only thermal drivers may print blank pages with HTML — use a driver that supports Windows GDI/HTML printing. |
 
 ## Next milestone (M1)
 

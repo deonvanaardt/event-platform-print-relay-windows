@@ -207,10 +207,10 @@ public sealed class WebView2SilentPrinter : IDisposable
             throw new InvalidOperationException("Failed to load badge HTML in WebView2.");
         }
 
-        ConfigureWebViewForCr80Layout();
+        ConfigureWebViewForA5Layout();
         await WaitForDocumentReadyAsync(_webView.CoreWebView2).ConfigureAwait(true);
 
-        var settings = CreateCr80PrintSettings(_webView.CoreWebView2.Environment);
+        var settings = CreateA5PrintSettings(_webView.CoreWebView2.Environment);
 
         if (IsPrintToPdfDriver(printerName))
         {
@@ -240,7 +240,7 @@ public sealed class WebView2SilentPrinter : IDisposable
 
         try
         {
-            Console.WriteLine("Rendering CR80 PDF...");
+            Console.WriteLine("Rendering A5 PDF...");
             var rendered = await _webView.CoreWebView2
                 .PrintToPdfAsync(tempPdfPath, settings)
                 .ConfigureAwait(true);
@@ -250,7 +250,7 @@ public sealed class WebView2SilentPrinter : IDisposable
                 throw new InvalidOperationException("WebView2 failed to render badge PDF.");
             }
 
-            Console.WriteLine($"Printing to \"{printerName}\" ({RelayConstants.Cr80WidthMm}mm x {RelayConstants.Cr80HeightMm}mm)...");
+            Console.WriteLine($"Printing to \"{printerName}\" ({RelayConstants.A5WidthMm}mm x {RelayConstants.A5HeightMm}mm)...");
             PdfSpooler.PrintFile(tempPdfPath, printerName);
         }
         finally
@@ -271,7 +271,7 @@ public sealed class WebView2SilentPrinter : IDisposable
     private static bool IsPrintToPdfDriver(string printerName) =>
         printerName.Contains("print to pdf", StringComparison.OrdinalIgnoreCase);
 
-    private static CoreWebView2PrintSettings CreateCr80PrintSettings(
+    private static CoreWebView2PrintSettings CreateA5PrintSettings(
         CoreWebView2Environment environment)
     {
         var settings = environment.CreatePrintSettings();
@@ -282,16 +282,16 @@ public sealed class WebView2SilentPrinter : IDisposable
         settings.MarginLeft = 0;
         settings.MarginRight = 0;
         settings.MediaSize = CoreWebView2PrintMediaSize.Custom;
-        settings.PageWidth = RelayConstants.Cr80WidthInches;
-        settings.PageHeight = RelayConstants.Cr80HeightInches;
+        settings.PageWidth = RelayConstants.A5WidthInches;
+        settings.PageHeight = RelayConstants.A5HeightInches;
         settings.ScaleFactor = 1.0;
         return settings;
     }
 
-    private void ConfigureWebViewForCr80Layout()
+    private void ConfigureWebViewForA5Layout()
     {
-        var widthPx = (int)Math.Round(RelayConstants.Cr80WidthInches * 96);
-        var heightPx = (int)Math.Round(RelayConstants.Cr80HeightInches * 96);
+        var widthPx = (int)Math.Round(RelayConstants.A5WidthInches * 96);
+        var heightPx = (int)Math.Round(RelayConstants.A5HeightInches * 96);
 
         _hostForm!.Size = new Size(widthPx, heightPx);
         _webView!.Size = new Size(widthPx, heightPx);

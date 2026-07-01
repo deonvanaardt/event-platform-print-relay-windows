@@ -19,4 +19,14 @@ public static class RelayConstants
     public const double Cr80WidthInches = Cr80WidthMm / 25.4;
 
     public const double Cr80HeightInches = Cr80HeightMm / 25.4;
+
+    /// <summary>ISO A5 width (spike testing on common office paper).</summary>
+    public const double A5WidthMm = 148.0;
+
+    /// <summary>ISO A5 height (spike testing on common office paper).</summary>
+    public const double A5HeightMm = 210.0;
+
+    public const double A5WidthInches = A5WidthMm / 25.4;
+
+    public const double A5HeightInches = A5HeightMm / 25.4;
 }

@@ -65,7 +65,7 @@ internal static class Program
         var fixturePath = Path.Combine(
             AppContext.BaseDirectory,
             "Fixtures",
-            "test-badge-cr80.html");
+            "test-badge-a5.html");
 
         if (!File.Exists(fixturePath))
         {
@@ -81,10 +81,10 @@ internal static class Program
         Console.WriteLine("Starting WebView2...");
         using var printer = new WebView2SilentPrinter();
 
-        Console.WriteLine("Loading CR80 test badge...");
+        Console.WriteLine("Loading A5 test badge...");
         await printer.PrintUriAsync(uri, printerName).ConfigureAwait(true);
 
-        Console.WriteLine($"Printed CR80 test badge to \"{printerName}\".");
+        Console.WriteLine($"Printed A5 test badge to \"{printerName}\".");
         return 0;
     }
 
@@ -156,7 +156,7 @@ internal static class Program
             Gate 3 validation (Windows VM or hardware):
               1. dotnet run --project src/EventPlatform.PrintRelay.Spike -- list-printers
               2. dotnet run --project src/EventPlatform.PrintRelay.Spike -- print-test --printer "Microsoft Print to PDF"
-              3. Confirm no system print dialog appears and output matches CR80 dimensions.
+              3. Confirm no system print dialog appears and output matches A5 dimensions (148mm x 210mm).
 
             See docs/SPIKE.md for the full checklist.
             """);
