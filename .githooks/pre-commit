@@ -1,0 +1,12 @@
+#!/bin/sh
+# Block direct commits on the production branch.
+branch="$(git symbolic-ref --short HEAD 2>/dev/null || true)"
+
+case "$branch" in
+  main|master)
+    echo "Blocked: do not commit directly on '$branch'." >&2
+    echo "Create a branch first: git checkout -b feature/my-change" >&2
+    echo "Emergency bypass: git commit --no-verify" >&2
+    exit 1
+    ;;
+esac

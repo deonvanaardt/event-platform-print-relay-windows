@@ -1,0 +1,37 @@
+---
+description: Maintain SPRINT.md as stories move
+alwaysApply: true
+---
+
+# Sprint board maintenance
+
+`SPRINT.md` is the live sprint view. Keep it accurate in the **same session** as story work.
+
+## Before starting work
+
+1. Read `SPRINT.md` — only implement **In scope**, **Stretch**, or **In progress** stories.
+2. Story IDs are `W-01-Sxx` — verify against `BACKLOG.md`.
+3. Do not start out-of-scope stories without explicit approval.
+
+## When you begin a story
+
+1. Move story to **## In progress**.
+2. One story **In progress** at a time unless parallel work requested.
+3. Leave checkbox unchecked until done.
+
+## When a story is complete
+
+Acceptance criteria pass; tests green where applicable.
+
+1. Check box in **In scope** (or **Stretch**).
+2. Remove from **In progress**; add line under **Done**.
+3. Update `CHANGELOG.md` per `changelog.mdc`.
+4. Log decisions in `DECISIONS.md` if qualified.
+
+Mention in reply: "Sprint: W-01-Sxx → Done".
+
+## Blockers
+
+Add under **## Blockers / notes** — do not move to Done.
+
+Do not ask permission to update sprint status on normal completion.

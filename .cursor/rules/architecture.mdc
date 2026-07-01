@@ -1,0 +1,37 @@
+---
+description: Repository layout and project boundaries
+alwaysApply: true
+---
+
+# Architecture
+
+Single .NET solution for the Windows print relay tray app. Parent platform owns API and badge rendering.
+
+## Directory map
+
+| Path | Purpose |
+|---|---|
+| `src/EventPlatform.PrintRelay.Core/` | API client, setup code, poll loop, settings, logging — **no Windows UI** |
+| `src/EventPlatform.PrintRelay.App/` | Tray app, wizard, WebView2 print host (Phase 1–2) — Windows only |
+| `src/EventPlatform.PrintRelay.Spike/` | Gate 3 CLI; regression until App owns print path |
+| `tests/EventPlatform.PrintRelay.Core.Tests/` | xUnit + JSON Schema contract tests |
+| `schemas/` | Pinned platform JSON Schema + fixtures (`platform-pin.json`) |
+| `docs/` | PRD, spike runbook, staging integration |
+
+## Boundaries
+
+| Concern | Owner |
+|---|---|
+| Print queue API, `badge_html` rendering | **event-management-platform** |
+| Tray app, MSI, WebView2 silent print | **this repo** |
+| Node relay (macOS/Linux) | **event-management-platform** `/tools/print-relay` |
+
+## Layering
+
+1. **Core** — HTTP, decode setup code, poll backoff, job state machine, settings persistence interfaces.
+2. **App / Spike** — WinForms UI, `WebView2SilentPrinter`, tray, toasts.
+3. **No badge layout** in any layer — consume `badge_html` string only.
+
+## Adding a project
+
+Update `Tech_Stack_Decision_Record.md` §3 and `IMPLEMENTATION_PLAN.md` layout section. Log non-obvious splits in `DECISIONS.md`.
