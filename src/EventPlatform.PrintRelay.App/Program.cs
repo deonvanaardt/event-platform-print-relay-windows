@@ -44,7 +44,7 @@ internal static class Program
             settings = await RelaySettingsStore.LoadAsync(settingsPath).ConfigureAwait(true);
         }
 
-        if (!settings.IsComplete())
+        if (settings is null || !settings.IsComplete())
         {
             return 0;
         }
