@@ -234,19 +234,37 @@ public sealed class WebView2SilentPrinter : IDisposable
             return;
         }
 
-        settings.PrinterName = printerName;
-        settings.PageRanges = "1";
+        var tempPdfPath = Path.Combine(
+            Path.GetTempPath(),
+            $"print-relay-spike-{Guid.NewGuid():N}.pdf");
 
-        Console.WriteLine($"Printing to \"{printerName}\" ({RelayConstants.Cr80WidthMm}mm x {RelayConstants.Cr80HeightMm}mm)...");
-
-        var status = await _webView.CoreWebView2
-            .PrintAsync(settings)
-            .ConfigureAwait(true);
-
-        if (status != CoreWebView2PrintStatus.Succeeded)
+        try
         {
-            throw new InvalidOperationException(
-                $"WebView2 print failed with status: {status}.");
+            Console.WriteLine("Rendering CR80 PDF...");
+            var rendered = await _webView.CoreWebView2
+                .PrintToPdfAsync(tempPdfPath, settings)
+                .ConfigureAwait(true);
+
+            if (!rendered)
+            {
+                throw new InvalidOperationException("WebView2 failed to render badge PDF.");
+            }
+
+            Console.WriteLine($"Printing to \"{printerName}\" ({RelayConstants.Cr80WidthMm}mm x {RelayConstants.Cr80HeightMm}mm)...");
+            PdfSpooler.PrintFile(tempPdfPath, printerName);
+        }
+        finally
+        {
+            try
+            {
+                if (File.Exists(tempPdfPath))
+                {
+                    File.Delete(tempPdfPath);
+                }
+            }
+            catch (IOException)
+            {
+            }
         }
     }
 
