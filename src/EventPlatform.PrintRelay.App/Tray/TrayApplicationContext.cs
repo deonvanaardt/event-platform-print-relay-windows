@@ -33,11 +33,14 @@ internal sealed class TrayApplicationContext : ApplicationContext
         MainForm = _syncForm;
 
         _menu = BuildMenu();
+
+        var startingIcon = CreateIcon(RelayTrayIconState.Reconnecting);
+        _trayIcon = startingIcon;
         _notifyIcon = new NotifyIcon
         {
             Visible = true,
             Text = "Print Relay — Starting…",
-            Icon = AssignTrayIcon(RelayTrayIconState.Reconnecting),
+            Icon = startingIcon,
             ContextMenuStrip = _menu,
         };
 

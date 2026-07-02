@@ -32,7 +32,7 @@ internal static class Program
         }
         catch (Exception ex)
         {
-            RelayStartupLog.Write($"Fatal error: {ex.Message}");
+            RelayStartupLog.Write($"Fatal error: {ex}");
             MessageBox.Show(
                 ex.Message,
                 "Print Relay",
