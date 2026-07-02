@@ -17,7 +17,7 @@ Signed Windows desktop app for silent badge printing at check-in desks. Polls th
 | [`DECISIONS.md`](DECISIONS.md) | Implementation-time choices |
 | [`Tech_Stack_Decision_Record.md`](Tech_Stack_Decision_Record.md) | Tools, bans, hard rules |
 
-Cursor agents: rules in [`.cursor/rules/`](.cursor/rules/) mirror the platform repo discipline.
+Cursor agents: rules in [`.cursor/rules/`](.cursor/rules/) mirror the platform repo discipline. **Mac agent ↔ Windows testing:** see [`.cursor/rules/git-sync.mdc`](.cursor/rules/git-sync.mdc).
 
 ## Status
 
@@ -52,6 +52,21 @@ dotnet test
 ```
 
 **Spike (Windows only):** see [`docs/SPIKE.md`](docs/SPIKE.md).
+
+**App (Windows — after agent pushes from Mac):**
+
+```powershell
+git fetch origin
+git checkout feature/sprint-1-m1
+git pull origin feature/sprint-1-m1
+git log -1 --oneline          # must match commit agent reported
+taskkill /IM EventPlatform.PrintRelay.exe /F
+dotnet publish src\EventPlatform.PrintRelay.App -c Release -r win-x64 --self-contained -o artifacts\app
+.\artifacts\app\EventPlatform.PrintRelay.exe --version
+.\artifacts\app\EventPlatform.PrintRelay.exe
+```
+
+Full checklist: [`.cursor/rules/git-sync.mdc`](.cursor/rules/git-sync.mdc).
 
 ```powershell
 dotnet run --project src/EventPlatform.PrintRelay.Spike -- list-printers

@@ -21,6 +21,23 @@ Write it in **plain English**. Use short numbered steps. No jargon without expla
 4. **Separate must-do vs optional** — label **Required now** vs **Optional / when you test later**.
 5. **Prerequisites** — if Windows steps need staging, a desk setup code, or a physical printer, say so first.
 6. **No secrets in steps** — never tell the user to paste relay secrets into chat or logs; refer to setup wizard or saved settings.
+7. **After agent pushed App changes** — include the **sync checklist** from `git-sync.mdc` (fetch → checkout branch → pull → match `git log -1` to agent’s SHA → taskkill → publish → `--version` → run). Do not skip pull.
+
+### Standard sync (after agent push — App / tray / Spike)
+
+```powershell
+cd C:\Users\Deon\event-platform-print-relay-windows
+git fetch origin
+git checkout feature/sprint-1-m1
+git pull origin feature/sprint-1-m1
+git log -1 --oneline
+taskkill /IM EventPlatform.PrintRelay.exe /F
+dotnet publish src\EventPlatform.PrintRelay.App -c Release -r win-x64 --self-contained -o artifacts\app
+.\artifacts\app\EventPlatform.PrintRelay.exe --version
+.\artifacts\app\EventPlatform.PrintRelay.exe
+```
+
+Full detail: `.cursor/rules/git-sync.mdc`.
 
 ### Example (Core-only change)
 

@@ -13,6 +13,7 @@ alwaysApply: true
 4. Cross-repo contracts: read `INTEGRATION.md` and pinned `schemas/` — do not change response shapes without parent PRD §26 approval.
 5. Implementation rationale: read `DECISIONS.md`; **log new decisions automatically** (see `decisions.mdc`).
 6. When a story ships: update `SPRINT.md` and `CHANGELOG.md` same session.
+7. **Mac ↔ Windows handoff:** after App/Spike changes the user will test on Windows, **commit and push** in the same session per `git-sync.mdc`. Report branch + commit SHA in the reply.
 
 ## C#
 
