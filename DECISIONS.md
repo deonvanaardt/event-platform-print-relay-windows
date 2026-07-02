@@ -36,6 +36,14 @@ Chronological record of **implementation-time** decisions for the Windows print 
 
 <!-- Add entries above this line, newest first. -->
 
+## 2026-07-01 — Session state in Core; technical IDs behind Status toggle (S07–S08)
+
+**Status:** accepted  
+**Context:** Staging E2E tests were “flying blind” — invisible poll loop, no job IDs, PowerShell required to debug desk/host mismatches. PRD §7–§9 specifies tray + diagnostics but allows operator-safe defaults.  
+**Decision:** Implement `RelaySessionState` + `IRelayActivitySink` in Core (testable on macOS CI). Poll loop emits poll/job lifecycle events. App ships `TrayApplicationContext`, **Status** panel (checklist + live feed + recent jobs), **Show technical details** toggle (off by default) for `desk_id` / `event_id` / job IDs, JSON Lines log, and **Copy diagnostics**. Secrets never in UI, logs, or clipboard export.  
+**Alternatives considered:** Always-visible UUIDs in Status — rejected (PRD operator UX). Debug-only build flavor — rejected (staging needs trace in same binary). Platform health endpoint for desk_id without jobs — rejected (out of scope).  
+**Consequences:** `Core/Diagnostics/`, `Core/Logging/RelayFileLogger.cs`, `App/Tray/`; poll loop constructor gains optional sink; `docs/STAGING_INTEGRATION.md` updated for Status-first testing.
+
 ## 2026-07-01 — App CR80 print path + hidden host for poll loop (S06)
 
 **Status:** accepted  

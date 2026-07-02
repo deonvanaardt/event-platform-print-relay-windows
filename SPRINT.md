@@ -2,12 +2,12 @@
 
 **Dates:** 2026-07-01 → 2026-07-07  
 **Epic:** [W-01 — Windows print relay MVP](BACKLOG.md#w-01--windows-print-relay-mvp)  
-**Phase:** [Phase 1 — M1](IMPLEMENTATION_PLAN.md#phase-1--m1-staging-integration)  
+**Phase:** [Phase 1 — M1](IMPLEMENTATION_PLAN.md#phase-1--m1-staging-integration) · [Phase 2 — M2 tray](IMPLEMENTATION_PLAN.md#phase-2--m2-tray-app)  
 **Spec:** `docs/PRINT_RELAY_WINDOWS_PRD.md` · `INTEGRATION.md`
 
 ## Goal
 
-After Gate 3 spike sign-off, ship contract validation in CI and the first end-to-end path: decode setup code → poll staging → print `badge_html` → complete.
+After Gate 3 spike sign-off, ship contract validation in CI and the first end-to-end path: decode setup code → poll staging → print `badge_html` → complete. M2 tray + diagnostics landed early for staging test visibility.
 
 ## In scope (Sprint 1)
 
@@ -15,10 +15,12 @@ After Gate 3 spike sign-off, ship contract validation in CI and the first end-to
 - [x] **W-01-S04** — Poll loop + job lifecycle
 - [x] **W-01-S05** — Setup wizard (M1)
 - [x] **W-01-S06** — Print `badge_html` from staging
+- [x] **W-01-S07** — System tray UI (M2 early)
+- [x] **W-01-S08** — Settings + diagnostics (M2 early)
 
 ## Stretch (if time remains)
 
-- **W-01-S07** — System tray UI (start M2 early)
+_(none)_
 
 ## Recommended build order
 
@@ -26,6 +28,7 @@ After Gate 3 spike sign-off, ship contract validation in CI and the first end-to
 2. **W-01-S04** — Extract poll loop from Spike into Core (or new `App` project shell)
 3. **W-01-S05** — WinForms/WPF setup wizard wired to Core
 4. **W-01-S06** — Staging integration: real `badge_html` through `WebView2SilentPrinter` (CR80 dimensions)
+5. **W-01-S07–S08** — Tray, Status panel, diagnostics export, JSON Lines log
 
 ## In progress
 
@@ -39,11 +42,12 @@ _(none — update this when you start a story)_
 - **W-01-S04** — Poll loop + job lifecycle
 - **W-01-S05** — Setup wizard (M1)
 - **W-01-S06** — Print `badge_html` from staging
+- **W-01-S07** — System tray UI
+- **W-01-S08** — Settings + diagnostics
 
 ## Out of scope this sprint
 
 - MSI packaging and code signing (W-01-S09)
-- Full tray UX polish (W-01-S07 — stretch only)
 - Platform admin copy changes (E-05-S09 — platform repo)
 
 ## Blockers / notes
@@ -51,6 +55,7 @@ _(none — update this when you start a story)_
 - Gate 3 passed on physical Windows laptop (A5 sign-off; CR80 fixture retained)
 - Platform staging must have `badge_html` (E-05-S06) before W-01-S06 sign-off
 - Spike uses `PrintToPdf` + `PdfSpooler` for some drivers — production path must use CR80 dimensions per PRD §8.2 (see `DECISIONS.md`)
+- Use tray **Status** panel + **Show technical details** for staging E2E trace (see `docs/STAGING_INTEGRATION.md`)
 
 ---
 

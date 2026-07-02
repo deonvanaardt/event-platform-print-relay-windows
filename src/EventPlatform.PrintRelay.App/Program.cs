@@ -1,21 +1,24 @@
-using EventPlatform.PrintRelay.App.Polling;
-using EventPlatform.PrintRelay.App.Printing;
 using EventPlatform.PrintRelay.App.Setup;
-using EventPlatform.PrintRelay.Core.Api;
-using EventPlatform.PrintRelay.Core.Polling;
+using EventPlatform.PrintRelay.App.Tray;
 using EventPlatform.PrintRelay.Core.Settings;
 
 namespace EventPlatform.PrintRelay.App;
 
 internal static class Program
 {
-    private const string WebView2InstallUrl =
-        "https://go.microsoft.com/fwlink/p/?LinkId=2124703";
-
     [STAThread]
-    private static int Main()
+    private static int Main(string[] args)
     {
         ApplicationConfiguration.Initialize();
+
+        if (IsAboutRequest(args))
+        {
+            ShowAboutDialog();
+            return 0;
+        }
+
+        RelayStartupLog.Write(
+            $"Process started — version {RelayAppInfo.AppVersion}, tray build.");
 
         try
         {
@@ -23,6 +26,7 @@ internal static class Program
         }
         catch (Exception ex)
         {
+            RelayStartupLog.Write($"Fatal error: {ex.Message}");
             MessageBox.Show(
                 ex.Message,
                 "Print Relay",
@@ -32,90 +36,61 @@ internal static class Program
         }
     }
 
+    private static bool IsAboutRequest(string[] args) =>
+        args.Any(arg =>
+            string.Equals(arg, "--about", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(arg, "--version", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(arg, "/about", StringComparison.OrdinalIgnoreCase));
+
+    private static void ShowAboutDialog()
+    {
+        var buildInfoPath = Path.Combine(AppContext.BaseDirectory, "build-info.txt");
+        var buildInfo = File.Exists(buildInfoPath)
+            ? File.ReadAllText(buildInfoPath).Trim()
+            : "build-info.txt not found (publish without MSBuild stamp).";
+
+        MessageBox.Show(
+            $"Print Relay {RelayAppInfo.AppVersion}{Environment.NewLine}{Environment.NewLine}{buildInfo}",
+            "Print Relay — About",
+            MessageBoxButtons.OK,
+            MessageBoxIcon.Information);
+    }
+
     private static async Task<int> RunAsync()
     {
-        var settingsPath = RelaySettingsStore.GetDefaultSettingsPath();
-        var settings = await RelaySettingsStore.LoadAsync(settingsPath).ConfigureAwait(true);
-
-        if (!settings.IsComplete())
+        while (true)
         {
-            using var http = new HttpClient();
-            Application.Run(new SetupWizardForm(http, settingsPath));
-            settings = await RelaySettingsStore.LoadAsync(settingsPath).ConfigureAwait(true);
-        }
+            var settingsPath = RelaySettingsStore.GetDefaultSettingsPath();
+            var settings = await RelaySettingsStore.LoadAsync(settingsPath).ConfigureAwait(true);
 
-        if (settings is null || !settings.IsComplete())
-        {
-            return 0;
-        }
-
-        await RunRelayAsync(settings).ConfigureAwait(true);
-        return 0;
-    }
-
-    private static async Task RunRelayAsync(RelaySettings settings)
-    {
-        using var printer = TryCreatePrinter();
-        if (printer is null)
-        {
-            return;
-        }
-
-        using var http = new HttpClient();
-        using var cancellation = new CancellationTokenSource();
-
-        var api = new PrintRelayApiClient(http, settings.ApiUrl, settings.Secret);
-        var processor = new BadgeHtmlPrintJobProcessor(settings.PrinterName, printer);
-        var loop = new PrintRelayPollLoop(api, processor, new PollBackoff());
-
-        var pollTask = loop.RunAsync(cancellation.Token);
-
-        Application.Run(new RelayHostForm(cancellation));
-
-        try
-        {
-            await pollTask.ConfigureAwait(true);
-        }
-        catch (OperationCanceledException)
-        {
-        }
-    }
-
-    private static WebView2SilentPrinter? TryCreatePrinter()
-    {
-        try
-        {
-            return new WebView2SilentPrinter();
-        }
-        catch (InvalidOperationException)
-        {
-            var result = MessageBox.Show(
-                "Print Relay needs the Microsoft Edge WebView2 Runtime.\n\nOpen the download page now?",
-                "Print Relay",
-                MessageBoxButtons.YesNo,
-                MessageBoxIcon.Warning);
-
-            if (result == DialogResult.Yes)
+            if (!settings.IsComplete())
             {
-                try
-                {
-                    System.Diagnostics.Process.Start(
-                        new System.Diagnostics.ProcessStartInfo(WebView2InstallUrl)
-                        {
-                            UseShellExecute = true,
-                        });
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(
-                        ex.Message,
-                        "Print Relay",
-                        MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
-                }
+                RelayStartupLog.Write("Setup wizard required — settings incomplete.");
+                using var http = new HttpClient();
+                Application.Run(new SetupWizardForm(http, settingsPath));
+                settings = await RelaySettingsStore.LoadAsync(settingsPath).ConfigureAwait(true);
             }
 
-            return null;
+            if (settings is null || !settings.IsComplete())
+            {
+                RelayStartupLog.Write("Exiting — setup was not completed.");
+                return 0;
+            }
+
+            RelayStartupLog.Write("Starting tray application context.");
+            var restart = RunRelay(settings, settingsPath);
+
+            if (!restart)
+            {
+                return 0;
+            }
         }
+    }
+
+    private static bool RunRelay(RelaySettings settings, string settingsPath)
+    {
+        using var tray = new TrayApplicationContext(settings, settingsPath);
+        Application.Run(tray);
+        return tray.RestartRequested;
     }
 }

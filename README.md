@@ -25,7 +25,7 @@ Cursor agents: rules in [`.cursor/rules/`](.cursor/rules/) mirror the platform r
 |---|---|
 | **Spike** — WebView2 silent fixture print (Gate 3) | **Passed** — A5 physical sign-off |
 | **Sprint 1** — Schema CI + M1 staging integration | **In progress** — see `SPRINT.md` |
-| M2 — Tray UI, settings, diagnostics | Not started |
+| M2 — Tray UI, settings, diagnostics | **Shipped** (W-01-S07, W-01-S08) |
 | M3 — Signed MSI + CI release | Not started |
 
 ## Repository layout

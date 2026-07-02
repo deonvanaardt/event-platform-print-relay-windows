@@ -13,6 +13,12 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 
 ### Added
 
+- System tray UI: `NotifyIcon` states, menu (Status, printer, test print, test connection, Copy diagnostics, Settings, Quit) (W-01-S07)
+- Status panel: connection checklist, live activity feed, recent jobs table, **Show technical details** toggle for desk/event/job IDs (W-01-S07)
+- Settings screen: desk name, printer change, re-run setup wizard, app version (W-01-S08)
+- Core diagnostics: `RelaySessionState`, `RelayActivityEvent`, `IRelayActivitySink`, poll loop activity hooks, `RelayConnectionTester` (W-01-S08)
+- JSON Lines log at `%AppData%\EventPlatform\PrintRelay\logs\relay.log` (no secrets) (W-01-S08)
+- Copy diagnostics JSON to clipboard; xUnit tests for session state, diagnostics redaction, poll activity (W-01-S08)
 - App production print path: `WebView2SilentPrinter` (CR80 default), `PdfSpooler`, `BadgeHtmlPrintJobProcessor`, hidden `RelayHostForm`; poll loop runs after setup (W-01-S06)
 - `PrintJobMessages` operator-safe failure text for missing `badge_html` and printer errors (W-01-S06)
 - xUnit tests for `PrintJobMessages` (W-01-S06)
@@ -26,8 +32,6 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 
 ### Not yet built
 
-- System tray UI (W-01-S07)
-- Settings + diagnostics (W-01-S08)
 - Signed MSI + CI release (W-01-S09)
 - Physical sign-off Win 10 + 11 (W-01-S10)
 - Full list: [BACKLOG.md](BACKLOG.md)

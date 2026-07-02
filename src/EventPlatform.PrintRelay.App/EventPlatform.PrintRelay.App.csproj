@@ -10,6 +10,7 @@
     <AssemblyName>EventPlatform.PrintRelay</AssemblyName>
     <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Version>0.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -26,5 +27,23 @@
   <ItemGroup>
     <ProjectReference Include="..\EventPlatform.PrintRelay.Core\EventPlatform.PrintRelay.Core.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Fixtures\test-badge-cr80.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Target Name="WriteBuildInfo" AfterTargets="Publish">
+    <PropertyGroup>
+      <BuildInfoPath Condition="'$(PublishDir)' != ''">$(PublishDir)build-info.txt</BuildInfoPath>
+      <BuildInfoPath Condition="'$(PublishDir)' == ''">$(OutputPath)build-info.txt</BuildInfoPath>
+      <BuildInfoUtc>$([System.DateTime]::UtcNow.ToString("yyyy-MM-dd HH:mm:ss")) UTC</BuildInfoUtc>
+    </PropertyGroup>
+    <WriteLinesToFile
+      File="$(BuildInfoPath)"
+      Lines="app_version=$(Version); built_utc=$(BuildInfoUtc); configuration=$(Configuration); runtime=$(RuntimeIdentifier); features=tray-ui"
+      Overwrite="true" />
+  </Target>
 
 </Project>
