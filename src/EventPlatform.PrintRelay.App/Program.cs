@@ -9,6 +9,12 @@ internal static class Program
     [STAThread]
     private static int Main(string[] args)
     {
+        if (IsVersionRequest(args))
+        {
+            WriteVersionToConsole();
+            return 0;
+        }
+
         ApplicationConfiguration.Initialize();
 
         if (IsAboutRequest(args))
@@ -36,22 +42,37 @@ internal static class Program
         }
     }
 
+    private static bool IsVersionRequest(string[] args) =>
+        args.Any(arg =>
+            string.Equals(arg, "--version", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(arg, "/version", StringComparison.OrdinalIgnoreCase));
+
     private static bool IsAboutRequest(string[] args) =>
         args.Any(arg =>
             string.Equals(arg, "--about", StringComparison.OrdinalIgnoreCase)
-            || string.Equals(arg, "--version", StringComparison.OrdinalIgnoreCase)
             || string.Equals(arg, "/about", StringComparison.OrdinalIgnoreCase));
 
-    private static void ShowAboutDialog()
+    private static string BuildAboutText()
     {
         var buildInfoPath = Path.Combine(AppContext.BaseDirectory, "build-info.txt");
         var buildInfo = File.Exists(buildInfoPath)
             ? File.ReadAllText(buildInfoPath).Trim()
-            : "build-info.txt not found (publish without MSBuild stamp).";
+            : "build-info.txt not found.";
 
+        return $"Print Relay {RelayAppInfo.AppVersion}{Environment.NewLine}{buildInfo}";
+    }
+
+    private static void WriteVersionToConsole()
+    {
+        var text = BuildAboutText();
+        Console.WriteLine(text);
+    }
+
+    private static void ShowAboutDialog()
+    {
         MessageBox.Show(
-            $"Print Relay {RelayAppInfo.AppVersion}{Environment.NewLine}{Environment.NewLine}{buildInfo}",
-            "Print Relay — About",
+            BuildAboutText(),
+            "Print Relay",
             MessageBoxButtons.OK,
             MessageBoxIcon.Information);
     }

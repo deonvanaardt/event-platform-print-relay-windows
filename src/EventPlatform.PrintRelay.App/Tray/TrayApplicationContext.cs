@@ -47,7 +47,15 @@ internal sealed class TrayApplicationContext : ApplicationContext
 
         _syncForm.Show();
         _syncForm.Hide();
-        BeginRuntimeInitialization();
+
+        var initTimer = new System.Windows.Forms.Timer { Interval = 1 };
+        initTimer.Tick += (_, _) =>
+        {
+            initTimer.Stop();
+            initTimer.Dispose();
+            BeginRuntimeInitialization();
+        };
+        initTimer.Start();
     }
 
     public bool RestartRequested => _restartRequested;
@@ -99,28 +107,56 @@ internal sealed class TrayApplicationContext : ApplicationContext
                 {
                     if (_syncForm.IsDisposed)
                     {
-                        task.Result?.Dispose();
+                        if (task.Status == TaskStatus.RanToCompletion)
+                        {
+                            task.Result?.Dispose();
+                        }
+
                         return;
                     }
 
-                    if (task.IsFaulted)
+                    void ApplyResult()
                     {
-                        HandleStartupFailure(task.Exception?.GetBaseException());
-                        return;
+                        if (_syncForm.IsDisposed)
+                        {
+                            if (task.Status == TaskStatus.RanToCompletion)
+                            {
+                                task.Result?.Dispose();
+                            }
+
+                            return;
+                        }
+
+                        if (task.IsFaulted)
+                        {
+                            HandleStartupFailure(task.Exception?.GetBaseException());
+                            return;
+                        }
+
+                        _runtime = task.Result;
+                        _runtime.SessionState.Changed += OnSessionChanged;
+                        SetMenuEnabled(true);
+                        UpdateTrayIcon();
+
+                        _notifyIcon.ShowBalloonTip(
+                            4000,
+                            "Print Relay",
+                            "Print Relay is running. Right-click the tray icon for Status.",
+                            ToolTipIcon.Info);
                     }
 
-                    _runtime = task.Result;
-                    _runtime.SessionState.Changed += OnSessionChanged;
-                    SetMenuEnabled(true);
-                    UpdateTrayIcon();
-
-                    _notifyIcon.ShowBalloonTip(
-                        4000,
-                        "Print Relay",
-                        "Print Relay is running. Right-click the tray icon for Status.",
-                        ToolTipIcon.Info);
+                    if (_syncForm.InvokeRequired)
+                    {
+                        _syncForm.BeginInvoke(ApplyResult);
+                    }
+                    else
+                    {
+                        ApplyResult();
+                    }
                 },
-                TaskScheduler.FromCurrentSynchronizationContext());
+                CancellationToken.None,
+                TaskContinuationOptions.None,
+                TaskScheduler.Default);
     }
 
     private void HandleStartupFailure(Exception? error)

@@ -196,12 +196,16 @@ internal sealed class RelayRuntime : IDisposable
         _fileLogger.LogStopped();
         _cancellation.Cancel();
 
-        try
+        if (_pollTask is not null)
         {
-            _pollTask?.GetAwaiter().GetResult();
-        }
-        catch (OperationCanceledException)
-        {
+            try
+            {
+                _pollTask.Wait(TimeSpan.FromSeconds(5));
+            }
+            catch (AggregateException ex) when (ex.InnerExceptions.All(
+                inner => inner is OperationCanceledException))
+            {
+            }
         }
 
         Printer.Dispose();
