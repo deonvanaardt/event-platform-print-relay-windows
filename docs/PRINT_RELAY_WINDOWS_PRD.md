@@ -313,6 +313,7 @@ Write JSON Lines to `%AppData%\EventPlatform\PrintRelay\logs\relay.log`:
 - `timestamp`, `level`, `message`
 - `job_id`, `registration_id` when applicable
 - Never log the relay secret or full setup code
+- **Retention:** when `relay.log` reaches 5 MB, wipe the file in place and continue (one `info` line notes truncation). `startup.log` is capped at 256 KB the same way. Limits are not operator-configurable.
 
 ### 9.3 Diagnostics export
 

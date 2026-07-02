@@ -7,6 +7,12 @@ public static class RelayConstants
 {
     public const int PollIntervalMs = 1000;
     public const int MaxFailureMessageLength = 500;
+
+    /// <summary>Max size of <c>relay.log</c> before in-place wipe (5 MB).</summary>
+    public const long MaxRelayLogBytes = 5 * 1024 * 1024;
+
+    /// <summary>Max size of <c>startup.log</c> before in-place wipe (256 KB).</summary>
+    public const long MaxStartupLogBytes = 256 * 1024;
     public const string SetupCodePrefix = "DESK-";
     public const int SetupCodeVersion = 1;
 

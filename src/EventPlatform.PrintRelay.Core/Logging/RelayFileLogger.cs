@@ -11,12 +11,22 @@ public sealed class RelayFileLogger : IRelayActivitySink, IDisposable
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
     };
 
-    private readonly StreamWriter _writer;
+    private readonly string _logFilePath;
+    private readonly long _maxLogBytes;
+    private StreamWriter _writer;
     private readonly object _lock = new();
 
-    public RelayFileLogger(string logFilePath)
+    public RelayFileLogger(string logFilePath, long maxLogBytes = RelayConstants.MaxRelayLogBytes)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(logFilePath);
+
+        if (maxLogBytes <= 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(maxLogBytes), "Max log bytes must be positive.");
+        }
+
+        _logFilePath = logFilePath;
+        _maxLogBytes = maxLogBytes;
 
         var directory = Path.GetDirectoryName(logFilePath);
 
@@ -25,11 +35,8 @@ public sealed class RelayFileLogger : IRelayActivitySink, IDisposable
             Directory.CreateDirectory(directory);
         }
 
-        _writer = new StreamWriter(
-            new FileStream(logFilePath, FileMode.Append, FileAccess.Write, FileShare.Read))
-        {
-            AutoFlush = true,
-        };
+        RelayLogRetention.TruncateIfOversized(_logFilePath, _maxLogBytes);
+        _writer = OpenWriter();
     }
 
     public static string GetDefaultLogPath()
@@ -63,6 +70,7 @@ public sealed class RelayFileLogger : IRelayActivitySink, IDisposable
 
         lock (_lock)
         {
+            EnsureWithinSizeLimit();
             _writer.WriteLine(json);
         }
     }
@@ -90,8 +98,46 @@ public sealed class RelayFileLogger : IRelayActivitySink, IDisposable
 
         lock (_lock)
         {
+            EnsureWithinSizeLimit();
             _writer.WriteLine(json);
         }
+    }
+
+    private void EnsureWithinSizeLimit()
+    {
+        if (!File.Exists(_logFilePath))
+        {
+            return;
+        }
+
+        if (new FileInfo(_logFilePath).Length < _maxLogBytes)
+        {
+            return;
+        }
+
+        _writer.Dispose();
+        RelayLogRetention.TruncateIfOversized(_logFilePath, _maxLogBytes);
+        _writer = OpenWriter();
+
+        var truncationNotice = JsonSerializer.Serialize(
+            new RelayLogEntry
+            {
+                Timestamp = DateTimeOffset.UtcNow,
+                Level = "info",
+                Message = "Log truncated due to size limit.",
+            },
+            JsonOptions);
+
+        _writer.WriteLine(truncationNotice);
+    }
+
+    private StreamWriter OpenWriter()
+    {
+        return new StreamWriter(
+            new FileStream(_logFilePath, FileMode.Append, FileAccess.Write, FileShare.Read))
+        {
+            AutoFlush = true,
+        };
     }
 
     private static string MapLevel(RelayActivityKind kind)

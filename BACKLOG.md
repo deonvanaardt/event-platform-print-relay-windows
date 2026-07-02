@@ -86,6 +86,7 @@ Sprint-ready stories for the **event-platform-print-relay-windows** repository. 
   - Settings: desk name (read-only), printer dropdown, re-run setup, app version.
   - Never display secret, event ID, or full API URL.
   - Logs to `%AppData%\EventPlatform\PrintRelay\logs\relay.log` (JSON Lines); no secret leakage.
+  - Log files truncate in place when over size cap (`relay.log` 5 MB, `startup.log` 256 KB).
   - Copy diagnostics JSON to clipboard per PRD §9.3.
 
 ### W-01-S09 — MSI + Authenticode CI (M3)

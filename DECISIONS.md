@@ -36,6 +36,14 @@ Chronological record of **implementation-time** decisions for the Windows print 
 
 <!-- Add entries above this line, newest first. -->
 
+## 2026-07-02 — In-place log truncation (disk cap)
+
+**Status:** accepted  
+**Context:** `relay.log` and `startup.log` append forever; a busy desk polling every 1 s can grow tens of MB per day on venue PCs with limited disk.  
+**Decision:** `RelayLogRetention.TruncateIfOversized` wipes a log file in place when size reaches `RelayConstants.MaxRelayLogBytes` (5 MB) or `MaxStartupLogBytes` (256 KB). `RelayFileLogger` checks on construction and before each write; writes a single JSON `"Log truncated due to size limit."` line after wipe. No archived `relay.log.1` files — lowest disk use; recent state remains in Status panel.  
+**Alternatives considered:** Rotating archives — rejected (user chose truncate). Serilog rolling file — rejected (Tech Stack: custom logging only). Operator-configurable limits — rejected (matches fixed poll interval).  
+**Consequences:** `Core/Logging/RelayLogRetention.cs`, `RelayConstants` size caps, xUnit tests under `tests/.../Logging/`.
+
 ## 2026-07-02 — Pdfium native layout bridge (bblanchon vs PdfiumPrinter)
 
 **Status:** accepted  

@@ -13,6 +13,7 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 
 ### Added
 
+- Automatic log truncation: `relay.log` capped at 5 MB, `startup.log` at 256 KB; in-place wipe with truncation notice in `relay.log` (W-01-S08)
 - System tray UI: `NotifyIcon` states, menu (Status, printer, test print, test connection, Copy diagnostics, Settings, Quit) (W-01-S07)
 - Status panel: connection checklist, live activity feed, recent jobs table, **Show technical details** toggle for desk/event/job IDs (W-01-S07)
 - Settings screen: desk name, printer change, re-run setup wizard, app version (W-01-S08)

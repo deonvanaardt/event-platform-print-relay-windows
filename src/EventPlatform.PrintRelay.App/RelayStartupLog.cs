@@ -1,9 +1,12 @@
-using EventPlatform.PrintRelay.Core.Settings;
+using EventPlatform.PrintRelay.Core;
+using EventPlatform.PrintRelay.Core.Logging;
 
 namespace EventPlatform.PrintRelay.App;
 
 internal static class RelayStartupLog
 {
+    private static readonly object Lock = new();
+
     public static void Write(string message)
     {
         try
@@ -22,8 +25,13 @@ internal static class RelayStartupLog
                 Directory.CreateDirectory(directory);
             }
 
-            var line = $"{DateTimeOffset.UtcNow:O} {message}{Environment.NewLine}";
-            File.AppendAllText(logPath, line);
+            lock (Lock)
+            {
+                RelayLogRetention.TruncateIfOversized(logPath, RelayConstants.MaxStartupLogBytes);
+
+                var line = $"{DateTimeOffset.UtcNow:O} {message}{Environment.NewLine}";
+                File.AppendAllText(logPath, line);
+            }
         }
         catch
         {
