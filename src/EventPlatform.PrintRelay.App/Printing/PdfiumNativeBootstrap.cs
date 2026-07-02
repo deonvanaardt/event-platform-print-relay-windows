@@ -39,7 +39,7 @@ internal sealed class RelayPdfiumLibraryLoader : ILibraryLoader
             }
         }
 
-        return LoadResult.Failure;
+        return LoadResult.Failure($"pdfium.dll not found in fallback paths (default: {path}).");
     }
 
     private static IEnumerable<string> EnumerateCandidates(string defaultPath)
