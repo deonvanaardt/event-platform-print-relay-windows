@@ -47,6 +47,16 @@ jobs:
           -r win-x64 --self-contained true -p:PublishSingleFile=true -c Release
           -o artifacts/app
 
+      - name: Verify Pdfium native (win-x64)
+        shell: pwsh
+        run: |
+          $paths = @(
+            'artifacts/app/runtimes/win-x64/native/pdfium.dll',
+            'artifacts/app/x64/pdfium.dll',
+            'artifacts/app/pdfium.dll'
+          )
+          if (-not ($paths | Where-Object { Test-Path $_ })) { exit 1 }
+
       - name: Upload app artifact
         uses: actions/upload-artifact@v4
         with:

@@ -36,6 +36,22 @@ Chronological record of **implementation-time** decisions for the Windows print 
 
 <!-- Add entries above this line, newest first. -->
 
+## 2026-07-02 — Pdfium native layout bridge (bblanchon vs PdfiumPrinter)
+
+**Status:** accepted  
+**Context:** `Test-Path …\runtimes\win-x64\native\pdfium.dll` returned false after correct `-r win-x64` publish; print still failed. `bblanchon.PDFium.Win32` copies `pdfium.dll` to `{x86,x64,arm64}/` at output root; PdfiumPrinter on .NET 8 loads `runtimes/win-{arch}/native/pdfium.dll` (known PdfiumPrinter #15).  
+**Decision:** `build/PdfiumNative.targets` copies arch folders into `runtimes/win-{arch}/native/` on Build/Publish. `PdfiumNativeBootstrap` registers a fallback loader that also tries `{arch}/pdfium.dll` and root `pdfium.dll`. Bump `bblanchon.PDFium.Win32` to 151.0.7920.  
+**Alternatives considered:** Fork PdfiumPrinter — rejected. Only document manual copy — rejected (fragile for operators).  
+**Consequences:** App/Spike `Printing/PdfiumNativeBootstrap.cs`, `build/PdfiumNative.targets`; operator verify checks any of three paths.
+
+## 2026-07-02 — ARM64 Windows publish must pin win-x64 RID (Pdfium native)
+
+**Status:** accepted  
+**Context:** Staging print failed in ~250 ms with generic “check printer” message. Test badge on ARM64 Windows surfaced missing `runtimes\win-arm64\native\pdfium.dll` — `dotnet publish` without `-r` on ARM hosts defaults to `win-arm64`; older PDFium package layout did not ship arm64 natives reliably.  
+**Decision:** Document and enforce **`-r win-x64`** for operator publish on all Windows PCs (ARM runs x64 under emulation). Bump `bblanchon.PDFium.Win32` for native `win-arm64` when explicitly published. Post-publish check: `Test-Path …\runtimes\win-x64\native\pdfium.dll`.  
+**Alternatives considered:** Require only win-arm64 on ARM laptops — rejected until venue hardware mix is known; x64 emulation is simpler for MVP.  
+**Consequences:** `git-sync.mdc`, App/Spike csproj PDFium version; operator steps call out ARM64 trap.
+
 ## 2026-07-01 — Session state in Core; technical IDs behind Status toggle (S07–S08)
 
 **Status:** accepted  

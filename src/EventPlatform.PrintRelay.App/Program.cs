@@ -1,3 +1,4 @@
+using EventPlatform.PrintRelay.App.Printing;
 using EventPlatform.PrintRelay.App.Setup;
 using EventPlatform.PrintRelay.App.Tray;
 using EventPlatform.PrintRelay.Core.Settings;
@@ -16,6 +17,7 @@ internal static class Program
         }
 
         ApplicationConfiguration.Initialize();
+        PdfiumNativeBootstrap.EnsureLoaded();
 
         if (IsAboutRequest(args))
         {

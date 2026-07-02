@@ -8,6 +8,7 @@ internal static class Program
     private static int Main(string[] args)
     {
         ApplicationConfiguration.Initialize();
+        PdfiumNativeBootstrap.EnsureLoaded();
 
         try
         {

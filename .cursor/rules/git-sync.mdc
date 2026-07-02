@@ -68,6 +68,18 @@ dotnet publish src\EventPlatform.PrintRelay.App -c Release -r win-x64 --self-con
 
 Publish must end with `-> ...\artifacts\app\` and **no** `MSB3027` file-lock errors.
 
+**ARM64 Windows (Surface / Snapdragon laptops):** always pass **`-r win-x64`** as above. If you omit `-r`, `dotnet publish` defaults to `win-arm64` and Pdfium may fail with *“Native Library not found … win-arm64\native\pdfium.dll”*. After publish, confirm Pdfium is present (any one may be true):
+
+```powershell
+@(
+  ".\artifacts\app\runtimes\win-x64\native\pdfium.dll",
+  ".\artifacts\app\x64\pdfium.dll",
+  ".\artifacts\app\pdfium.dll"
+) | ForEach-Object { if (Test-Path $_) { "OK $_" } }
+```
+
+At least one line must print `OK …`. If none do, the publish did not bundle Pdfium — pull latest and republish.
+
 ### 4. Verify build (safe — no dialog)
 
 ```powershell
@@ -83,6 +95,8 @@ Use **`--version`** (console text). Avoid **`--about`** unless troubleshooting U
 ```powershell
 .\artifacts\app\EventPlatform.PrintRelay.exe
 ```
+
+Always launch the **`.exe`** directly — do **not** use `dotnet artifacts\app\EventPlatform.PrintRelay.dll` (that runs as native ARM64 on your laptop and looks for `win-arm64` Pdfium).
 
 Tray icon may be under the **^** overflow by the clock.
 
