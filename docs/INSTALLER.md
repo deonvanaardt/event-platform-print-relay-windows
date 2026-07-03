@@ -67,6 +67,8 @@ The release MSI is a **single file** (`EmbedCab="yes"`). You do not need to copy
 
 **Settings:** `%AppData%\EventPlatform\PrintRelay\` is **not** removed on uninstall (desk secret and printer choice persist).
 
+**WebView2 cache:** `%LocalAppData%\EventPlatform\PrintRelay\WebView2\` (writable; required when installed under Program Files).
+
 ---
 
 ## W-01-S09 acceptance checklist (Windows hardware)

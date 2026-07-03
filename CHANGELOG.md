@@ -18,6 +18,7 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 - Release CI: `.github/workflows/release.yml` — unsigned MSI on tag / workflow dispatch (W-01-S09)
 - Installer runbook `docs/INSTALLER.md`; SignPath follow-up `docs/SIGNPATH.md` (W-01-S11 prep)
 - App version bump `0.3.0` for first MSI release line (W-01-S09)
+- WebView2 user data folder under `%LocalAppData%` for Program Files MSI install (0.3.1)
 - Governance: SignPath OSS signing path documented; W-01-S09 / W-01-S11 story split
 
 ### Not yet built

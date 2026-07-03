@@ -36,6 +36,14 @@ Chronological record of **implementation-time** decisions for the Windows print 
 
 <!-- Add entries above this line, newest first. -->
 
+## 2026-07-03 — WebView2 user data under LocalAppData for MSI install
+
+**Status:** accepted  
+**Context:** MSI installs to Program Files. WebView2 `CreateAsync()` without `userDataFolder` defaults to a folder next to the exe, which is not writable for normal users — startup fails with a misleading “install WebView2 Runtime” dialog even when Evergreen is present. Dev `artifacts\app` runs worked because the folder was user-writable.  
+**Decision:** `WebView2Paths.UserDataFolder` → `%LocalAppData%\EventPlatform\PrintRelay\WebView2\`; pass to `CoreWebView2Environment.CreateAsync`. Only prompt for WebView2 download when `GetAvailableBrowserVersionString()` returns null.  
+**Alternatives considered:** Install to per-user LocalAppData — rejected (PRD Program Files path). Run as admin — rejected (venue UX).  
+**Consequences:** `App/Printing/WebView2Paths.cs`, `WebView2SilentPrinter.cs`, `TrayApplicationContext.cs`.
+
 ## 2026-07-03 — SignPath OSS + unsigned MSI first (W-01-S09 / W-01-S11 split)
 
 **Status:** accepted  

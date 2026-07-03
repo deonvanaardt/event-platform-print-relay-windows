@@ -95,10 +95,7 @@ internal sealed class TrayApplicationContext : ApplicationContext
                     return new RelayRuntime(_settings, _settingsPath);
                 }
                 catch (InvalidOperationException ex)
-                    when (ex.Message.Contains("WebView2", StringComparison.OrdinalIgnoreCase)
-                        || ex.InnerException?.Message.Contains(
-                            "WebView2",
-                            StringComparison.OrdinalIgnoreCase) == true)
+                    when (IsWebView2RuntimeMissing(ex))
                 {
                     throw new InvalidOperationException(
                         "Print Relay needs the Microsoft Edge WebView2 Runtime.",
@@ -169,8 +166,9 @@ internal sealed class TrayApplicationContext : ApplicationContext
         AssignTrayIcon(RelayTrayIconState.Error);
 
         var message = error?.Message ?? "Print Relay could not start.";
+        RelayStartupLog.Write($"Startup failed: {error}");
 
-        if (message.Contains("WebView2", StringComparison.OrdinalIgnoreCase))
+        if (message.Contains("needs the Microsoft Edge WebView2 Runtime", StringComparison.Ordinal))
         {
             var result = MessageBox.Show(
                 message + "\n\nOpen the WebView2 download page now?",
@@ -414,4 +412,9 @@ internal sealed class TrayApplicationContext : ApplicationContext
 
     private static string TruncateTooltip(string text) =>
         text.Length <= 63 ? text : text[..60] + "…";
+
+    private static bool IsWebView2RuntimeMissing(InvalidOperationException ex) =>
+        RelayAppInfo.TryGetWebView2Version() is null
+        && (ex.Message.Contains("WebView2", StringComparison.OrdinalIgnoreCase)
+            || ex.InnerException?.Message.Contains("WebView2", StringComparison.OrdinalIgnoreCase) == true);
 }

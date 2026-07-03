@@ -122,7 +122,7 @@ public sealed class WebView2SilentPrinter : IDisposable
         try
         {
             var environment = await CoreWebView2Environment
-                .CreateAsync()
+                .CreateAsync(userDataFolder: WebView2Paths.UserDataFolder)
                 .ConfigureAwait(true);
 
             await _webView
