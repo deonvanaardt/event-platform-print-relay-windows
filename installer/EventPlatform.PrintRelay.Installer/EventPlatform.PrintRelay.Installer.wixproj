@@ -3,6 +3,8 @@
   <PropertyGroup>
     <OutputName>EventPlatform.PrintRelay</OutputName>
     <ProductVersion>0.3.0</ProductVersion>
+    <Platform>x64</Platform>
+    <InstallerPlatform>x64</InstallerPlatform>
     <PublishDir>$(MSBuildThisFileDirectory)../../artifacts/publish/</PublishDir>
     <DefineConstants>ProductVersion=$(ProductVersion)</DefineConstants>
   </PropertyGroup>
@@ -13,6 +15,7 @@
       <DirectoryRefId>INSTALLFOLDER</DirectoryRefId>
       <SuppressRootDirectory>true</SuppressRootDirectory>
       <SuppressRegistry>true</SuppressRegistry>
+      <Transform>HarvestX64.xslt</Transform>
     </HarvestDirectory>
     <BindPath Include="$(PublishDir)" />
   </ItemGroup>

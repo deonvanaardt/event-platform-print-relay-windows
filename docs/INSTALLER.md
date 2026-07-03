@@ -27,8 +27,8 @@ dotnet publish src\EventPlatform.PrintRelay.App `
   "artifacts\publish\pdfium.dll"
 ) | ForEach-Object { if (Test-Path $_) { "OK $_" } }
 
-# 3. Build MSI
-dotnet build installer\EventPlatform.PrintRelay.Installer\EventPlatform.PrintRelay.Installer.wixproj -c Release
+# 3. Build MSI (x64 package — required for ProgramFiles64Folder)
+dotnet build installer\EventPlatform.PrintRelay.Installer\EventPlatform.PrintRelay.Installer.wixproj -c Release -p:Platform=x64
 
 # MSI output (under installer project bin):
 Get-ChildItem installer\EventPlatform.PrintRelay.Installer\bin -Recurse -Filter *.msi

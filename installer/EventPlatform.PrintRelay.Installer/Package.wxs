@@ -31,7 +31,8 @@
     <Component
       Id="StartMenuShortcut"
       Directory="ApplicationProgramsFolder"
-      Guid="B2C3D4E5-F6A7-8901-BCDE-F12345678902">
+      Guid="B2C3D4E5-F6A7-8901-BCDE-F12345678902"
+      Bitness="always64">
 
       <Shortcut
         Id="ApplicationStartMenuShortcut"
@@ -54,7 +55,8 @@
     <Component
       Id="AutoStartRegistry"
       Directory="INSTALLFOLDER"
-      Guid="C3D4E5F6-A7B8-9012-CDEF-123456789013">
+      Guid="C3D4E5F6-A7B8-9012-CDEF-123456789013"
+      Bitness="always64">
 
       <RegistryValue
         Root="HKCU"
