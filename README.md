@@ -39,6 +39,7 @@ tests/
   EventPlatform.PrintRelay.Core.Tests/
 schemas/                           # Pinned platform JSON Schema (see platform-pin.json)
 installer/                         # WiX MSI project (W-01-S09)
+releases/msi/                      # Committed MSI backups (optional)
 docs/
   PRINT_RELAY_WINDOWS_PRD.md
   SPIKE.md

@@ -24,9 +24,11 @@ bld/
 **/packages/*
 !**/packages/build/
 
-# Publish
+# Publish (ephemeral local builds — not committed)
 publish/
 artifacts/
+
+# Committed MSI backups live under releases/msi/ (see releases/msi/README.md)
 
 # OS
 .DS_Store
