@@ -36,6 +36,22 @@ Chronological record of **implementation-time** decisions for the Windows print 
 
 <!-- Add entries above this line, newest first. -->
 
+## 2026-07-03 — SignPath OSS + unsigned MSI first (W-01-S09 / W-01-S11 split)
+
+**Status:** accepted  
+**Context:** PRD requires Authenticode before customer distribution; purchasing and storing a `.pfx` in GitHub secrets is a vendor dependency SignPath OSS avoids. SignPath approval takes days and must not block installer CI.  
+**Decision:** **W-01-S09** ships WiX MSI + unsigned `release.yml` → GitHub Releases (prerelease). **W-01-S11** adds `signpath/github-action-submit-signing-request` after OSS approval. Secrets are SignPath API tokens only — never `WINDOWS_CODE_SIGNING_CERTIFICATE` / `.pfx`. MSI harvest uses **folder publish** (`PublishSingleFile=false`), not single-file publish.  
+**Alternatives considered:** Self-managed Authenticode + `signtool` in CI — rejected (operational burden). Block all MSI work until SignPath approved — rejected (delays staging IT testing).  
+**Consequences:** `installer/`, `.github/workflows/release.yml`, `docs/INSTALLER.md`, `docs/SIGNPATH.md`; governance docs name SignPath explicitly.
+
+## 2026-07-03 — WiX Toolset 5 SDK for MSI (W-01-S09)
+
+**Status:** accepted  
+**Context:** Backlog allows WiX or equivalent; no installer existed. Need Program Files install, Start Menu, HKCU Run key, upgrade path, and heat harvest of self-contained publish folder.  
+**Decision:** `installer/EventPlatform.PrintRelay.Installer` using `WixToolset.Sdk/5.0.2` + `WixToolset.Heat` with `HarvestDirectory` bound to `artifacts/publish/`. Fixed `UpgradeCode`; auto-start and shortcut as explicit components; AppData settings untouched by MSI.  
+**Alternatives considered:** Advanced Installer — rejected (not in Tech Stack). Single-file publish inside MSI — rejected (Pdfium/WebView2 native layout).  
+**Consequences:** `installer/EventPlatform.PrintRelay.Installer.wixproj`, `Package.wxs`, solution entry; Tech Stack §1 pins WiX 5.
+
 ## 2026-07-02 — In-place log truncation (disk cap)
 
 **Status:** accepted  

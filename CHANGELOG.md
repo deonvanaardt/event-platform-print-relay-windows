@@ -13,11 +13,16 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 
 ### Added
 
-_(none yet)_
+- WiX MSI installer: `Program Files\EventPlatform\PrintRelay\`, Start Menu shortcut, HKCU Run auto-start (W-01-S09)
+- `installer/EventPlatform.PrintRelay.Installer` — WiX Toolset 5 SDK, folder-publish harvest (W-01-S09)
+- Release CI: `.github/workflows/release.yml` — unsigned MSI on tag / workflow dispatch (W-01-S09)
+- Installer runbook `docs/INSTALLER.md`; SignPath follow-up `docs/SIGNPATH.md` (W-01-S11 prep)
+- App version bump `0.3.0` for first MSI release line (W-01-S09)
+- Governance: SignPath OSS signing path documented; W-01-S09 / W-01-S11 story split
 
 ### Not yet built
 
-- Signed MSI + CI release (W-01-S09)
+- SignPath OSS signing CI (W-01-S11)
 - Physical sign-off Win 10 + 11 (W-01-S10)
 - Full list: [BACKLOG.md](BACKLOG.md)
 

@@ -27,8 +27,8 @@ Do not substitute, add, or remove tools without updating this record.
 | JSON | `System.Text.Json` | BCL | Property names case-insensitive for API responses |
 | Schema validation | JsonSchema.Net | Latest stable | Contract tests against pinned `schemas/*.json` |
 | CI | GitHub Actions | — | Core tests ubuntu; Windows build job for Spike/App |
-| Installer | WiX Toolset v4 (or equivalent) | TBD in W-01-S09 | Produces `.msi`; document choice in `DECISIONS.md` when picked |
-| Code signing | Authenticode | — | Hard gate before customer MSI (PRD §4.2) |
+| Installer | WiX Toolset v5 (`WixToolset.Sdk`) | 5.0.x | Produces `.msi`; folder-publish harvest; see `installer/` |
+| Code signing | SignPath OSS | — | Authenticode output via SignPath API (W-01-S11); **no** self-managed `.pfx`. Secrets: `SIGNPATH_API_TOKEN`, `SIGNPATH_ORG_ID`, `SIGNPATH_PROJECT_SLUG`, `SIGNPATH_SIGNING_POLICY_SLUG` |
 
 ---
 

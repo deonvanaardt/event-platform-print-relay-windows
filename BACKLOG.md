@@ -30,7 +30,8 @@ Sprint-ready stories for the **event-platform-print-relay-windows** repository. 
 | W-01-S06 | Print `badge_html` from staging | ✅ Done — staging E2E smoke passed 2026-07-03 |
 | W-01-S07 | System tray UI (M2) | ✅ Done — icon states; status panel; tray menu |
 | W-01-S08 | Settings + diagnostics (M2) | ✅ Done — diagnostics export; JSON Lines log; log truncation |
-| W-01-S09 | MSI + Authenticode CI (M3) | Signed `.msi`; HKCU auto-start; GitHub release artifact |
+| W-01-S09 | MSI + release CI (unsigned) (M3) | WiX `.msi`; HKCU auto-start; unsigned GitHub Release artifact |
+| W-01-S11 | SignPath OSS signing CI (M3) | Signed `.msi` via SignPath; customer-ready GitHub Release |
 | W-01-S10 | Physical sign-off (M4) | Win 10 + 11 with USB/network printer; version matrix in README |
 
 ### W-01-S03 — JSON Schema pinning + contract tests
@@ -89,14 +90,27 @@ Sprint-ready stories for the **event-platform-print-relay-windows** repository. 
   - Log files truncate in place when over size cap (`relay.log` 5 MB, `startup.log` 256 KB).
   - Copy diagnostics JSON to clipboard per PRD §9.3.
 
-### W-01-S09 — MSI + Authenticode CI (M3)
+### W-01-S09 — MSI + release CI (unsigned) (M3)
 
-- **PRD:** §4
+- **PRD:** §4.1, §6
+- **Dependencies:** W-01-S06, W-01-S07
 - **Acceptance:**
-  - WiX (or equivalent) produces `.msi` to `%ProgramFiles%\EventPlatform\PrintRelay\`.
-  - Release CI signs installer + exe with Authenticode certificate.
-  - HKCU Run key for auto-start on login.
-  - Artifact uploaded to GitHub Releases; platform `NEXT_PUBLIC_PRINT_RELAY_WINDOWS_MSI_URL` points to it.
+  - WiX produces `.msi` installing to `%ProgramFiles%\EventPlatform\PrintRelay\`.
+  - Start Menu shortcut launches `EventPlatform.PrintRelay.exe`.
+  - HKCU `Run` key for auto-start on login (installer-owned).
+  - `release.yml` builds unsigned MSI on tag / workflow dispatch; artifact on GitHub Releases.
+  - Manual install checklist in `docs/INSTALLER.md` passes on Windows hardware.
+  - **No** `.pfx` / `signtool` secrets in CI.
+
+### W-01-S11 — SignPath OSS signing CI (M3)
+
+- **PRD:** §4.2
+- **Dependencies:** W-01-S09; SignPath OSS approval
+- **Acceptance:**
+  - SignPath OSS project linked to this repo; signing policy for `.msi`.
+  - `release.yml` submits unsigned MSI to `signpath/github-action-submit-signing-request`; publishes **signed** MSI to GitHub Releases.
+  - Secrets: `SIGNPATH_API_TOKEN`, `SIGNPATH_ORG_ID`, `SIGNPATH_PROJECT_SLUG`, `SIGNPATH_SIGNING_POLICY_SLUG` only.
+  - Platform `NEXT_PUBLIC_PRINT_RELAY_WINDOWS_MSI_URL` points to signed release artifact (E-05-S09).
 
 ### W-01-S10 — Physical sign-off (M4)
 
@@ -127,4 +141,4 @@ Sprint-ready stories for the **event-platform-print-relay-windows** repository. 
 | E-05-S06 `badge_html` on pending | W-01-S06 |
 | E-05-S07 Copy setup code | W-01-S05 |
 | E-05-S08 JSON Schema export | W-01-S03 |
-| E-05-S09 Desk instructions + MSI URL | W-01-S09 go-live |
+| E-05-S09 Desk instructions + MSI URL | W-01-S11 go-live |

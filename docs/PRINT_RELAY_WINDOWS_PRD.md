@@ -87,12 +87,16 @@ A `.exe` bootstrap wrapper (e.g. WiX Toolset or Advanced Installer) is acceptabl
 
 ### 4.2 Code signing
 
-The installer and application executable must be signed with a valid Authenticode certificate before any customer distribution. Unsigned builds trigger Windows SmartScreen and block installation for non-technical users.
+The installer and application executable must be **Authenticode-signed** before any **customer** distribution. Unsigned builds trigger Windows SmartScreen warnings and are acceptable only for internal, staging, and IT testing until signing is wired in.
+
+**Signing provider:** [SignPath OSS](https://signpath.io/solutions/open-source-community) (free tier for open-source projects). SignPath issues and holds the signing certificate on their infrastructure. The Windows repo does **not** use a self-managed `.pfx` or `signtool` with certificate secrets in GitHub Actions.
 
 Code signing is a hard gate before first customer deployment, not a post-MVP item. Requirements:
 
-- Certificate ownership and renewal process documented before first release.
-- CI pipeline signs release artifacts automatically — signing must not be a manual pre-event step.
+- SignPath OSS project registration completed and documented (`docs/INSTALLER.md`).
+- Release CI signs artifacts via `signpath/github-action-submit-signing-request` (story **W-01-S11**) — signing must not be a manual pre-event step.
+- GitHub Actions secrets for signing are SignPath API credentials only (`SIGNPATH_API_TOKEN`, `SIGNPATH_ORG_ID`, `SIGNPATH_PROJECT_SLUG`, `SIGNPATH_SIGNING_POLICY_SLUG`). Never store a `.pfx` in repo secrets.
+- **W-01-S09** may ship unsigned MSI builds to GitHub Releases for installer and auto-start validation before SignPath approval completes.
 
 ### 4.3 Target platform
 
@@ -395,7 +399,7 @@ Resolve before significant implementation:
 1. **Renderer coupling approved** — Parent PRD and platform team agree to additive `badge_html` on `GET /api/print-queue/pending` (Section 16). Alternative: published `@emp/print-renderer` package — only if server-side HTML is rejected.
 2. **Setup code `v: 1` frozen** — JSON schema documented; registered in parent PRD Section 26.
 3. **WebView2 silent print spike** — Physical Windows + named printer, no dialog, using fixture HTML matching CR80 dimensions.
-4. **Code-signing certificate** — Available or on order; CI signing path defined.
+4. **SignPath OSS registration** — Apply at [signpath.io/solutions/open-source-community](https://signpath.io/solutions/open-source-community); parallel to W-01-S09; does not block unsigned MSI CI. W-01-S11 wires SignPath into `release.yml`.
 5. **Contract verification** — Windows app types and tests aligned with `lib/print-queue/serialize.ts` response shapes in the main repo (not a greenfield API design — endpoints already ship).
 6. **JSON Schema export** — `BadgeRenderInput` / pending job response schema published from main repo for deserialisation validation in the Windows repo.
 

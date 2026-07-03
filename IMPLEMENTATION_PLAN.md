@@ -54,7 +54,7 @@ Phased delivery for the signed `.msi` tray app. Does not replace `docs/PRINT_REL
 | 1. Renderer coupling (`badge_html`) | ✅ Platform E-05-S06 | Server HTML on pending |
 | 2. Setup code `v: 1` frozen | ✅ Platform E-05-S07 + schemas | `DESK-` + JSON schema |
 | 3. WebView2 silent print spike | ✅ W-01-S02 | A5 physical sign-off |
-| 4. Code-signing certificate | ⏳ | Required before M3 customer release |
+| 4. SignPath OSS registration | ⏳ | Parallel to W-01-S09; W-01-S11 wires CI signing |
 | 5. Contract verification | 🔄 W-01-S03 | Pin schemas + CI validation |
 | 6. JSON Schema export | ✅ Platform E-05-S08 | Vendored in `schemas/` |
 
@@ -107,13 +107,14 @@ Do not build MSI or full tray polish until Gate 3 passed ✅.
 
 ## Phase 3 — M3 release engineering
 
-**Goal:** Signed MSI, auto-start, downloadable artifact linked from platform admin.
+**Goal:** MSI installer, auto-start, GitHub Releases artifact; SignPath signing for customer distribution.
 
 | Deliverable | Story |
 |---|---|
-| MSI + Authenticode CI | W-01-S09 |
+| MSI + unsigned release CI | W-01-S09 |
+| SignPath OSS signing CI | W-01-S11 |
 
-**Exit criteria:** IT can install without SmartScreen block; HKCU auto-start works for installing user.
+**Exit criteria:** IT can install unsigned MSI for staging (W-01-S09); signed MSI passes SmartScreen for customer pilots (W-01-S11); HKCU auto-start works for installing user.
 
 ---
 
@@ -135,6 +136,8 @@ src/
   EventPlatform.PrintRelay.Core/     # API, setup code, poll loop, settings (cross-platform tests)
   EventPlatform.PrintRelay.App/      # Tray app, wizard, WebView2 print (Windows only) — Phase 1–2
   EventPlatform.PrintRelay.Spike/    # Gate 3 CLI; keep until App print path proven, then archive
+installer/
+  EventPlatform.PrintRelay.Installer/  # WiX MSI (W-01-S09)
 tests/
   EventPlatform.PrintRelay.Core.Tests/
 schemas/                             # Pinned platform JSON Schema + fixtures

@@ -26,7 +26,8 @@ Cursor agents: rules in [`.cursor/rules/`](.cursor/rules/) mirror the platform r
 | **Spike** — WebView2 silent fixture print (Gate 3) | **Passed** — A5 physical sign-off |
 | **Sprint 1** — Schema CI + M1 staging integration | **Closed** — staging E2E smoke passed 2026-07-03 |
 | M2 — Tray UI, settings, diagnostics | **Shipped** (W-01-S07, W-01-S08) |
-| **Sprint 2** — Signed MSI + CI release | **Next** (W-01-S09) |
+| **Sprint 2** — Unsigned MSI + release CI | **In progress** (W-01-S09) |
+| SignPath OSS signing | **Next** (W-01-S11, after SignPath approval) |
 
 ## Repository layout
 
@@ -37,6 +38,7 @@ src/
 tests/
   EventPlatform.PrintRelay.Core.Tests/
 schemas/                           # Pinned platform JSON Schema (see platform-pin.json)
+installer/                         # WiX MSI project (W-01-S09)
 docs/
   PRINT_RELAY_WINDOWS_PRD.md
   SPIKE.md
@@ -52,6 +54,8 @@ dotnet test
 ```
 
 **Spike (Windows only):** see [`docs/SPIKE.md`](docs/SPIKE.md).
+
+**MSI installer (Windows):** see [`docs/INSTALLER.md`](docs/INSTALLER.md).
 
 **App (Windows — after agent pushes from Mac):**
 

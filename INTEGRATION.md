@@ -23,7 +23,7 @@ Canonical copy also lives in the platform repo at `printrelay/INTEGRATION.md`. U
 | Repository | Contents | Deploy target |
 |---|---|---|
 | **event-management-platform** | Print queue API, `renderBadgeDocument`, admin setup code UI, JSON schemas | Vercel |
-| **event-platform-print-relay-windows** (this repo) | .NET tray app, WebView2 print, MSI, code signing | GitHub Releases → admin MSI link |
+| **event-platform-print-relay-windows** (this repo) | .NET tray app, WebView2 print, MSI, SignPath signing | GitHub Releases → admin MSI link (after W-01-S11) |
 
 ---
 
@@ -78,8 +78,9 @@ Decoded payload validated against [`schemas/desk-setup-code.v1.json`](schemas/de
 
 - [x] W-01-S03–S06: Schema CI + poll loop + wizard + staging E2E
 - [x] W-01-S07–S08: Tray UI + diagnostics
-- [ ] W-01-S09: Signed MSI + CI release
-- [ ] Set `NEXT_PUBLIC_PRINT_RELAY_WINDOWS_MSI_URL` in platform admin
+- [ ] W-01-S09: Unsigned MSI + release CI
+- [ ] W-01-S11: SignPath OSS signing + signed GitHub Release
+- [ ] Set `NEXT_PUBLIC_PRINT_RELAY_WINDOWS_MSI_URL` in platform admin (after W-01-S11)
 
 ### Phase D — Go-live
 

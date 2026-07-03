@@ -69,11 +69,11 @@ _(none — update this when you start a story)_
 
 ## Goal
 
-Signed `.msi`, Authenticode CI, HKCU auto-start, GitHub Release artifact for platform admin MSI link.
+Unsigned `.msi` + release CI (HKCU auto-start, GitHub Releases). SignPath signing deferred to **W-01-S11** after OSS approval.
 
 ## In scope (Sprint 2)
 
-- [ ] **W-01-S09** — MSI + Authenticode CI (M3)
+- [ ] **W-01-S09** — MSI + release CI (unsigned) (M3)
 
 ## Stretch (if time remains)
 
@@ -81,7 +81,7 @@ _(none)_
 
 ## In progress
 
-_(none)_
+- **W-01-S09** — MSI + release CI (unsigned)
 
 ## Done
 
@@ -89,9 +89,11 @@ _(none yet)_
 
 ## Out of scope this sprint
 
+- SignPath OSS signing CI (W-01-S11 — after SignPath approval)
 - Physical sign-off matrix Win 10 + 11 (W-01-S10 — M4)
-- Platform admin copy changes (E-05-S09 — platform repo)
+- Platform admin MSI URL (E-05-S09 — after W-01-S11 signed release)
 
 ## Blockers / notes
 
-- Gate 4: Authenticode code-signing certificate required before customer distribution
+- Gate 4: SignPath OSS registration (parallel; does not block W-01-S09 unsigned MSI)
+- **2026-07-03:** W-01-S09 implementation landed — awaiting Windows MSI acceptance per `docs/INSTALLER.md` checklist
