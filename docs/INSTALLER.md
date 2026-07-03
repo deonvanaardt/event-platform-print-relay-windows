@@ -57,6 +57,8 @@ Workflow: [`.github/workflows/release.yml`](../.github/workflows/release.yml)
 
 **Install location:** `C:\Program Files\EventPlatform\PrintRelay\`
 
+The release MSI is a **single file** (`EmbedCab="yes"`). You do not need to copy `cab1.cab` separately. If an older build prompts for a CAB, rebuild after pulling latest or copy `cab1.cab` next to the MSI as a temporary workaround.
+
 **Start Menu:** Event Platform → Print Relay
 
 **Auto-start:** installer writes HKCU  

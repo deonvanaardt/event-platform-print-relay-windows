@@ -10,7 +10,7 @@
 
     <MajorUpgrade
       DowngradeErrorMessage="A newer version of Event Platform Print Relay is already installed." />
-    <MediaTemplate />
+    <MediaTemplate EmbedCab="yes" />
 
     <Feature Id="Main" Title="Print Relay" Level="1">
       <ComponentGroupRef Id="HarvestedComponents" />
