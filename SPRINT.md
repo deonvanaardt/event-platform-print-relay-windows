@@ -1,6 +1,6 @@
-# Sprint 1 — M1 staging integration
+# Sprint 1 — M1 staging integration — **CLOSED**
 
-**Dates:** 2026-07-01 → 2026-07-07  
+**Dates:** 2026-07-01 → 2026-07-03  
 **Epic:** [W-01 — Windows print relay MVP](BACKLOG.md#w-01--windows-print-relay-mvp)  
 **Phase:** [Phase 1 — M1](IMPLEMENTATION_PLAN.md#phase-1--m1-staging-integration) · [Phase 2 — M2 tray](IMPLEMENTATION_PLAN.md#phase-2--m2-tray-app)  
 **Spec:** `docs/PRINT_RELAY_WINDOWS_PRD.md` · `INTEGRATION.md`
@@ -8,6 +8,8 @@
 ## Goal
 
 After Gate 3 spike sign-off, ship contract validation in CI and the first end-to-end path: decode setup code → poll staging → print `badge_html` → complete. M2 tray + diagnostics landed early for staging test visibility.
+
+**Exit:** Staging E2E smoke test passed on physical Windows hardware (2026-07-03). See `docs/STAGING_INTEGRATION.md`.
 
 ## In scope (Sprint 1)
 
@@ -52,11 +54,44 @@ _(none — update this when you start a story)_
 
 ## Blockers / notes
 
+- **2026-07-03:** Staging E2E smoke test **passed** on new physical Windows box (setup → poll → print `badge_html` → job `printed` on platform).
 - Gate 3 passed on physical Windows laptop (A5 sign-off; CR80 fixture retained)
-- Platform staging must have `badge_html` (E-05-S06) before W-01-S06 sign-off
 - Spike uses `PrintToPdf` + `PdfSpooler` for some drivers — production path must use CR80 dimensions per PRD §8.2 (see `DECISIONS.md`)
-- Use tray **Status** panel + **Show technical details** for staging E2E trace (see `docs/STAGING_INTEGRATION.md`)
 
 ---
 
-_Rewrite at sprint start. Git history keeps prior sprints._
+# Sprint 2 — M3 MSI + release engineering
+
+**Dates:** TBD  
+**Epic:** [W-01 — Windows print relay MVP](BACKLOG.md#w-01--windows-print-relay-mvp)  
+**Phase:** [Phase 3 — M3](IMPLEMENTATION_PLAN.md#phase-3--m3-release-engineering)  
+**Spec:** `docs/PRINT_RELAY_WINDOWS_PRD.md` §4 · `INTEGRATION.md`
+
+## Goal
+
+Signed `.msi`, Authenticode CI, HKCU auto-start, GitHub Release artifact for platform admin MSI link.
+
+## In scope (Sprint 2)
+
+- [ ] **W-01-S09** — MSI + Authenticode CI (M3)
+
+## Stretch (if time remains)
+
+_(none)_
+
+## In progress
+
+_(none)_
+
+## Done
+
+_(none yet)_
+
+## Out of scope this sprint
+
+- Physical sign-off matrix Win 10 + 11 (W-01-S10 — M4)
+- Platform admin copy changes (E-05-S09 — platform repo)
+
+## Blockers / notes
+
+- Gate 4: Authenticode code-signing certificate required before customer distribution

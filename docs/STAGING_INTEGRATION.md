@@ -55,6 +55,10 @@ Tray menu → **Copy diagnostics** — JSON for support (hostname, connection st
 
 Log date, platform version/commit, Windows app version, printer model, and pass/fail in the PR or story comment when closing W-01-S06.
 
+| Date | App version | Result | Notes |
+|------|-------------|--------|-------|
+| 2026-07-03 | 0.2.0 | **Pass** | Staging E2E on new physical Windows box — setup, test print, check-in job, `printed` on platform |
+
 ## Related
 
 - Platform smoke: `pnpm smoke:print-queue` (from event-management-platform)

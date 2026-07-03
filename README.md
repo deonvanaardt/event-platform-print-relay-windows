@@ -24,9 +24,9 @@ Cursor agents: rules in [`.cursor/rules/`](.cursor/rules/) mirror the platform r
 | Milestone | State |
 |---|---|
 | **Spike** — WebView2 silent fixture print (Gate 3) | **Passed** — A5 physical sign-off |
-| **Sprint 1** — Schema CI + M1 staging integration | **In progress** — see `SPRINT.md` |
+| **Sprint 1** — Schema CI + M1 staging integration | **Closed** — staging E2E smoke passed 2026-07-03 |
 | M2 — Tray UI, settings, diagnostics | **Shipped** (W-01-S07, W-01-S08) |
-| M3 — Signed MSI + CI release | Not started |
+| **Sprint 2** — Signed MSI + CI release | **Next** (W-01-S09) |
 
 ## Repository layout
 

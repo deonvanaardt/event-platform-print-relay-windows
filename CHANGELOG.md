@@ -13,6 +13,24 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 
 ### Added
 
+_(none yet)_
+
+### Not yet built
+
+- Signed MSI + CI release (W-01-S09)
+- Physical sign-off Win 10 + 11 (W-01-S10)
+- Full list: [BACKLOG.md](BACKLOG.md)
+
+---
+
+## 0.2.0 — 2026-07-03 — Sprint 1 — M1 staging + M2 tray
+
+**Stories:** W-01-S03, W-01-S04, W-01-S05, W-01-S06, W-01-S07, W-01-S08
+
+**Sign-off:** Staging E2E smoke test passed on physical Windows hardware (check-in → poll → print `badge_html` → job `printed`).
+
+### Added
+
 - Automatic log truncation: `relay.log` capped at 5 MB, `startup.log` at 256 KB; in-place wipe with truncation notice in `relay.log` (W-01-S08)
 - System tray UI: `NotifyIcon` states, menu (Status, printer, test print, test connection, Copy diagnostics, Settings, Quit) (W-01-S07)
 - Status panel: connection checklist, live activity feed, recent jobs table, **Show technical details** toggle for desk/event/job IDs (W-01-S07)
@@ -30,12 +48,6 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 - xUnit poll loop tests: ordering, lifecycle, backoff, auth vs connectivity, crash isolation (W-01-S04)
 - Pinned platform JSON Schema under `schemas/` with `platform-pin.json` commit SHA (W-01-S03)
 - xUnit contract tests validate fixtures and reject invalid samples; CI runs via existing `core-tests` job (W-01-S03)
-
-### Not yet built
-
-- Signed MSI + CI release (W-01-S09)
-- Physical sign-off Win 10 + 11 (W-01-S10)
-- Full list: [BACKLOG.md](BACKLOG.md)
 
 ---
 

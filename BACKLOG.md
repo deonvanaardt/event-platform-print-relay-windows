@@ -24,12 +24,12 @@ Sprint-ready stories for the **event-platform-print-relay-windows** repository. 
 |---|---|---|
 | W-01-S01 | Repo scaffold + Core library | ✅ Done — API client, setup code codec, settings store, poll backoff; xUnit on macOS |
 | W-01-S02 | WebView2 silent print spike (Gate 3) | ✅ Done — fixture HTML to named printer, no dialog; A5 physical sign-off |
-| W-01-S03 | JSON Schema pinning + contract tests | Pinned `schemas/` from platform commit; xUnit validates fixtures; CI on ubuntu |
-| W-01-S04 | Poll loop + job lifecycle | 1000 ms poll; sequential jobs; complete/fail callbacks; backoff on API errors |
-| W-01-S05 | Setup wizard (M1) | Paste `DESK-` code; validate via pending poll; printer dropdown; persist settings |
-| W-01-S06 | Print `badge_html` from staging | End-to-end: poll staging → print server HTML → complete; missing `badge_html` → fail job |
-| W-01-S07 | System tray UI (M2) | Icon states (green/amber/red/grey); status panel; menu per PRD §7 |
-| W-01-S08 | Settings + diagnostics (M2) | Printer change; re-run setup; Copy diagnostics (no secrets); JSON Lines log |
+| W-01-S03 | JSON Schema pinning + contract tests | ✅ Done — pinned `schemas/`; xUnit + CI |
+| W-01-S04 | Poll loop + job lifecycle | ✅ Done — 1000 ms poll; complete/fail; backoff |
+| W-01-S05 | Setup wizard (M1) | ✅ Done — `DESK-` code; printer dropdown; persist settings |
+| W-01-S06 | Print `badge_html` from staging | ✅ Done — staging E2E smoke passed 2026-07-03 |
+| W-01-S07 | System tray UI (M2) | ✅ Done — icon states; status panel; tray menu |
+| W-01-S08 | Settings + diagnostics (M2) | ✅ Done — diagnostics export; JSON Lines log; log truncation |
 | W-01-S09 | MSI + Authenticode CI (M3) | Signed `.msi`; HKCU auto-start; GitHub release artifact |
 | W-01-S10 | Physical sign-off (M4) | Win 10 + 11 with USB/network printer; version matrix in README |
 
