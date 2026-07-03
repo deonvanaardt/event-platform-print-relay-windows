@@ -33,10 +33,8 @@ dotnet build installer\EventPlatform.PrintRelay.Installer\EventPlatform.PrintRel
 # MSI output (under installer project bin):
 Get-ChildItem installer\EventPlatform.PrintRelay.Installer\bin -Recurse -Filter *.msi
 
-# 4. Optional — copy into repo for GitHub backup (see releases/msi/README.md)
-$version = ([xml](Get-Content src\EventPlatform.PrintRelay.App\EventPlatform.PrintRelay.App.csproj)).Project.PropertyGroup.Version | Select-Object -First 1
-$msi = Get-ChildItem installer\EventPlatform.PrintRelay.Installer\bin -Recurse -Filter *.msi | Select-Object -First 1
-Copy-Item -Force $msi.FullName "releases\msi\EventPlatform.PrintRelay-$version-win-x64.msi"
+# 4. Backup copy for GitHub (fixed path — overwrite each build)
+Copy-Item -Force (Get-ChildItem installer\EventPlatform.PrintRelay.Installer\bin -Recurse -Filter *.msi | Select-Object -First 1).FullName releases\msi\EventPlatform.PrintRelay.msi
 ```
 
 ---
