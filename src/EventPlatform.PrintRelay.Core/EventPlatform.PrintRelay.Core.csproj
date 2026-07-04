@@ -10,4 +10,8 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="EventPlatform.PrintRelay.Core.Tests" />
+  </ItemGroup>
+
 </Project>
