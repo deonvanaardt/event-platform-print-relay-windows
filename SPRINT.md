@@ -60,9 +60,9 @@ _(none — update this when you start a story)_
 
 ---
 
-# Sprint 2 — M3 MSI + release engineering
+# Sprint 2 — M3 MSI + release engineering — **CLOSED**
 
-**Dates:** TBD  
+**Dates:** 2026-07-03 → 2026-07-04  
 **Epic:** [W-01 — Windows print relay MVP](BACKLOG.md#w-01--windows-print-relay-mvp)  
 **Phase:** [Phase 3 — M3](IMPLEMENTATION_PLAN.md#phase-3--m3-release-engineering)  
 **Spec:** `docs/PRINT_RELAY_WINDOWS_PRD.md` §4 · `INTEGRATION.md`
@@ -73,7 +73,7 @@ Unsigned `.msi` + release CI (HKCU auto-start, GitHub Releases). SignPath signin
 
 ## In scope (Sprint 2)
 
-- [ ] **W-01-S09** — MSI + release CI (unsigned) (M3)
+- [x] **W-01-S09** — MSI + release CI (unsigned) (M3)
 
 ## Stretch (if time remains)
 
@@ -81,11 +81,11 @@ _(none)_
 
 ## In progress
 
-- **W-01-S09** — MSI + release CI (unsigned)
+_(none)_
 
 ## Done
 
-_(none yet)_
+- **W-01-S09** — MSI + release CI (unsigned): WiX installer, finish UI + launch-on-exit, HKCU auto-start, `release.yml`, Windows acceptance per `docs/INSTALLER.md` (2026-07-04)
 
 ## Out of scope this sprint
 
@@ -96,4 +96,4 @@ _(none yet)_
 ## Blockers / notes
 
 - Gate 4: SignPath OSS registration (parallel; does not block W-01-S09 unsigned MSI)
-- **2026-07-03:** W-01-S09 implementation landed — awaiting Windows MSI acceptance per `docs/INSTALLER.md` checklist
+- **2026-07-04:** W-01-S09 Windows acceptance **passed** — MSI install, finish UI, launch-on-exit, smoke test; MSI backup in `releases/msi/`

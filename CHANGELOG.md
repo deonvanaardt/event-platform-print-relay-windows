@@ -13,20 +13,30 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 
 ### Added
 
-- WiX MSI installer: `Program Files\EventPlatform\PrintRelay\`, Start Menu shortcut, HKCU Run auto-start (W-01-S09)
-- Installer finish UI: success message, **Start Print Relay now** checkbox (checked by default), launch on Finish via `WixUnelevatedShellExec` (W-01-S09)
-- `installer/EventPlatform.PrintRelay.Installer` — WiX Toolset 5 SDK, folder-publish harvest (W-01-S09)
-- Release CI: `.github/workflows/release.yml` — unsigned MSI on tag / workflow dispatch (W-01-S09)
-- Installer runbook `docs/INSTALLER.md`; SignPath follow-up `docs/SIGNPATH.md` (W-01-S11 prep)
-- App version bump `0.3.0` for first MSI release line (W-01-S09)
-- WebView2 user data folder under `%LocalAppData%` for Program Files MSI install (0.3.1)
-- Governance: SignPath OSS signing path documented; W-01-S09 / W-01-S11 story split
+_(none)_
 
 ### Not yet built
 
 - SignPath OSS signing CI (W-01-S11)
 - Physical sign-off Win 10 + 11 (W-01-S10)
 - Full list: [BACKLOG.md](BACKLOG.md)
+
+---
+
+## 0.3.1 — 2026-07-04 — Sprint 2 — M3 MSI + release
+
+**Stories:** W-01-S09
+
+### Added
+
+- WiX MSI installer: `Program Files\EventPlatform\PrintRelay\`, Start Menu shortcut, HKCU Run auto-start (W-01-S09)
+- Installer finish UI: success message, **Start Print Relay now** checkbox (checked by default), launch on Finish via `WixUnelevatedShellExec` (W-01-S09)
+- `installer/EventPlatform.PrintRelay.Installer` — WiX Toolset 5 SDK, folder-publish harvest (W-01-S09)
+- Release CI: `.github/workflows/release.yml` — unsigned MSI on tag / workflow dispatch (W-01-S09)
+- Installer runbook `docs/INSTALLER.md`; SignPath follow-up `docs/SIGNPATH.md` (W-01-S11 prep)
+- App version `0.3.1`; MSI backup under `releases/msi/` (W-01-S09)
+- WebView2 user data folder under `%LocalAppData%` for Program Files MSI install
+- Governance: SignPath OSS signing path documented; W-01-S09 / W-01-S11 story split
 
 ---
 

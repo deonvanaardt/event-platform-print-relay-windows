@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputName>EventPlatform.PrintRelay</OutputName>
-    <ProductVersion>0.3.0</ProductVersion>
+    <ProductVersion>0.3.1</ProductVersion>
     <Platform>x64</Platform>
     <InstallerPlatform>x64</InstallerPlatform>
     <PublishDir>$(MSBuildThisFileDirectory)../../artifacts/publish/</PublishDir>
