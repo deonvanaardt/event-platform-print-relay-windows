@@ -110,6 +110,26 @@ jobs:
             "signed=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
           }
 
+      - name: Write GitHub Release body
+        id: release_body
+        shell: pwsh
+        run: |
+          $signed = '${{ steps.release_msi.outputs.signed }}' -eq 'true'
+          $status = if ($signed) {
+            '**This release:** Authenticode-signed via SignPath OSS. Customer-ready distribution.'
+          } else {
+            '**This release:** Unsigned — SignPath secrets not configured or signing was skipped. Internal and staging use only; SmartScreen will warn.'
+          }
+          @"
+          ## Code signing
+
+          Free code signing provided by [SignPath.io](https://signpath.io/), certificate by [SignPath Foundation](https://signpath.org/).
+
+          $status
+
+          Policy: [docs/CODE_SIGNING_POLICY.md](https://github.com/${{ github.repository }}/blob/main/docs/CODE_SIGNING_POLICY.md) · Runbook: [docs/SIGNPATH.md](https://github.com/${{ github.repository }}/blob/main/docs/SIGNPATH.md)
+          "@ | Set-Content -Path release-body.md -Encoding utf8NoBOM
+
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
@@ -117,4 +137,4 @@ jobs:
           files: ${{ steps.release_msi.outputs.path }}
           prerelease: ${{ steps.release_msi.outputs.signed != 'true' }}
           generate_release_notes: true
-          body: ${{ steps.release_msi.outputs.signed == 'true' && 'Authenticode-signed via SignPath OSS. Customer-ready distribution.' || '**Unsigned** — SignPath secrets not configured or signing was skipped. Internal and staging use only; SmartScreen will warn.' }}
+          body_path: release-body.md

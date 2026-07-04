@@ -10,7 +10,7 @@ Signed Windows desktop app for silent badge printing at check-in desks. Polls th
 
 Windows installers (`.msi`) are published on **[GitHub Releases](https://github.com/deonvanaardt/event-platform-print-relay-windows/releases)**.
 
-Release builds are code-signed via the [SignPath Foundation](https://signpath.io/foundation) open-source signing program. Setup and signing details: [`docs/SIGNPATH.md`](docs/SIGNPATH.md).
+Release builds are code-signed via the [SignPath Foundation](https://signpath.org/) open-source signing program. Setup and signing details: [`docs/SIGNPATH.md`](docs/SIGNPATH.md). **Code signing policy:** [`docs/CODE_SIGNING_POLICY.md`](docs/CODE_SIGNING_POLICY.md).
 
 **Privacy:** [`docs/PRIVACY.md`](docs/PRIVACY.md)
 
@@ -106,4 +106,6 @@ Document minimum platform version per release. First production build requires p
 
 ## License
 
-Proprietary — Event Platform.
+[MIT](LICENSE) — Event Platform Print Relay (this repository).
+
+The MSI installer shows a separate end-user license during setup (`installer/EventPlatform.PrintRelay.Installer/license.rtf`) for venue deployment terms.
