@@ -97,3 +97,41 @@ _(none)_
 
 - Gate 4: SignPath OSS registration (parallel; does not block W-01-S09 unsigned MSI)
 - **2026-07-04:** W-01-S09 Windows acceptance **passed** — MSI install, finish UI, launch-on-exit, smoke test; MSI backup in `releases/msi/`
+
+---
+
+# Sprint 3 — M3 SignPath signing + M4 prep
+
+**Dates:** TBD  
+**Epic:** [W-01 — Windows print relay MVP](BACKLOG.md#w-01--windows-print-relay-mvp)  
+**Phase:** [Phase 3 — M3](IMPLEMENTATION_PLAN.md#phase-3--m3-release-engineering) · [Phase 4 — M4](IMPLEMENTATION_PLAN.md#phase-4--m4-go-live)  
+**Spec:** `docs/SIGNPATH.md` · `docs/PRINT_RELAY_WINDOWS_PRD.md` §4.2
+
+## Goal
+
+Customer-ready **signed** `.msi` on GitHub Releases via SignPath OSS. Physical Win 10/11 sign-off when signing is live.
+
+## In scope (Sprint 3)
+
+- [ ] **W-01-S11** — SignPath OSS signing CI (M3)
+
+## Stretch (if time remains)
+
+- [ ] **W-01-S10** — Physical sign-off Win 10 + 11 (M4) — after signed MSI available
+
+## In progress
+
+_(none — update this when you start a story)_
+
+## Done
+
+_(none yet)_
+
+## Out of scope this sprint
+
+- Platform admin MSI URL (E-05-S09 — platform repo; after signed release URL is stable)
+
+## Blockers / notes
+
+- **SignPath OSS approval** required before W-01-S11 CI can publish signed artifacts — apply per `docs/SIGNPATH.md`
+- Unsigned `v0.3.1` prerelease on `main` is the current staging baseline
