@@ -36,6 +36,14 @@ Chronological record of **implementation-time** decisions for the Windows print 
 
 <!-- Add entries above this line, newest first. -->
 
+## 2026-07-04 — Installer finish UI with launch-on-exit
+
+**Status:** accepted  
+**Context:** MSI had no wizard UI — install ended on a bare progress/close flow with no success confirmation and no way to open the app immediately after install.  
+**Decision:** Add `WixUI_Minimal` via `WixToolset.UI.wixext`; success text and checked **Start Print Relay now** on `ExitDialog`; `WixUnelevatedShellExec` custom action (`WixToolset.Util.wixext`) on Finish so the tray app starts as the installing user, not elevated.  
+**Alternatives considered:** Custom `ExitDialog` with a separate Start button (fork WiX UI source — rejected for MVP scope); `WixShellExec` (rejected — per-machine install runs elevated).  
+**Consequences:** `Package.wxs`, `license.rtf`, UI + Util wixext packages; `docs/INSTALLER.md` acceptance extended.
+
 ## 2026-07-03 — WebView2 user data under LocalAppData for MSI install
 
 **Status:** accepted  

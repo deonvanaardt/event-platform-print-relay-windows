@@ -98,6 +98,7 @@ Sprint-ready stories for the **event-platform-print-relay-windows** repository. 
   - WiX produces `.msi` installing to `%ProgramFiles%\EventPlatform\PrintRelay\`.
   - Start Menu shortcut launches `EventPlatform.PrintRelay.exe`.
   - HKCU `Run` key for auto-start on login (installer-owned).
+  - Finish screen confirms successful install; optional **Start Print Relay now** launches app on Finish (checked by default).
   - `release.yml` builds unsigned MSI on tag / workflow dispatch; artifact on GitHub Releases.
   - Manual install checklist in `docs/INSTALLER.md` passes on Windows hardware.
   - **No** `.pfx` / `signtool` secrets in CI.

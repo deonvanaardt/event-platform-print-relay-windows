@@ -14,6 +14,7 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 ### Added
 
 - WiX MSI installer: `Program Files\EventPlatform\PrintRelay\`, Start Menu shortcut, HKCU Run auto-start (W-01-S09)
+- Installer finish UI: success message, **Start Print Relay now** checkbox (checked by default), launch on Finish via `WixUnelevatedShellExec` (W-01-S09)
 - `installer/EventPlatform.PrintRelay.Installer` — WiX Toolset 5 SDK, folder-publish harvest (W-01-S09)
 - Release CI: `.github/workflows/release.yml` — unsigned MSI on tag / workflow dispatch (W-01-S09)
 - Installer runbook `docs/INSTALLER.md`; SignPath follow-up `docs/SIGNPATH.md` (W-01-S11 prep)

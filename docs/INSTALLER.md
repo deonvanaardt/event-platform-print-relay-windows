@@ -57,6 +57,8 @@ Workflow: [`.github/workflows/release.yml`](../.github/workflows/release.yml)
 1. Double-click `EventPlatform.PrintRelay.msi` (or downloaded release asset).
 2. Accept the UAC prompt (per-machine install to Program Files).
 3. SmartScreen may warn **"Windows protected your PC"** for unsigned builds — choose **More info** → **Run anyway** (internal/staging only).
+4. Follow the installer wizard: **Welcome** → accept license → **Install** → progress → **Finish**.
+5. On the finish screen, confirm the success message appears. **Start Print Relay now** is checked by default; click **Finish** to launch the tray app immediately (or uncheck to close without launching).
 
 **Install location:** `C:\Program Files\EventPlatform\PrintRelay\`
 
@@ -79,12 +81,17 @@ The release MSI is a **single file** (`EmbedCab="yes"`). You do not need to copy
 Run after local or CI-built MSI:
 
 - [ ] MSI installs to `Program Files\EventPlatform\PrintRelay\` without errors
+- [ ] Installer wizard shows welcome, license, progress, and finish screens
+- [ ] Finish screen shows success text and **Start Print Relay now** checkbox (checked by default)
+- [ ] Click **Finish** with checkbox checked — tray app starts (setup wizard on first run); no second UAC on the launched app
+- [ ] Uncheck **Start Print Relay now**, click **Finish** — installer closes without launching the app
 - [ ] Start Menu shortcut launches the tray app (icon near clock)
 - [ ] `reg query HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v EventPlatform.PrintRelay` shows the install path
 - [ ] Sign out and back in (or reboot) — app auto-starts to tray without a main window
 - [ ] Staging smoke: setup code → poll → print `badge_html` → job `printed` on platform (see [`STAGING_INTEGRATION.md`](STAGING_INTEGRATION.md))
 - [ ] Uninstall from Settings → Apps — Program Files removed; Run key removed; AppData settings still present
 - [ ] Install newer MSI over older — upgrade succeeds; settings preserved
+- [ ] Silent install still works: `msiexec /i EventPlatform.PrintRelay.msi /qn` (no UI; no launch-on-finish)
 
 Mark **W-01-S09** Done in `SPRINT.md` when all boxes pass.
 

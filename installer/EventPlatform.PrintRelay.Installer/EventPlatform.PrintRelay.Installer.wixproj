@@ -22,6 +22,12 @@
 
   <ItemGroup>
     <PackageReference Include="WixToolset.Heat" Version="5.0.2" />
+    <PackageReference Include="WixToolset.UI.wixext" Version="5.0.2" />
+    <PackageReference Include="WixToolset.Util.wixext" Version="5.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="license.rtf" />
   </ItemGroup>
 
   <Target Name="ValidatePublishDir" BeforeTargets="HarvestDirectory">
