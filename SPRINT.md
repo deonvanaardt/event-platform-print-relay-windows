@@ -113,7 +113,7 @@ Customer-ready **signed** `.msi` on GitHub Releases via SignPath OSS. Physical W
 
 ## In scope (Sprint 3)
 
-- [ ] **W-01-S11** — SignPath OSS signing CI (M3)
+- [ ] **W-01-S11** — SignPath OSS signing CI (M3) — CI wired; pending OSS approval + signed `v0.4.0` verify
 
 ## Stretch (if time remains)
 
@@ -121,11 +121,11 @@ Customer-ready **signed** `.msi` on GitHub Releases via SignPath OSS. Physical W
 
 ## In progress
 
-_(none — update this when you start a story)_
+- **W-01-S11** — SignPath OSS signing CI: `release.yml` SignPath step + docs; operator: apply OSS, dashboard, secrets, tag `v0.4.0`, Windows verify
 
 ## Done
 
-_(none yet)_
+_(none yet — mark W-01-S11 Done after signed release + Windows acceptance)_
 
 ## Out of scope this sprint
 
@@ -133,5 +133,6 @@ _(none yet)_
 
 ## Blockers / notes
 
-- **SignPath OSS approval** required before W-01-S11 CI can publish signed artifacts — apply per `docs/SIGNPATH.md`
-- Unsigned `v0.3.1` prerelease on `main` is the current staging baseline
+- **SignPath OSS approval** required before first **signed** GitHub Release — apply per `docs/SIGNPATH.md` Step 1
+- CI falls back to unsigned prerelease when `SIGNPATH_API_TOKEN` is not set
+- Target first signed release: tag `v0.4.0` after secrets configured

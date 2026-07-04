@@ -13,11 +13,14 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 
 ### Added
 
-_(none)_
+- SignPath OSS signing in `release.yml`: conditional `signpath/github-action-submit-signing-request`, signed MSI on tag release when secrets set, unsigned prerelease fallback (W-01-S11)
+- `docs/SIGNPATH.md` operator runbook: OSS application, dashboard setup, GitHub secrets, first signed `v0.4.0` release steps (W-01-S11)
+- Signed MSI verification section in `docs/INSTALLER.md` (`Get-AuthenticodeSignature`) (W-01-S11)
+- App version `0.4.0` (W-01-S11)
 
 ### Not yet built
 
-- SignPath OSS signing CI (W-01-S11)
+- First signed GitHub Release (`v0.4.0`) — blocked on SignPath OSS approval + secrets + Windows verify
 - Physical sign-off Win 10 + 11 (W-01-S10)
 - Full list: [BACKLOG.md](BACKLOG.md)
 
