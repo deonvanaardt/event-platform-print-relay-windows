@@ -29,7 +29,7 @@
       BinaryRef="Wix4UtilCA_$(sys.BUILDARCHSHORT)"
       DllEntry="WixUnelevatedShellExec"
       Execute="immediate"
-      Return="asyncNoWait" />
+      Return="check" />
 
     <UI>
       <ui:WixUI Id="WixUI_Minimal" />
