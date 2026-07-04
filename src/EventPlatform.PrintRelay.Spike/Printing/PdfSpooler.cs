@@ -9,6 +9,8 @@ internal static class PdfSpooler
         ArgumentException.ThrowIfNullOrWhiteSpace(pdfPath);
         ArgumentException.ThrowIfNullOrWhiteSpace(printerName);
 
+        PdfiumNativeBootstrap.EnsureLoaded();
+
         if (!File.Exists(pdfPath))
         {
             throw new FileNotFoundException($"PDF not found: {pdfPath}", pdfPath);

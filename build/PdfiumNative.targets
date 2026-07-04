@@ -1,0 +1,48 @@
+<Project>
+  <!--
+    bblanchon.PDFium.Win32 copies pdfium.dll to x86/, x64/, arm64/ at output root.
+    PdfiumPrinter (.NET) loads from runtimes/win-{arch}/native/pdfium.dll.
+    Bridge the layout after every build and publish.
+  -->
+  <Target Name="CopyPdfiumToRuntimeFolders" AfterTargets="Build;Publish">
+    <PropertyGroup>
+      <_PdfiumOutDir Condition="'$(PublishDir)' != ''">$(PublishDir)</_PdfiumOutDir>
+      <_PdfiumOutDir Condition="'$(_PdfiumOutDir)' == ''">$(OutputPath)</_PdfiumOutDir>
+    </PropertyGroup>
+
+    <MakeDir Directories="$(_PdfiumOutDir)runtimes\win-x86\native" />
+    <MakeDir Directories="$(_PdfiumOutDir)runtimes\win-x64\native" />
+    <MakeDir Directories="$(_PdfiumOutDir)runtimes\win-arm64\native" />
+
+    <Copy
+      SourceFiles="$(_PdfiumOutDir)x86\pdfium.dll"
+      DestinationFiles="$(_PdfiumOutDir)runtimes\win-x86\native\pdfium.dll"
+      Condition="Exists('$(_PdfiumOutDir)x86\pdfium.dll')"
+      SkipUnchangedFiles="true" />
+    <Copy
+      SourceFiles="$(_PdfiumOutDir)x64\pdfium.dll"
+      DestinationFiles="$(_PdfiumOutDir)runtimes\win-x64\native\pdfium.dll"
+      Condition="Exists('$(_PdfiumOutDir)x64\pdfium.dll')"
+      SkipUnchangedFiles="true" />
+    <Copy
+      SourceFiles="$(_PdfiumOutDir)arm64\pdfium.dll"
+      DestinationFiles="$(_PdfiumOutDir)runtimes\win-arm64\native\pdfium.dll"
+      Condition="Exists('$(_PdfiumOutDir)arm64\pdfium.dll')"
+      SkipUnchangedFiles="true" />
+    <Copy
+      SourceFiles="$(_PdfiumOutDir)pdfium.dll"
+      DestinationFiles="$(_PdfiumOutDir)runtimes\win-x86\native\pdfium.dll"
+      Condition="Exists('$(_PdfiumOutDir)pdfium.dll')"
+      SkipUnchangedFiles="true" />
+    <Copy
+      SourceFiles="$(_PdfiumOutDir)pdfium.dll"
+      DestinationFiles="$(_PdfiumOutDir)runtimes\win-x64\native\pdfium.dll"
+      Condition="Exists('$(_PdfiumOutDir)pdfium.dll')"
+      SkipUnchangedFiles="true" />
+    <Copy
+      SourceFiles="$(_PdfiumOutDir)pdfium.dll"
+      DestinationFiles="$(_PdfiumOutDir)runtimes\win-arm64\native\pdfium.dll"
+      Condition="Exists('$(_PdfiumOutDir)pdfium.dll')"
+      SkipUnchangedFiles="true" />
+  </Target>
+</Project>

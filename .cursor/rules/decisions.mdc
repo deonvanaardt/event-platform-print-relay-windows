@@ -1,0 +1,31 @@
+---
+description: Automatically log implementation decisions to DECISIONS.md
+alwaysApply: true
+---
+
+# Decision log maintenance
+
+When you make or implement a **non-obvious implementation decision**, append an entry to `DECISIONS.md` in the **same session**.
+
+## Log when
+
+- Chose between valid approaches (print path, project split, installer tool)
+- Rejected an approach after spike or failed attempt
+- Resolved ambiguity the Windows PRD did not spell out at code level
+- Introduced a pattern others must follow
+- Changed a prior approach — mark old entry `superseded`, add new entry
+
+## Do NOT log when
+
+- Trivial renames or formatting
+- Decision already in Windows PRD or Tech Stack (link instead)
+- Pure product scope change — update PRD, not `DECISIONS.md`
+- New library — update Tech Stack Decision Record
+
+## How to write
+
+1. Insert **above** `<!-- Add entries above this line, newest first. -->` in the Log section.
+2. Use template from `DECISIONS.md` (5–15 lines).
+3. Mention briefly in reply: "Logged decision: …"
+
+Do not ask the user whether to log — just log unless they said not to.

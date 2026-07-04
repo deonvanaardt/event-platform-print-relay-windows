@@ -1,0 +1,109 @@
+---
+description: When the agent commits/pushes; how Mac and Windows stay on the same code
+alwaysApply: true
+---
+
+# Git sync — Mac (agent) ↔ GitHub ↔ Windows (testing)
+
+This repo is edited on **macOS** (agent) and tested on **Windows** (operator). GitHub is the handoff. `git pull` on Windows only works after the agent **pushes**.
+
+**Default branch for active work:** `feature/sprint-1-m1` (check `git branch` if unsure).
+
+---
+
+## Agent — when to commit and push
+
+### MUST commit + push (same session, no need to ask)
+
+- Any change under `src/EventPlatform.PrintRelay.App/` or `src/EventPlatform.PrintRelay.Spike/` the user will run on Windows
+- Bug fixes reported from Windows testing
+- User says **commit**, **push**, or **commit and push**
+- Story work marked Done that includes runnable app behaviour
+
+Use one commit per logical fix/feature. Message: what/why (not a file list).
+
+### MUST NOT commit or push unless the user asks
+
+- Read-only answers, plans, or investigations with **no code changes**
+- User says **don't commit** or **don't push**
+- Partial/WIP that does not meet story acceptance (unless user explicitly wants a WIP push)
+
+### After every push — tell the user in the reply
+
+1. **Branch:** e.g. `feature/sprint-1-m1`
+2. **Commit:** short SHA + subject line, e.g. `cb22916 Fix tray startup deadlock…`
+3. **Reminder:** run the Windows sync steps below before `dotnet publish`
+
+Core-only / tests / docs-only changes: push is optional; say **“Not pushed — Windows exe unchanged”** or push if bundled with App changes in the same session.
+
+---
+
+## Operator — sync Windows before every test
+
+Run in **PowerShell** on the Windows PC (`C:\Users\Deon\event-platform-print-relay-windows` or your clone path).
+
+### 1. Pull latest (required after agent says it pushed)
+
+```powershell
+cd C:\Users\Deon\event-platform-print-relay-windows
+git fetch origin
+git checkout feature/sprint-1-m1
+git pull origin feature/sprint-1-m1
+git log -1 --oneline
+```
+
+**Check:** `git log -1` matches the commit SHA/subject the agent gave you. If not, you are not on the right branch or pull failed.
+
+### 2. Stop the old app (required before publish)
+
+```powershell
+taskkill /IM EventPlatform.PrintRelay.exe /F
+```
+
+### 3. Publish
+
+```powershell
+dotnet publish src\EventPlatform.PrintRelay.App -c Release -r win-x64 --self-contained -o artifacts\app
+```
+
+Publish must end with `-> ...\artifacts\app\` and **no** `MSB3027` file-lock errors.
+
+**ARM64 Windows (Surface / Snapdragon laptops):** always pass **`-r win-x64`** as above. If you omit `-r`, `dotnet publish` defaults to `win-arm64` and Pdfium may fail with *“Native Library not found … win-arm64\native\pdfium.dll”*. After publish, confirm Pdfium is present (any one may be true):
+
+```powershell
+@(
+  ".\artifacts\app\runtimes\win-x64\native\pdfium.dll",
+  ".\artifacts\app\x64\pdfium.dll",
+  ".\artifacts\app\pdfium.dll"
+) | ForEach-Object { if (Test-Path $_) { "OK $_" } }
+```
+
+At least one line must print `OK …`. If none do, the publish did not bundle Pdfium — pull latest and republish.
+
+### 4. Verify build (safe — no dialog)
+
+```powershell
+.\artifacts\app\EventPlatform.PrintRelay.exe --version
+(Get-Item .\artifacts\app\EventPlatform.PrintRelay.exe).VersionInfo.FileVersion
+Get-Content .\artifacts\app\build-info.txt
+```
+
+Use **`--version`** (console text). Avoid **`--about`** unless troubleshooting UI.
+
+### 5. Run
+
+```powershell
+.\artifacts\app\EventPlatform.PrintRelay.exe
+```
+
+Always launch the **`.exe`** directly — do **not** use `dotnet artifacts\app\EventPlatform.PrintRelay.dll` (that runs as native ARM64 on your laptop and looks for `win-arm64` Pdfium).
+
+Tray icon may be under the **^** overflow by the clock.
+
+---
+
+## If Windows says “Already up to date” but behaviour is old
+
+- Confirm branch: `git branch --show-current` → must match agent’s branch
+- Confirm remote: `git log -1 --oneline` vs agent’s SHA
+- Agent may not have pushed yet — ask for push or check GitHub

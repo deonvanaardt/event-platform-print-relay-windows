@@ -1,0 +1,39 @@
+<Project Sdk="WixToolset.Sdk/5.0.2">
+
+  <PropertyGroup>
+    <OutputName>EventPlatform.PrintRelay</OutputName>
+    <ProductVersion>0.3.1</ProductVersion>
+    <Platform>x64</Platform>
+    <InstallerPlatform>x64</InstallerPlatform>
+    <PublishDir>$(MSBuildThisFileDirectory)../../artifacts/publish/</PublishDir>
+    <DefineConstants>ProductVersion=$(ProductVersion)</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <HarvestDirectory Include="$(PublishDir)">
+      <ComponentGroupName>HarvestedComponents</ComponentGroupName>
+      <DirectoryRefId>INSTALLFOLDER</DirectoryRefId>
+      <SuppressRootDirectory>true</SuppressRootDirectory>
+      <SuppressRegistry>true</SuppressRegistry>
+      <Transform>HarvestX64.xslt</Transform>
+    </HarvestDirectory>
+    <BindPath Include="$(PublishDir)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Heat" Version="5.0.2" />
+    <PackageReference Include="WixToolset.UI.wixext" Version="5.0.2" />
+    <PackageReference Include="WixToolset.Util.wixext" Version="5.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="license.rtf" />
+  </ItemGroup>
+
+  <Target Name="ValidatePublishDir" BeforeTargets="HarvestDirectory">
+    <Error
+      Condition="!Exists('$(PublishDir)EventPlatform.PrintRelay.exe')"
+      Text="Publish folder missing EventPlatform.PrintRelay.exe. Run: dotnet publish src/EventPlatform.PrintRelay.App -c Release -r win-x64 --self-contained -p:PublishSingleFile=false -o artifacts/publish" />
+  </Target>
+
+</Project>

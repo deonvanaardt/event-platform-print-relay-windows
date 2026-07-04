@@ -13,19 +13,58 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 
 ### Added
 
-- Pinned platform JSON Schema under `schemas/` with `platform-pin.json` commit SHA (W-01-S03)
-- xUnit contract tests validate fixtures and reject invalid samples; CI runs via existing `core-tests` job (W-01-S03)
+_(none)_
 
 ### Not yet built
 
-- Poll loop + complete/fail lifecycle (W-01-S04)
-- Setup wizard — paste `DESK-` code (W-01-S05)
-- Staging E2E — print `badge_html` (W-01-S06)
-- System tray UI (W-01-S07)
-- Settings + diagnostics (W-01-S08)
-- Signed MSI + CI release (W-01-S09)
+- SignPath OSS signing CI (W-01-S11)
 - Physical sign-off Win 10 + 11 (W-01-S10)
 - Full list: [BACKLOG.md](BACKLOG.md)
+
+---
+
+## 0.3.1 — 2026-07-04 — Sprint 2 — M3 MSI + release
+
+**Stories:** W-01-S09
+
+### Added
+
+- WiX MSI installer: `Program Files\EventPlatform\PrintRelay\`, Start Menu shortcut, HKCU Run auto-start (W-01-S09)
+- Installer finish UI: success message, **Start Print Relay now** checkbox (checked by default), launch on Finish via `WixUnelevatedShellExec` (W-01-S09)
+- `installer/EventPlatform.PrintRelay.Installer` — WiX Toolset 5 SDK, folder-publish harvest (W-01-S09)
+- Release CI: `.github/workflows/release.yml` — unsigned MSI on tag / workflow dispatch (W-01-S09)
+- Installer runbook `docs/INSTALLER.md`; SignPath follow-up `docs/SIGNPATH.md` (W-01-S11 prep)
+- App version `0.3.1`; MSI backup under `releases/msi/` (W-01-S09)
+- WebView2 user data folder under `%LocalAppData%` for Program Files MSI install
+- Governance: SignPath OSS signing path documented; W-01-S09 / W-01-S11 story split
+
+---
+
+## 0.2.0 — 2026-07-03 — Sprint 1 — M1 staging + M2 tray
+
+**Stories:** W-01-S03, W-01-S04, W-01-S05, W-01-S06, W-01-S07, W-01-S08
+
+**Sign-off:** Staging E2E smoke test passed on physical Windows hardware (check-in → poll → print `badge_html` → job `printed`).
+
+### Added
+
+- Automatic log truncation: `relay.log` capped at 5 MB, `startup.log` at 256 KB; in-place wipe with truncation notice in `relay.log` (W-01-S08)
+- System tray UI: `NotifyIcon` states, menu (Status, printer, test print, test connection, Copy diagnostics, Settings, Quit) (W-01-S07)
+- Status panel: connection checklist, live activity feed, recent jobs table, **Show technical details** toggle for desk/event/job IDs (W-01-S07)
+- Settings screen: desk name, printer change, re-run setup wizard, app version (W-01-S08)
+- Core diagnostics: `RelaySessionState`, `RelayActivityEvent`, `IRelayActivitySink`, poll loop activity hooks, `RelayConnectionTester` (W-01-S08)
+- JSON Lines log at `%AppData%\EventPlatform\PrintRelay\logs\relay.log` (no secrets) (W-01-S08)
+- Copy diagnostics JSON to clipboard; xUnit tests for session state, diagnostics redaction, poll activity (W-01-S08)
+- App production print path: `WebView2SilentPrinter` (CR80 default), `PdfSpooler`, `BadgeHtmlPrintJobProcessor`, hidden `RelayHostForm`; poll loop runs after setup (W-01-S06)
+- `PrintJobMessages` operator-safe failure text for missing `badge_html` and printer errors (W-01-S06)
+- xUnit tests for `PrintJobMessages` (W-01-S06)
+- `EventPlatform.PrintRelay.App` WinForms setup wizard: paste `DESK-` code, validate via pending poll, printer dropdown, persist to `%AppData%`; skip wizard when settings complete (W-01-S05)
+- `SetupCodeValidation` with PRD operator-safe error messages; `RelaySettingsExtensions.IsComplete` (W-01-S05)
+- xUnit tests for setup validation, settings completeness, and settings store round-trip (W-01-S05)
+- `PrintRelayPollLoop` with `IPrintJobProcessor`, sequential `created_at` job processing, complete/fail lifecycle, connectivity backoff, and per-job failure isolation (W-01-S04)
+- xUnit poll loop tests: ordering, lifecycle, backoff, auth vs connectivity, crash isolation (W-01-S04)
+- Pinned platform JSON Schema under `schemas/` with `platform-pin.json` commit SHA (W-01-S03)
+- xUnit contract tests validate fixtures and reject invalid samples; CI runs via existing `core-tests` job (W-01-S03)
 
 ---
 

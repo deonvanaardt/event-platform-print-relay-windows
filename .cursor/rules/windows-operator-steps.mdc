@@ -1,0 +1,64 @@
+---
+description: After each change, tell the user plainly what to do on the Windows machine
+alwaysApply: true
+---
+
+# Windows operator steps (required in every reply)
+
+After **every** action you take (code change, doc update, plan, investigation, or “no changes needed”), end the reply with a section titled:
+
+## What to do on your Windows machine
+
+Write it in **plain English**. Use short numbered steps. No jargon without explanation.
+
+### Rules
+
+1. **Always include this section** — even when the answer is “nothing right now.”
+2. **Be explicit** — say exactly what to open, run, click, or verify; name printers, paths, and commands when relevant.
+3. **Match the work** — tie steps to what you just changed:
+   - **Core-only / tests / docs / CI** → usually “Nothing on Windows yet” plus when it will matter (e.g. after S05 wizard or S06 print path).
+   - **Spike / WebView2 / WinForms / MSI** → give full Windows steps (build, run, printer check, staging setup code, etc.).
+4. **Separate must-do vs optional** — label **Required now** vs **Optional / when you test later**.
+5. **Prerequisites** — if Windows steps need staging, a desk setup code, or a physical printer, say so first.
+6. **No secrets in steps** — never tell the user to paste relay secrets into chat or logs; refer to setup wizard or saved settings.
+7. **After agent pushed App changes** — include the **sync checklist** from `git-sync.mdc` (fetch → checkout branch → pull → match `git log -1` to agent’s SHA → taskkill → publish → `--version` → run). Do not skip pull.
+
+### Standard sync (after agent push — App / tray / Spike)
+
+```powershell
+cd C:\Users\Deon\event-platform-print-relay-windows
+git fetch origin
+git checkout feature/sprint-1-m1
+git pull origin feature/sprint-1-m1
+git log -1 --oneline
+taskkill /IM EventPlatform.PrintRelay.exe /F
+dotnet publish src\EventPlatform.PrintRelay.App -c Release -r win-x64 --self-contained -o artifacts\app
+.\artifacts\app\EventPlatform.PrintRelay.exe --version
+.\artifacts\app\EventPlatform.PrintRelay.exe
+```
+
+Full detail: `.cursor/rules/git-sync.mdc`.
+
+### Example (Core-only change)
+
+```markdown
+## What to do on your Windows machine
+
+**Required now:** Nothing. This change only affects automated tests on macOS/Linux CI.
+
+**When you test later (after W-01-S05/S06):** On the venue PC, install the relay app, paste your `DESK-` setup code, pick a printer, and trigger a test print from staging.
+```
+
+### Example (Spike / print change)
+
+```markdown
+## What to do on your Windows machine
+
+**Required now:**
+1. Open PowerShell in the repo folder.
+2. Run: `dotnet run --project src/EventPlatform.PrintRelay.Spike -- list-printers`
+3. Note your printer name, then run: `dotnet run --project src/EventPlatform.PrintRelay.Spike -- print-test "Your Printer Name"`
+4. Confirm one badge prints with **no** print dialog.
+
+**Optional:** If nothing prints, check the printer is online in Windows Settings → Printers.
+```

@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>EventPlatform.PrintRelay.App</RootNamespace>
+    <AssemblyName>EventPlatform.PrintRelay</AssemblyName>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Version>0.3.1</Version>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2903.40" />
+    <PackageReference Include="PdfiumPrinter" Version="1.4.1" />
+    <PackageReference Include="bblanchon.PDFium.Win32" Version="151.0.7920" />
+  </ItemGroup>
+
+  <!-- WebView2 NuGet references WPF assemblies even in WinForms-only apps. -->
+  <ItemGroup>
+    <Reference Remove="Microsoft.Web.WebView2.Wpf" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\EventPlatform.PrintRelay.Core\EventPlatform.PrintRelay.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Fixtures\test-badge-cr80.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <Import Project="..\..\build\PdfiumNative.targets" />
+
+  <Target Name="WriteBuildInfo" AfterTargets="Publish">
+    <PropertyGroup>
+      <BuildInfoPath Condition="'$(PublishDir)' != ''">$(PublishDir)build-info.txt</BuildInfoPath>
+      <BuildInfoPath Condition="'$(PublishDir)' == ''">$(OutputPath)build-info.txt</BuildInfoPath>
+      <BuildInfoUtc>$([System.DateTime]::UtcNow.ToString("yyyy-MM-dd HH:mm:ss")) UTC</BuildInfoUtc>
+    </PropertyGroup>
+    <WriteLinesToFile
+      File="$(BuildInfoPath)"
+      Lines="app_version=$(Version); built_utc=$(BuildInfoUtc); configuration=$(Configuration); runtime=$(RuntimeIdentifier); features=tray-ui"
+      Overwrite="true" />
+  </Target>
+
+</Project>

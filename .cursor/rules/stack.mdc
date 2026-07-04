@@ -1,0 +1,35 @@
+---
+description: Hard stack choices and explicit bans — Windows print relay
+alwaysApply: true
+---
+
+# Stack
+
+Full detail: `Tech_Stack_Decision_Record.md`. Do not add tools without updating that record.
+
+## Required tools
+
+- **.NET 8** — LTS; self-contained Windows publish (`global.json`)
+- **C#** — nullable on; `TreatWarningsAsErrors` on all projects
+- **xUnit** — sole test framework for Core
+- **WebView2** — sole HTML engine for badge print
+- **System.Text.Json** — API deserialization
+- **JsonSchema.Net** — contract validation against pinned `schemas/`
+- **WinForms** — hidden WebView2 host + tray (`NotifyIcon`) in MVP
+- **GitHub Actions** — CI (ubuntu Core tests + windows build)
+
+## Do NOT introduce
+
+QuestPDF, PdfSharpCore, iText, or any client-side badge layout library; `ShellExecute` print verb; rendering from `badge_document` JSON; thermal/ZPL SDKs; npm/Node in this repo; WPF **and** WinForms mixed without Tech Stack update.
+
+**PdfiumPrinter** is allowed only as PDF **spooler** after WebView2 renders HTML to PDF — not for layout.
+
+## Hard runtime rules
+
+- Print **only** server `badge_html` — platform `renderBadgeDocument` is the sole layout authority
+- Poll interval **1000 ms** — match Node relay; not operator-configurable
+- One relay instance per desk secret
+- No print dialog during check-in or test print (PRD §8.3)
+- Never log relay secret or full setup code
+- Operator UI never shows event ID, secret, or full API URL
+- Contract changes require parent PRD §26 — bump `schemas/platform-pin.json` when platform schemas change

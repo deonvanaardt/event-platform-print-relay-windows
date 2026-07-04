@@ -1,0 +1,39 @@
+---
+description: Read and update CHANGELOG.md when capabilities ship
+alwaysApply: true
+---
+
+# Changelog maintenance
+
+## Before implementing
+
+Read `CHANGELOG.md` **Unreleased** and latest version section. Check **Not yet built** before assuming a feature exists.
+
+## Update when (same session)
+
+- Backlog story completes (moves to Done in `SPRINT.md`)
+- User-facing or structural capability ships
+- Sprint closes — promote `[Unreleased]` to versioned section
+
+## Do NOT log when
+
+- Docs-only grooming without new capability
+- Refactors with no new capability
+- Partial/WIP — wait until acceptance criteria pass
+
+## How to write
+
+Under `## [Unreleased]` → `### Added`:
+
+- Capability-first; include story ID `(W-01-S03)`
+- Name key artifacts when helpful
+- Update `### Not yet built` — remove shipped items
+
+## Sprint close
+
+1. Rename `[Unreleased]` to `## X.Y.Z — YYYY-MM-DD — Sprint N — Title`
+2. Add **Stories:** line
+3. Fresh `[Unreleased]` section
+4. `0.1.0` = Spike; bump minor for M1/M2 milestones per `IMPLEMENTATION_PLAN.md`
+
+Do not ask permission — update on completed stories unless user said not to.

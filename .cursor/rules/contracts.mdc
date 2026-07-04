@@ -1,0 +1,43 @@
+---
+description: Cross-repo print relay contracts — read before API or schema work
+alwaysApply: true
+---
+
+# Contracts
+
+Governed by parent **Event Platform PRD §14.4 and §26**. Windows repo consumes; does not define API shape.
+
+## HTTP API (platform)
+
+| Method | Path | Auth | Body |
+|---|---|---|---|
+| GET | `/api/print-queue/pending` | `Bearer relay_…` | — |
+| POST | `/api/print-queue/{id}/complete` | `Bearer relay_…` | — |
+| POST | `/api/print-queue/{id}/failed` | `Bearer relay_…` | `{ "message"?: string }` |
+
+Base URL from setup code `api_url` field (no trailing slash).
+
+## Pending response
+
+Validate against `schemas/pending-job.response.json`. Windows **prints `badge_html` only**. `badge_document` is validated for forward compatibility — never rendered client-side.
+
+## Setup code wire format
+
+```
+DESK-<base64url(JSON)>
+```
+
+Decode → validate against `schemas/desk-setup-code.v1.json` → extract `secret`, `api_url`, `desk_name`.
+
+## Changing contracts
+
+1. Parent PRD §26 amendment in **platform repo** first.
+2. Platform ships schema + deploy.
+3. Copy schemas to this repo; bump `schemas/platform-pin.json`.
+4. Coordinated Windows release if required fields change.
+
+See `INTEGRATION.md` release coordination table.
+
+## Pinning
+
+Never track platform `main` without a commit SHA in `platform-pin.json`. Contract tests must pass before merge.
