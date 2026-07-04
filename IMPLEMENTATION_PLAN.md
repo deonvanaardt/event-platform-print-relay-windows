@@ -54,7 +54,7 @@ Phased delivery for the signed `.msi` tray app. Does not replace `docs/PRINT_REL
 | 1. Renderer coupling (`badge_html`) | ✅ Platform E-05-S06 | Server HTML on pending |
 | 2. Setup code `v: 1` frozen | ✅ Platform E-05-S07 + schemas | `DESK-` + JSON schema |
 | 3. WebView2 silent print spike | ✅ W-01-S02 | A5 physical sign-off |
-| 4. SignPath OSS registration | ⏳ | Parallel to W-01-S09; W-01-S11 wires CI signing |
+| 4. SignPath OSS registration | ⏳ | Apply per `docs/SIGNPATH.md`; W-01-S11 CI wired — pending approval + first signed release |
 | 5. Contract verification | 🔄 W-01-S03 | Pin schemas + CI validation |
 | 6. JSON Schema export | ✅ Platform E-05-S08 | Vendored in `schemas/` |
 

@@ -78,8 +78,8 @@ Decoded payload validated against [`schemas/desk-setup-code.v1.json`](schemas/de
 
 - [x] W-01-S03–S06: Schema CI + poll loop + wizard + staging E2E
 - [x] W-01-S07–S08: Tray UI + diagnostics
-- [ ] W-01-S09: Unsigned MSI + release CI
-- [ ] W-01-S11: SignPath OSS signing + signed GitHub Release
+- [x] W-01-S09: Unsigned MSI + release CI
+- [ ] W-01-S11: SignPath OSS signing + signed GitHub Release (CI wired; pending OSS approval + `v0.4.0` verify)
 - [ ] Set `NEXT_PUBLIC_PRINT_RELAY_WINDOWS_MSI_URL` in platform admin (after W-01-S11)
 
 ### Phase D — Go-live

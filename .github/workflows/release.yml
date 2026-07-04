@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       prerelease:
-        description: Mark GitHub release as prerelease (unsigned until W-01-S11)
+        description: Mark GitHub release as prerelease when MSI is unsigned (ignored for SignPath-signed tag releases)
         type: boolean
         default: true
   push:
@@ -17,6 +17,9 @@ permissions:
 jobs:
   windows-msi:
     runs-on: windows-latest
+    env:
+      # Expose token as env so step `if:` can gate signing without logging the secret.
+      SIGNPATH_API_TOKEN: ${{ secrets.SIGNPATH_API_TOKEN }}
     steps:
       - uses: actions/checkout@v4
 
@@ -73,17 +76,45 @@ jobs:
           Write-Host "MSI: $($msi.FullName)"
 
       - name: Upload MSI artifact
+        id: upload_msi
         uses: actions/upload-artifact@v4
         with:
           name: print-relay-msi-win-x64
           path: ${{ steps.msi.outputs.path }}
 
-      # W-01-S11: add signpath/github-action-submit-signing-request here after SignPath OSS approval.
+      - name: Sign MSI via SignPath
+        if: env.SIGNPATH_API_TOKEN != ''
+        uses: signpath/github-action-submit-signing-request@v1
+        with:
+          api-token: ${{ secrets.SIGNPATH_API_TOKEN }}
+          organization-id: ${{ secrets.SIGNPATH_ORG_ID }}
+          project-slug: ${{ secrets.SIGNPATH_PROJECT_SLUG }}
+          signing-policy-slug: ${{ secrets.SIGNPATH_SIGNING_POLICY_SLUG }}
+          github-artifact-id: ${{ steps.upload_msi.outputs.artifact-id }}
+          artifact-configuration-slug: msi-installer
+          wait-for-completion: true
+          output-artifact-directory: signed-msi
+
+      - name: Resolve release MSI path
+        id: release_msi
+        shell: pwsh
+        run: |
+          $signed = Get-ChildItem -Path signed-msi -Filter '*.msi' -ErrorAction SilentlyContinue | Select-Object -First 1
+          if ($signed) {
+            Write-Host "Using SignPath-signed MSI: $($signed.FullName)"
+            "path=$($signed.FullName)" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+            "signed=true" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          } else {
+            Write-Host "Using unsigned MSI (SignPath not configured or signing skipped)."
+            "path=${{ steps.msi.outputs.path }}" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+            "signed=false" | Out-File -FilePath $env:GITHUB_OUTPUT -Append -Encoding utf8
+          }
 
       - name: Create GitHub Release
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ steps.msi.outputs.path }}
-          prerelease: ${{ github.event_name != 'workflow_dispatch' || inputs.prerelease }}
+          files: ${{ steps.release_msi.outputs.path }}
+          prerelease: ${{ steps.release_msi.outputs.signed != 'true' }}
           generate_release_notes: true
+          body: ${{ steps.release_msi.outputs.signed == 'true' && 'Authenticode-signed via SignPath OSS. Customer-ready distribution.' || '**Unsigned** — SignPath secrets not configured or signing was skipped. Internal and staging use only; SmartScreen will warn.' }}

@@ -6,6 +6,14 @@ Signed Windows desktop app for silent badge printing at check-in desks. Polls th
 **Spec:** [`docs/PRINT_RELAY_WINDOWS_PRD.md`](docs/PRINT_RELAY_WINDOWS_PRD.md) v3.0  
 **Integration:** [`INTEGRATION.md`](INTEGRATION.md) (two-project checklist)
 
+## Download
+
+Windows installers (`.msi`) are published on **[GitHub Releases](https://github.com/deonvanaardt/event-platform-print-relay-windows/releases)**.
+
+Release builds are code-signed via the [SignPath Foundation](https://signpath.io/foundation) open-source signing program. Setup and signing details: [`docs/SIGNPATH.md`](docs/SIGNPATH.md).
+
+**Privacy:** [`docs/PRIVACY.md`](docs/PRIVACY.md)
+
 ## Planning (read before coding)
 
 | Document | Purpose |
@@ -26,8 +34,8 @@ Cursor agents: rules in [`.cursor/rules/`](.cursor/rules/) mirror the platform r
 | **Spike** — WebView2 silent fixture print (Gate 3) | **Passed** — A5 physical sign-off |
 | **Sprint 1** — Schema CI + M1 staging integration | **Closed** — staging E2E smoke passed 2026-07-03 |
 | M2 — Tray UI, settings, diagnostics | **Shipped** (W-01-S07, W-01-S08) |
-| **Sprint 2** — Unsigned MSI + release CI | **In progress** (W-01-S09) |
-| SignPath OSS signing | **Next** (W-01-S11, after SignPath approval) |
+| **Sprint 2** — Unsigned MSI + release CI | **Closed** (W-01-S09) |
+| **Sprint 3** — SignPath OSS signing CI | **In progress** (W-01-S11 — CI wired; pending OSS approval + first signed release) |
 
 ## Repository layout
 

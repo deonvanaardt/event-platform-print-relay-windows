@@ -39,16 +39,36 @@ Copy-Item -Force (Get-ChildItem installer\EventPlatform.PrintRelay.Installer\bin
 
 ---
 
-## CI release (unsigned)
+## CI release
 
 Workflow: [`.github/workflows/release.yml`](../.github/workflows/release.yml)
 
-| Trigger | Result |
-|---|---|
-| `workflow_dispatch` | Builds MSI; uploads workflow artifact |
-| Push tag `v*` (e.g. `v0.3.0`) | Builds MSI; creates **prerelease** GitHub Release with unsigned `.msi` |
+| Trigger | SignPath secrets set | Result |
+|---|---|---|
+| `workflow_dispatch` | No | Builds MSI; uploads workflow artifact only |
+| `workflow_dispatch` | Yes | Builds MSI; signs via SignPath; uploads artifact |
+| Push tag `v*` | No | **Prerelease** GitHub Release with unsigned `.msi` |
+| Push tag `v*` | Yes | **Stable** GitHub Release with Authenticode-signed `.msi` |
 
-**No** `.pfx` or `signtool` steps. SignPath signing is **W-01-S11**.
+Signing uses [SignPath OSS](SIGNPATH.md) — **no** `.pfx` or `signtool` in this repo.
+
+---
+
+## Signed MSI verification (W-01-S11)
+
+After downloading a release built with SignPath secrets configured:
+
+```powershell
+Get-AuthenticodeSignature .\EventPlatform.PrintRelay.msi
+# Expect: Status Valid, SignerCertificate present
+
+# After install
+Get-AuthenticodeSignature "C:\Program Files\EventPlatform\PrintRelay\EventPlatform.PrintRelay.exe"
+# Expect: Status Valid
+```
+
+- SmartScreen should **not** show “Windows protected your PC” / unknown publisher (or significantly less friction than unsigned builds).
+- Re-run the full [W-01-S09 acceptance checklist](#w-01-s09-acceptance-checklist-windows-hardware) on the signed MSI.
 
 ---
 
@@ -97,9 +117,28 @@ Mark **W-01-S09** Done in `SPRINT.md` when all boxes pass.
 
 ---
 
-## SignPath OSS (parallel, non-blocking)
+## W-01-S11 acceptance checklist (signed release)
 
-Apply now so approval is ready for W-01-S11:  
-https://signpath.io/solutions/open-source-community
+Run after SignPath OSS approval, GitHub secrets configured, and tag `v0.4.0` pushed:
 
-See [`docs/SIGNPATH.md`](SIGNPATH.md) for the signing CI story.
+**CI**
+
+- [ ] GitHub Actions **Release** workflow: **Sign MSI via SignPath** step succeeds
+- [ ] GitHub Release for `v0.4.0` is **not** marked prerelease
+- [ ] Release asset is `.msi` (signed)
+
+**Windows (download release MSI)**
+
+- [ ] `Get-AuthenticodeSignature .\EventPlatform.PrintRelay.msi` → `Status: Valid`
+- [ ] Install MSI — SmartScreen does **not** require “Run anyway” for unknown publisher
+- [ ] `Get-AuthenticodeSignature "C:\Program Files\EventPlatform\PrintRelay\EventPlatform.PrintRelay.exe"` → `Status: Valid`
+- [ ] Full [W-01-S09 acceptance checklist](#w-01-s09-acceptance-checklist-windows-hardware) passes on signed MSI
+- [ ] Staging smoke: setup code → poll → print → job `printed`
+
+Mark **W-01-S11** Done in `SPRINT.md` when all boxes pass.
+
+---
+
+## SignPath OSS
+
+Release CI signs via SignPath when GitHub secrets are configured. Setup and first signed release: [`docs/SIGNPATH.md`](SIGNPATH.md).
