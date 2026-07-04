@@ -36,6 +36,14 @@ Chronological record of **implementation-time** decisions for the Windows print 
 
 <!-- Add entries above this line, newest first. -->
 
+## 2026-07-04 — MIT license + code signing policy for SignPath OSS eligibility
+
+**Status:** accepted  
+**Context:** SignPath Foundation terms require an OSI-approved license, no proprietary project components, and a published code signing policy with SignPath attribution. README stated “Proprietary” with no root `LICENSE`; release notes for v0.3.1 did not mention SignPath on the Releases page.  
+**Decision:** Add root `LICENSE` (MIT) for this repository; `docs/CODE_SIGNING_POLICY.md` with required SignPath attribution, roles, and privacy statement; link both from README **Download** / **License**. Extend `release.yml` to write a **Code signing** section on every tag release body. MSI installer keeps separate `license.rtf` for venue deployment terms.  
+**Alternatives considered:** Keep proprietary README and reply if asked — rejected (SignPath terms require OSI license). Retro-edit all past releases via CI — rejected (only future tags automated; v0.3.1 is one manual edit).  
+**Consequences:** `LICENSE`, `docs/CODE_SIGNING_POLICY.md`, `docs/SIGNPATH_OSS_APPROVAL.md`, `release.yml`, README; parent SaaS repo unchanged.
+
 ## 2026-07-04 — Installer finish UI with launch-on-exit
 
 **Status:** accepted  

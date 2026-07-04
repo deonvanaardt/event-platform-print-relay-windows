@@ -11,11 +11,13 @@ Customer-ready releases require Authenticode signatures. This repo uses **[SignP
 
 ## Step 1 — Apply for SignPath OSS (operator)
 
+**Approval follow-ups:** If SignPath asks about Releases page wording (e.g. v0.3.1) or a missing `LICENSE` file, use prepared replies in [`SIGNPATH_OSS_APPROVAL.md`](SIGNPATH_OSS_APPROVAL.md).
+
 1. Go to https://signpath.io/solutions/open-source-community
 2. Submit application with:
    - **Repository URL:** `https://github.com/deonvanaardt/event-platform-print-relay-windows` (adjust org if forked)
    - **Homepage URL:** `https://github.com/deonvanaardt/event-platform-print-relay-windows`
-   - **Download URL:** `https://github.com/deonvanaardt/event-platform-print-relay-windows/releases` (README mentions SignPath Foundation)
+   - **Download URL:** `https://github.com/deonvanaardt/event-platform-print-relay-windows/releases` (README **Download** + [`CODE_SIGNING_POLICY.md`](CODE_SIGNING_POLICY.md); release CI adds SignPath text to every tag release body)
    - **Privacy Policy URL:** `https://github.com/deonvanaardt/event-platform-print-relay-windows/blob/main/docs/PRIVACY.md`
    - **Description (copy/paste):**  
      _Windows tray application for silent badge printing at event check-in desks. Polls the Event Platform print queue and prints server-rendered HTML via WebView2. Open-source companion to the Event Platform; distributed as a signed WiX MSI on GitHub Releases._
