@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using EventPlatform.PrintRelay.Core.Diagnostics;
@@ -6,6 +7,9 @@ namespace EventPlatform.PrintRelay.Core.Logging;
 
 public sealed class RelayFileLogger : IRelayActivitySink, IDisposable
 {
+    private const string TruncationNoticeJson =
+        """{"level":"info","message":"Log truncated due to size limit."}""";
+
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
@@ -70,8 +74,9 @@ public sealed class RelayFileLogger : IRelayActivitySink, IDisposable
 
         lock (_lock)
         {
-            EnsureWithinSizeLimit();
+            EnsureWithinSizeLimit(json);
             _writer.WriteLine(json);
+            TrimToSizeLimit();
         }
     }
 
@@ -98,12 +103,13 @@ public sealed class RelayFileLogger : IRelayActivitySink, IDisposable
 
         lock (_lock)
         {
-            EnsureWithinSizeLimit();
+            EnsureWithinSizeLimit(json);
             _writer.WriteLine(json);
+            TrimToSizeLimit();
         }
     }
 
-    private void EnsureWithinSizeLimit()
+    private void EnsureWithinSizeLimit(string upcomingLine)
     {
         if (!File.Exists(_logFilePath))
         {
@@ -119,16 +125,51 @@ public sealed class RelayFileLogger : IRelayActivitySink, IDisposable
         RelayLogRetention.TruncateIfOversized(_logFilePath, _maxLogBytes);
         _writer = OpenWriter();
 
-        var truncationNotice = JsonSerializer.Serialize(
-            new RelayLogEntry
-            {
-                Timestamp = DateTimeOffset.UtcNow,
-                Level = "info",
-                Message = "Log truncated due to size limit.",
-            },
-            JsonOptions);
+        var noticeBytes = Encoding.UTF8.GetByteCount(TruncationNoticeJson) + 1;
+        var upcomingBytes = Encoding.UTF8.GetByteCount(upcomingLine) + 1;
 
-        _writer.WriteLine(truncationNotice);
+        if (noticeBytes + upcomingBytes < _maxLogBytes)
+        {
+            _writer.WriteLine(TruncationNoticeJson);
+        }
+    }
+
+    private void TrimToSizeLimit()
+    {
+        _writer.Flush();
+
+        if (!File.Exists(_logFilePath))
+        {
+            return;
+        }
+
+        if (new FileInfo(_logFilePath).Length < _maxLogBytes)
+        {
+            return;
+        }
+
+        _writer.Dispose();
+
+        var lines = File.ReadAllLines(_logFilePath).ToList();
+
+        while (lines.Count > 1 && GetUtf8FileSize(lines) >= _maxLogBytes)
+        {
+            lines.RemoveAt(0);
+        }
+
+        File.WriteAllLines(_logFilePath, lines);
+        _writer = OpenWriter();
+    }
+
+    private static long GetUtf8FileSize(IReadOnlyList<string> lines)
+    {
+        if (lines.Count == 0)
+        {
+            return 0;
+        }
+
+        var text = string.Join(Environment.NewLine, lines) + Environment.NewLine;
+        return Encoding.UTF8.GetByteCount(text);
     }
 
     private StreamWriter OpenWriter()
