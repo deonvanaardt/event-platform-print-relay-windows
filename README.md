@@ -10,7 +10,7 @@ Signed Windows desktop app for silent badge printing at check-in desks. Polls th
 
 Windows installers (`.msi`) are published on **[GitHub Releases](https://github.com/deonvanaardt/event-platform-print-relay-windows/releases)**.
 
-Release builds are code-signed via the [SignPath Foundation](https://signpath.org/) open-source signing program. Setup and signing details: [`docs/SIGNPATH.md`](docs/SIGNPATH.md). **Code signing policy:** [`docs/CODE_SIGNING_POLICY.md`](docs/CODE_SIGNING_POLICY.md).
+Release builds will be Authenticode-signed for customer distribution once a signing provider is in place. SignPath OSS was **declined 2026-07-18** (visibility); **paid signing is deferred** until the first paying customer. Unsigned prereleases are available now for staging. Plan and checklist: [`docs/SIGNPATH.md`](docs/SIGNPATH.md). **Code signing policy:** [`docs/CODE_SIGNING_POLICY.md`](docs/CODE_SIGNING_POLICY.md).
 
 **Privacy:** [`docs/PRIVACY.md`](docs/PRIVACY.md)
 
@@ -35,7 +35,7 @@ Cursor agents: rules in [`.cursor/rules/`](.cursor/rules/) mirror the platform r
 | **Sprint 1** — Schema CI + M1 staging integration | **Closed** — staging E2E smoke passed 2026-07-03 |
 | M2 — Tray UI, settings, diagnostics | **Shipped** (W-01-S07, W-01-S08) |
 | **Sprint 2** — Unsigned MSI + release CI | **Closed** (W-01-S09) |
-| **Sprint 3** — SignPath OSS signing CI | **In progress** (W-01-S11 — CI wired; pending OSS approval + first signed release) |
+| **Sprint 3** — SignPath OSS signing CI | **Blocked** (W-01-S11 — CI wired; SignPath declined 2026-07-18; reapply or paid signing) |
 
 ## Repository layout
 

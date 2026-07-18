@@ -113,7 +113,7 @@ Customer-ready **signed** `.msi` on GitHub Releases via SignPath OSS. Physical W
 
 ## In scope (Sprint 3)
 
-- [ ] **W-01-S11** — SignPath OSS signing CI (M3) — CI wired; pending OSS approval + signed `v0.4.0` verify
+- [ ] **W-01-S11** — SignPath OSS signing CI (M3) — CI wired; **blocked** — SignPath OSS declined 2026-07-18 (reputation); reapply or paid signing + signed `v0.4.0` verify
 
 ## Stretch (if time remains)
 
@@ -121,7 +121,7 @@ Customer-ready **signed** `.msi` on GitHub Releases via SignPath OSS. Physical W
 
 ## In progress
 
-- **W-01-S11** — SignPath OSS signing CI: `release.yml` SignPath step + docs; operator: apply OSS, dashboard, secrets, tag `v0.4.0`, Windows verify
+- **W-01-S11** — SignPath OSS signing CI: CI + docs done; **blocked** on signing provider (SignPath declined 2026-07-18 — reapply later or choose paid signing)
 
 ## Done
 
@@ -133,6 +133,6 @@ _(none yet — mark W-01-S11 Done after signed release + Windows acceptance)_
 
 ## Blockers / notes
 
-- **SignPath OSS approval** required before first **signed** GitHub Release — apply per `docs/SIGNPATH.md` Step 1
+- **SignPath OSS declined 2026-07-18** — insufficient external reputation; not a code/policy rejection. **Paid signing deferred** until first paying customer (Certum OSS cloud ~$50–58/yr; sole trader). Reapply SignPath when visibility grows (`docs/SIGNPATH.md`).
 - CI falls back to unsigned prerelease when `SIGNPATH_API_TOKEN` is not set
-- Target first signed release: tag `v0.4.0` after secrets configured
+- Target first signed release: tag `v0.4.0` after SignPath reapproval **or** paid signing CI is wired

@@ -21,7 +21,7 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 
 ### Not yet built
 
-- First signed GitHub Release (`v0.4.0`) — blocked on SignPath OSS approval + secrets + Windows verify
+- First signed GitHub Release (`v0.4.0`) — blocked on signing provider (SignPath OSS declined 2026-07-18; reapply or paid signing) + Windows verify
 - Physical sign-off Win 10 + 11 (W-01-S10)
 - Full list: [BACKLOG.md](BACKLOG.md)
 
