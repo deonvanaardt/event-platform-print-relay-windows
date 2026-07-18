@@ -21,7 +21,7 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 
 ### Fixed
 
-- Copy diagnostics moved from tray menu to **Status** panel button — avoids NotifyIcon non-STA clipboard failure (BUG-002, W-01-S08)
+- Diagnostics export saves JSON to `%AppData%\EventPlatform\PrintRelay\logs\diagnostics-export.json` from Status panel — avoids NotifyIcon STA/clipboard issues (BUG-002, W-01-S08)
 - Re-run setup wizard restarts relay and opens setup flow again (`RelayRestartReason`, process restart) (BUG-001, W-01-S08)
 - Setup wizard brings itself to the foreground when shown after process restart (BUG-001)
 

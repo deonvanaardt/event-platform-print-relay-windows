@@ -34,6 +34,14 @@ Chronological record of **implementation-time** decisions for the Windows print 
 
 ## Log
 
+## 2026-07-18 — Diagnostics export to file, not clipboard
+
+**Status:** accepted (supersedes same-day “Copy diagnostics on Status panel” entry for export mechanism)  
+**Context:** BUG-002 — even **Status** panel **Copy diagnostics** failed with STA errors because `ShowStatusForm()` was invoked from the NotifyIcon menu thread, so the form and its controls were created on a non-STA thread. Clipboard cannot be made reliable from that path without a full UI-thread form host.  
+**Decision:** **Export diagnostics** writes `diagnostics-export.json` under `%AppData%\EventPlatform\PrintRelay\logs\`. Status panel button shows the path; operator attaches file or copies contents manually. Marshal `ShowStatusForm` / `ShowSettingsForm` via `_syncForm.BeginInvoke` so child forms are always created on the main UI thread.  
+**Alternatives considered:** Clipboard after UI-thread form host — rejected after Status-button retest still failed; persistent STA worker — overkill for support export.  
+**Consequences:** `RelayDiagnosticsExporter.cs`, `StatusForm.cs`, `TrayApplicationContext.cs`; PRD §9.3 clipboard wording deferred — file export meets support needs.
+
 ## 2026-07-18 — Copy diagnostics on Status panel, not tray menu
 
 **Status:** accepted  

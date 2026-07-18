@@ -83,12 +83,12 @@ When a bug becomes sprint work, add the story ID to the bug entry (e.g. `W-01-S1
 
 **Steps to reproduce:**
 1. Complete setup so Print Relay is running in the tray.
-2. Right-click the tray icon → **Status** → **Copy diagnostics** (tray menu shortcut removed).
+2. Right-click the tray icon → **Status** → **Export diagnostics**.
 
-**Expected:** Diagnostics JSON is copied to the clipboard; operator is told it succeeded (per PRD §9.3).  
-**Actual:** Error dialog: *“Current thread must be set to single thread apartment (STA) mode…”* or *“Requested Clipboard operation did not succeed.”*
+**Expected:** Diagnostics JSON saved to `%AppData%\EventPlatform\PrintRelay\logs\diagnostics-export.json`; dialog shows path (per PRD §9.3 intent — support bundle without secrets).  
+**Actual:** Error dialog: *“Current thread must be set to single thread apartment (STA) mode…”* when using clipboard from tray or Status (wrong-thread form host).
 
-**Notes:** NotifyIcon context-menu callbacks run on a non-STA thread; marshaling failed on Windows retest 2026-07-18. Fixed in `83ae09e`: tray menu item removed; **Copy diagnostics** button on **Status** panel. Awaiting Windows verify.
+**Notes:** Root cause: NotifyIcon menu creates forms on non-STA thread. Fixed in `TBD`: marshal Status/Settings to UI thread; export to file (no clipboard). Awaiting Windows verify.
 
 ---
 

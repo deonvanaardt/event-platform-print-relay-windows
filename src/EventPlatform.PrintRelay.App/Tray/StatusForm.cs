@@ -103,9 +103,9 @@ internal sealed class StatusForm : Form
         var copyDiagnosticsButton = new Button
         {
             AutoSize = true,
-            Text = "Copy diagnostics",
+            Text = "Export diagnostics",
         };
-        copyDiagnosticsButton.Click += (_, _) => CopyDiagnosticsToClipboard();
+        copyDiagnosticsButton.Click += (_, _) => ExportDiagnostics();
 
         footer.Controls.Add(copyDiagnosticsButton);
         footer.Controls.Add(_technicalToggle);
@@ -204,16 +204,17 @@ internal sealed class StatusForm : Form
         }
     }
 
-    private void CopyDiagnosticsToClipboard()
+    private void ExportDiagnostics()
     {
         try
         {
             var json = _runtime.BuildDiagnosticsJson();
-            Clipboard.SetDataObject(json, copy: true, retryTimes: 10, retryDelay: 100);
+            var path = RelayDiagnosticsExporter.SaveExport(json);
 
             MessageBox.Show(
                 this,
-                "Diagnostics copied to clipboard.",
+                $"Diagnostics saved to:{Environment.NewLine}{path}{Environment.NewLine}{Environment.NewLine}" +
+                "Attach this file to a support ticket or open it and copy the contents.",
                 "Print Relay",
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);

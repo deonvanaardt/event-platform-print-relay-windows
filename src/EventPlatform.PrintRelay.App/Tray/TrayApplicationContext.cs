@@ -255,6 +255,16 @@ internal sealed class TrayApplicationContext : ApplicationContext
 
     private void ShowStatusForm()
     {
+        if (_syncForm.IsDisposed)
+        {
+            return;
+        }
+
+        _syncForm.BeginInvoke(ShowStatusFormCore);
+    }
+
+    private void ShowStatusFormCore()
+    {
         try
         {
             var runtime = RequireRuntime();
@@ -281,6 +291,16 @@ internal sealed class TrayApplicationContext : ApplicationContext
     }
 
     private void ShowSettingsForm()
+    {
+        if (_syncForm.IsDisposed)
+        {
+            return;
+        }
+
+        _syncForm.BeginInvoke(ShowSettingsFormCore);
+    }
+
+    private void ShowSettingsFormCore()
     {
         try
         {

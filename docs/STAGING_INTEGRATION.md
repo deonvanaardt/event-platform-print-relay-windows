@@ -40,7 +40,7 @@ Runbook for **W-01-S06** sign-off: Windows relay against Event Platform **stagin
 
 ## Copy diagnostics
 
-Tray → **Status** → **Copy diagnostics** — copies JSON for support (hostname, connection state, last job IDs; **no secrets**). Paste into a ticket or chat when asking for help.
+Tray → **Status** → **Export diagnostics** — saves `diagnostics-export.json` under `%AppData%\EventPlatform\PrintRelay\logs\` (hostname, connection state, last job IDs; **no secrets**). Attach the file to a support ticket or open it and copy the contents.
 
 ## Failure cases to verify
 
