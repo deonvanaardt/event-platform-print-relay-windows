@@ -89,7 +89,7 @@ When a bug becomes sprint work, add the story ID to the bug entry (e.g. `W-01-S1
 **Expected:** Diagnostics JSON is copied to the clipboard; balloon tip confirms “Diagnostics copied to clipboard.” (per PRD §9.3).  
 **Actual:** Error dialog: *“Current thread must be set to single thread apartment (STA) mode before OLE calls can be made. Ensure that your Main function has STAThreadAttribute marked on it.”* Nothing is copied.
 
-**Notes:** Fixed by marshaling `Clipboard.SetText` to the STA UI thread via `_syncForm.BeginInvoke` in `TrayApplicationContext.CopyDiagnostics`. Awaiting Windows verify after push.
+**Notes:** Fixed in `d7aa0ef` by marshaling `Clipboard.SetText` to the STA UI thread via `_syncForm.BeginInvoke` in `TrayApplicationContext.CopyDiagnostics`. Awaiting Windows verify.
 
 ---
 
