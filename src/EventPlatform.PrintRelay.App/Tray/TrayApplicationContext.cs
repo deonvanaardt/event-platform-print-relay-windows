@@ -358,6 +358,17 @@ internal sealed class TrayApplicationContext : ApplicationContext
 
     private void CopyDiagnostics()
     {
+        if (_syncForm.IsDisposed)
+        {
+            return;
+        }
+
+        if (_syncForm.InvokeRequired)
+        {
+            _syncForm.BeginInvoke(CopyDiagnostics);
+            return;
+        }
+
         try
         {
             Clipboard.SetText(RequireRuntime().BuildDiagnosticsJson());
