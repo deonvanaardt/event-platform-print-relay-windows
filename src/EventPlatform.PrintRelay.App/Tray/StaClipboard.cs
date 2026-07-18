@@ -1,45 +1,34 @@
 namespace EventPlatform.PrintRelay.App.Tray;
 
 /// <summary>
-/// Clipboard access from NotifyIcon menu callbacks, which may run on a non-STA thread
-/// even when <see cref="Control.InvokeRequired"/> is false on the sync form.
+/// Clipboard access from NotifyIcon menu callbacks. Always marshals to a control on the
+/// main UI thread (which runs the WinForms message pump) and retries transient OLE failures.
 /// </summary>
 internal static class StaClipboard
 {
-    public static void SetText(string text)
+    private const int RetryTimes = 10;
+    private const int RetryDelayMs = 100;
+
+    public static void SetText(string text, Control uiThread)
     {
         ArgumentNullException.ThrowIfNull(text);
+        ArgumentNullException.ThrowIfNull(uiThread);
 
-        if (Thread.CurrentThread.GetApartmentState() == ApartmentState.STA)
+        if (uiThread.IsDisposed)
         {
-            Clipboard.SetText(text);
-            return;
+            throw new ObjectDisposedException(nameof(uiThread));
         }
 
-        Exception? error = null;
-        var thread = new Thread(() =>
+        if (!uiThread.IsHandleCreated)
         {
-            try
-            {
-                Clipboard.SetText(text);
-            }
-            catch (Exception ex)
-            {
-                error = ex;
-            }
-        })
-        {
-            IsBackground = true,
-            Name = "StaClipboard",
-        };
-
-        thread.SetApartmentState(ApartmentState.STA);
-        thread.Start();
-        thread.Join();
-
-        if (error is not null)
-        {
-            throw error;
+            uiThread.CreateControl();
         }
+
+        uiThread.Invoke(() => SetTextWithRetry(text));
+    }
+
+    private static void SetTextWithRetry(string text)
+    {
+        Clipboard.SetDataObject(text, copy: true, RetryTimes, RetryDelayMs);
     }
 }

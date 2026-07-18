@@ -361,7 +361,7 @@ internal sealed class TrayApplicationContext : ApplicationContext
         try
         {
             var json = RequireRuntime().BuildDiagnosticsJson();
-            StaClipboard.SetText(json);
+            StaClipboard.SetText(json, _syncForm);
             ShowDiagnosticsCopiedBalloon();
         }
         catch (Exception ex)
