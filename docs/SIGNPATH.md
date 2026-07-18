@@ -1,8 +1,41 @@
 # SignPath OSS signing (W-01-S11)
 
-**Status:** CI wired in `.github/workflows/release.yml` — **pending** SignPath OSS approval, dashboard setup, GitHub secrets, and first signed `v0.4.0` release verification on Windows.
+**Status:** CI wired in `.github/workflows/release.yml` — SignPath Foundation OSS application **declined 2026-07-18** (insufficient external reputation signals; not a quality judgment). Reapply when the project has broader public visibility, or use a paid signing provider for customer releases sooner.
 
-Customer-ready releases require Authenticode signatures. This repo uses **[SignPath OSS](https://signpath.io/solutions/open-source-community)** — SignPath holds the certificate. **Do not** add a self-managed `.pfx` to GitHub Actions secrets.
+Customer-ready releases require Authenticode signatures. **Preferred path:** **[SignPath OSS](https://signpath.io/solutions/open-source-community)** — SignPath holds the certificate. **Do not** add a self-managed `.pfx` to GitHub Actions secrets until a paid-signing decision is recorded in `Tech_Stack_Decision_Record.md`.
+
+## Application status (2026-07-18)
+
+SignPath Foundation (Phillip Deng) declined the OSS application. Reviewers cited insufficient external verification signals:
+
+- Community adoption (GitHub stars, forks, contributors)
+- Independent references (Reddit, Stack Overflow, YouTube, etc.)
+- External articles, blog posts, or institutional backing
+- Sustained user engagement
+
+**Repo at application time:** public, MIT license, code signing policy, privacy policy, unsigned `v0.3.1` release — policy gaps were not cited.
+
+**Reapply when:** 2+ visibility signals are stronger (e.g. stars/forks, release downloads, third-party mention). SignPath invited a future reapplication.
+
+**Until signed releases exist:** GitHub Releases remain **unsigned prereleases**; operators use SmartScreen → *More info → Run anyway* (see [`INSTALLER.md`](INSTALLER.md)).
+
+### Alternatives if customer MSI is needed before reapply
+
+| Option | Rough cost | Notes |
+|---|---|---|
+| **Reapply to SignPath** | Free | Wait for reputation signals; CI already wired |
+| **Azure Artifact Signing** | ~$10/month | EU/UK **organizations** eligible; GitHub Actions integration |
+| **Certum cloud OV** | ~€100–200/year | `signtool` / cloud token; requires Tech Stack + CI update |
+
+**Operator decision (2026-07-18):** UK sole trader — defer paid signing until first paying customer. Until then: unsigned prereleases only. When triggered: **Certum Open Source Code Signing in the Cloud** (~$50–58/year); update `Tech_Stack_Decision_Record.md` and `release.yml` before purchase.
+
+### When first paying customer arrives (Certum OSS checklist)
+
+1. Purchase [Certum Open Source Code Signing in the Cloud](https://certum.store/code-signing.html) (~$58/year) — MIT repo should qualify; have GitHub URL and `LICENSE` ready for verification.
+2. Complete Certum identity verification (see [required documents](https://support.certum.eu/en/code-signing-required-documents/)).
+3. Install SimplySign Desktop on your Windows PC; sign publish output (`.exe`, native DLLs) then outer `.msi` before tagging, **or** wire automated signing in `release.yml` (community `ssign` / SimplySign-on-runner — evaluate at that time).
+4. Tag `v0.4.0` (or next version), verify with `Get-AuthenticodeSignature` per [`INSTALLER.md`](INSTALLER.md).
+5. Set platform `NEXT_PUBLIC_PRINT_RELAY_WINDOWS_MSI_URL` to the signed release asset (E-05-S09).
 
 **PRD:** `docs/PRINT_RELAY_WINDOWS_PRD.md` §4.2  
 **Installer runbook:** [`INSTALLER.md`](INSTALLER.md)

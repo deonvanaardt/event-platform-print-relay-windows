@@ -34,6 +34,20 @@ Chronological record of **implementation-time** decisions for the Windows print 
 
 ## Log
 
+## 2026-07-18 — Defer paid signing until first paying customer (sole trader)
+
+**Context:** SignPath OSS declined for reputation (not policy). Operator is a UK sole trader — Azure Artifact Signing Public Trust is org-only in the UK (individual path US/Canada). Cheapest paid path when needed: Certum Open Source Code Signing in the Cloud (~$50–58/year).
+**Decision:** **Do not** purchase signing or wire paid-signing CI until the first paying Event Platform customer. Continue unsigned GitHub Release prereleases for staging and internal venue testing (SmartScreen → *More info → Run anyway*). Reapply to SignPath OSS in parallel when visibility grows (free). Trigger Certum OSS purchase + signing workflow when customer distribution is required.
+**Alternatives considered:** Buy Certum now — rejected (no paying customer yet). Form UK Ltd for Azure — rejected (premature; revisit if volume warrants).
+**Consequences:** W-01-S11 and E-05-S09 (platform MSI URL) remain blocked for customer pilots; unsigned `v0.3.x` path is the active release channel.
+
+## 2026-07-18 — SignPath Foundation OSS declined (reputation); W-01-S11 blocked
+
+**Context:** SignPath Foundation (Phillip Deng) declined the OSS application. Reason: insufficient external verification signals (GitHub stars/forks/contributors, third-party mentions, articles, sustained engagement) — not license, policy, or code quality. Repo already had MIT `LICENSE`, `CODE_SIGNING_POLICY.md`, `PRIVACY.md`, and wired `release.yml` SignPath step.
+**Decision:** Record decline in `docs/SIGNPATH.md`, `SPRINT.md`, README. **Do not** wire `.pfx` or paid signing in CI until an explicit provider choice is made and `Tech_Stack_Decision_Record.md` is updated. Continue unsigned prereleases for staging. Reapply to SignPath when visibility grows, **or** adopt paid signing (Azure Artifact Signing for EU/UK org, Certum cloud OV) if customer MSI is needed sooner.
+**Alternatives considered:** Argue with SignPath — rejected (they state they generally don't discuss policy). Block all MSI work — rejected (W-01-S09 unsigned path already ships).
+**Consequences:** W-01-S11 remains open; first signed `v0.4.0` blocked; platform MSI URL (E-05-S09) waits on signing provider.
+
 <!-- Add entries above this line, newest first. -->
 
 ## 2026-07-04 — MIT license + code signing policy for SignPath OSS eligibility
