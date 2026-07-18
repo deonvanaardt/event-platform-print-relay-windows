@@ -10,10 +10,11 @@ alwaysApply: true
 1. Check `SPRINT.md` for current scope — only work on in-scope or in-progress stories. **Keep it updated** (see `sprint.mdc`).
 2. Check `CHANGELOG.md` **Unreleased** — do not re-implement shipped capabilities.
 3. Check `BACKLOG.md` for story ID and acceptance criteria.
-4. Cross-repo contracts: read `INTEGRATION.md` and pinned `schemas/` — do not change response shapes without parent PRD §26 approval.
-5. Implementation rationale: read `DECISIONS.md`; **log new decisions automatically** (see `decisions.mdc`).
-6. When a story ships: update `SPRINT.md` and `CHANGELOG.md` same session.
-7. **Mac ↔ Windows handoff:** after App/Spike changes the user will test on Windows, **commit and push** in the same session per `git-sync.mdc`. Report branch + commit SHA in the reply.
+4. Check `BUGS.md` **Open** for known defects; `FEATURE_REQUESTS.md` for ideas not yet in backlog (see `bugs.mdc`, `feature-requests.mdc`).
+5. Cross-repo contracts: read `INTEGRATION.md` and pinned `schemas/` — do not change response shapes without parent PRD §26 approval.
+6. Implementation rationale: read `DECISIONS.md`; **log new decisions automatically** (see `decisions.mdc`).
+7. When a story ships: update `SPRINT.md` and `CHANGELOG.md` same session.
+8. **Mac ↔ Windows handoff:** after App/Spike changes the user will test on Windows, **commit and push** in the same session per `git-sync.mdc`. Report branch + commit SHA in the reply.
 
 ## C#
 

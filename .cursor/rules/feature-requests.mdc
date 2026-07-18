@@ -1,0 +1,38 @@
+---
+description: Log and maintain feature ideas in FEATURE_REQUESTS.md
+alwaysApply: true
+---
+
+# Feature request log maintenance
+
+`FEATURE_REQUESTS.md` tracks **ideas** not yet backlog stories. Read before scoping new work; update in the **same session** when requests are raised or decided.
+
+## Log when
+
+- User asks for new capability not in `BACKLOG.md` or PRD
+- Venue/operator feedback that is enhancement, not a defect
+- Agent proposes scope that is not a bug fix and not already a `W-01-Sxx` story
+
+## Do NOT log when
+
+- Defect or regression — use `BUGS.md`
+- Already in `BACKLOG.md` / `SPRINT.md` — link story ID only
+- Requirement already in `docs/PRINT_RELAY_WINDOWS_PRD.md` — implement or update PRD, do not duplicate
+- Pure refactor or internal cleanup with no user-visible change
+- Parent platform feature (badge layout, queue API) — platform repo
+
+## How to write
+
+1. Assign next ID: `FR-NNN` (increment from header comment in Proposed section).
+2. Insert **above** `<!-- Add entries above this line` in **Proposed / under review**.
+3. Use template from `FEATURE_REQUESTS.md`. No secrets in entries.
+4. On **accepted**: add **Story:** `W-01-Sxx`, create/update `BACKLOG.md`, move entry to **Accepted / in backlog**.
+5. On **deferred** or **declined**: move to bottom section with clear reason.
+6. Do not implement accepted requests without a backlog story and sprint scope per `sprint.mdc`.
+
+## Agent behaviour
+
+- Check `FEATURE_REQUESTS.md` before treating user input as new product scope.
+- Log new requests without asking permission unless the user said not to.
+- Mention briefly in reply: "Logged feature request: FR-NNN — …"
+- If user says "just do it" for small in-scope work, skip logging — use `BACKLOG.md` / sprint rules instead.

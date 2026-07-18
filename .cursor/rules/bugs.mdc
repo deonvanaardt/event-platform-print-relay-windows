@@ -1,0 +1,39 @@
+---
+description: Log and maintain defects in BUGS.md
+alwaysApply: true
+---
+
+# Bug log maintenance
+
+`BUGS.md` tracks **defects** (broken behaviour). Read it before fixing reported issues; update it in the **same session** when bugs are found, triaged, or fixed.
+
+## Log when
+
+- User or operator reports incorrect behaviour, crash, install failure, or print failure
+- Windows testing finds a regression vs acceptance criteria
+- CI or contract test failure reveals a product bug (not infra-only)
+- Spike or investigation confirms a reproducible defect
+
+## Do NOT log when
+
+- Feature idea or enhancement — use `FEATURE_REQUESTS.md`
+- Already a backlog story — link `BACKLOG.md` / `SPRINT.md` instead
+- Expected limitation documented in PRD — link PRD section; use **wontfix** only if disputing as bug
+- One-off environment issue (printer offline, wrong setup code) with no code fix
+- Parent platform API bug — note in bug entry but primary fix may be platform repo
+
+## How to write
+
+1. Assign next ID: `BUG-NNN` (increment from header comment in Open section).
+2. Insert **above** `<!-- Add entries above this line` in **Open**.
+3. Use template from `BUGS.md`. **Never** include relay secrets, full setup codes, or bearer tokens.
+4. Include **App version** and **Environment** when known.
+5. On fix merged: set **Status** `fixed`, add commit/PR and release version, **move** entry to **Resolved** (keep ID).
+6. If promoted to sprint: add **Story:** `W-01-Sxx` and cross-link in `BACKLOG.md`.
+7. On ship: add bullet under `CHANGELOG.md` `[Unreleased]` if user-facing fix.
+
+## Agent behaviour
+
+- Check `BUGS.md` **Open** before investigating "bug" reports from the user.
+- Log new confirmed bugs without asking permission unless the user said not to.
+- Mention briefly in reply: "Logged bug: BUG-NNN — …"

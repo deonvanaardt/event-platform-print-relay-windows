@@ -22,6 +22,8 @@ Release builds will be Authenticode-signed for customer distribution once a sign
 | [`BACKLOG.md`](BACKLOG.md) | W-01 stories and acceptance criteria |
 | [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md) | M0–M4 phases |
 | [`CHANGELOG.md`](CHANGELOG.md) | What already ships |
+| [`BUGS.md`](BUGS.md) | Known defects (open and resolved) |
+| [`FEATURE_REQUESTS.md`](FEATURE_REQUESTS.md) | Ideas not yet backlog stories |
 | [`DECISIONS.md`](DECISIONS.md) | Implementation-time choices |
 | [`Tech_Stack_Decision_Record.md`](Tech_Stack_Decision_Record.md) | Tools, bans, hard rules |
 
