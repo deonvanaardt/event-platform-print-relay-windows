@@ -14,6 +14,7 @@ internal sealed class TrayApplicationContext : ApplicationContext
     private StatusForm? _statusForm;
     private SettingsForm? _settingsForm;
     private bool _restartRequested;
+    private RelayRestartReason _restartReason;
     private bool _startupFailed;
 
     public TrayApplicationContext(RelaySettings settings, string settingsPath)
@@ -62,6 +63,8 @@ internal sealed class TrayApplicationContext : ApplicationContext
     }
 
     public bool RestartRequested => _restartRequested;
+
+    public RelayRestartReason RestartReason => _restartReason;
 
     protected override void Dispose(bool disposing)
     {
@@ -304,10 +307,45 @@ internal sealed class TrayApplicationContext : ApplicationContext
         }
     }
 
-    private void RequestRestart()
+    private void RequestRestart(RelayRestartReason reason)
     {
         _restartRequested = true;
+        _restartReason = reason;
+
+        if (_syncForm.IsDisposed)
+        {
+            return;
+        }
+
+        _syncForm.BeginInvoke(PerformRestart);
+    }
+
+    private void PerformRestart()
+    {
+        if (_syncForm.IsDisposed)
+        {
+            return;
+        }
+
+        CloseChildForms();
         ExitThread();
+    }
+
+    private void CloseChildForms()
+    {
+        if (_settingsForm is { IsDisposed: false })
+        {
+            _settingsForm.Close();
+            _settingsForm.Dispose();
+            _settingsForm = null;
+        }
+
+        if (_statusForm is { IsDisposed: false })
+        {
+            _statusForm.Close();
+            _statusForm.Dispose();
+            _statusForm = null;
+        }
     }
 
     private void CopyDiagnostics()

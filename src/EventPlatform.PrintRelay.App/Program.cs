@@ -101,19 +101,29 @@ internal static class Program
             }
 
             RelayStartupLog.Write("Starting tray application context.");
-            var restart = RunRelay(settings, settingsPath);
+            var (restart, restartReason) = RunRelay(settings, settingsPath);
 
             if (!restart)
             {
                 return 0;
             }
+
+            RelayStartupLog.Write($"Restart requested: {restartReason}.");
+
+            if (restartReason == RelayRestartReason.ResetSetup)
+            {
+                await RelaySettingsStore.DeleteAsync(settingsPath).ConfigureAwait(true);
+                RelayStartupLog.Write("Settings cleared for setup reset.");
+            }
         }
     }
 
-    private static bool RunRelay(RelaySettings settings, string settingsPath)
+    private static (bool Restart, RelayRestartReason Reason) RunRelay(
+        RelaySettings settings,
+        string settingsPath)
     {
         using var tray = new TrayApplicationContext(settings, settingsPath);
         Application.Run(tray);
-        return tray.RestartRequested;
+        return (tray.RestartRequested, tray.RestartReason);
     }
 }

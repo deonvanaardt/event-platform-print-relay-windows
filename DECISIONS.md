@@ -48,6 +48,14 @@ Chronological record of **implementation-time** decisions for the Windows print 
 **Alternatives considered:** Argue with SignPath — rejected (they state they generally don't discuss policy). Block all MSI work — rejected (W-01-S09 unsigned path already ships).
 **Consequences:** W-01-S11 remains open; first signed `v0.4.0` blocked; platform MSI URL (E-05-S09) waits on signing provider.
 
+## 2026-07-18 — Explicit restart reason for setup reset (BUG-001)
+
+**Status:** accepted  
+**Context:** Re-run setup wizard deleted `settings.json` from `SettingsForm` then called `ExitThread()` synchronously from the Settings button handler. On Windows the tray often did not restart cleanly; settings could remain on disk or the wizard never appeared.  
+**Decision:** Introduce `RelayRestartReason` (`Reload` vs `ResetSetup`). Settings UI signals intent only; `Program.RunAsync` deletes settings via `RelaySettingsStore.DeleteAsync` **after** the tray context disposes. `RequestRestart` closes child forms and defers `ExitThread()` with `BeginInvoke` on the sync form.  
+**Alternatives considered:** Full process restart with `--setup` flag — rejected for this fix (heavier UX; in-process loop already designed for restart).  
+**Consequences:** `RelaySettingsStore.DeleteAsync`, `RelayRestartReason.cs`, `RelaySettingsStoreTests`; startup.log lines for restart transitions.
+
 <!-- Add entries above this line, newest first. -->
 
 ## 2026-07-04 — MIT license + code signing policy for SignPath OSS eligibility

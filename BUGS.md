@@ -87,7 +87,7 @@ When a bug becomes sprint work, add the story ID to the bug entry (e.g. `W-01-S1
 
 ### BUG-001 — Re-run setup wizard does not restart app or show wizard
 
-**Status:** open  
+**Status:** investigating  
 **Reported:** 2026-07-18  
 **App version:** 0.4.0 (or current published build)  
 **Environment:** Windows (venue PC)  
@@ -103,7 +103,7 @@ When a bug becomes sprint work, add the story ID to the bug entry (e.g. `W-01-S1
 **Expected:** App restarts (or returns to setup flow); setup wizard appears so the operator can paste a new desk code and printer.  
 **Actual:** App does not restart; setup wizard does not appear. Operator remains on the tray with prior configuration still in effect (or app exits without wizard).
 
-**Notes:** Settings copy promises wizard reopens after clearing saved settings (`SettingsForm.RerunSetup`). Printer save path uses the same `_requestRestart()` hook and may behave differently — compare when triaging. Logs: `%AppData%\EventPlatform\PrintRelay\logs\`. Workaround: quit tray, delete `%AppData%\EventPlatform\PrintRelay\settings.json`, relaunch exe.
+**Notes:** Fix in progress: `RelayRestartReason.ResetSetup` clears settings in `Program.RunAsync` after tray dispose; deferred `ExitThread` via `BeginInvoke`. Retest on Windows — confirm `startup.log` shows “Restart requested: ResetSetup” and “Settings cleared for setup reset.” Regression: printer save should restart tray without wizard. Workaround until verified: quit tray, delete `%AppData%\EventPlatform\PrintRelay\settings.json`, relaunch exe.
 
 ---
 
