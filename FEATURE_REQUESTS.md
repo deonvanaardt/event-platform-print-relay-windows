@@ -61,23 +61,7 @@ When a request is approved for implementation, create or reference a `W-01-Sxx` 
 
 <!-- Add entries above this line, newest first. Next ID: FR-002 -->
 
-### FR-001 — Branded app icon (tray + Start Menu)
-
-**Status:** proposed  
-**Requested:** 2026-07-18  
-**Requested by:** internal  
-
-**Summary:** Replace placeholder/system icons with a proper Event Platform Print Relay icon in the notification area and on the installed Start Menu shortcut.
-
-**User story:** As a desk operator, I want Print Relay to show a recognizable branded icon in the tray and Start Menu so I can find the app quickly among other programs at a busy venue.
-
-**Acceptance hints:**
-- Single branded icon asset (`.ico` with standard sizes: 16×16, 32×32, 48×48, 256×256) used consistently across the app.
-- Tray `NotifyIcon` uses the branded icon (with state variants or overlays for connected / reconnecting / error per PRD §7.1, if designed).
-- Installed app executable and Start Menu shortcut show the same icon (MSI / `ApplicationIcon` in App project).
-- Icon readable at 16×16 in the tray overflow area.
-
-**Notes:** Today the tray uses cloned `SystemIcons` (Warning / Error / Information); no `ApplicationIcon` is set on the App project. Design asset needed from product/brand. Related: PRD §7.1 tray states, `docs/INSTALLER.md` Start Menu shortcut checklist, W-01-S10 physical sign-off.
+_(none)_
 
 ---
 
@@ -85,7 +69,24 @@ When a request is approved for implementation, create or reference a `W-01-Sxx` 
 
 <!-- Move here when promoted to BACKLOG.md with W-01-Sxx. -->
 
-_(none yet)_
+### FR-001 — Branded app icon (tray + Start Menu)
+
+**Status:** accepted  
+**Requested:** 2026-07-18  
+**Requested by:** internal  
+**Story:** W-01-S12 · **Sprint 4**
+
+**Summary:** Replace placeholder/system icons with the Kiosa icon from `kiosa-marketing/brand-pack` in the notification area, on the executable, and on the installed Start Menu shortcut.
+
+**User story:** As a desk operator, I want Print Relay to show a recognizable branded icon in the tray and Start Menu so I can find the app quickly among other programs at a busy venue.
+
+**Acceptance hints:**
+- Single branded icon asset (`.ico` with standard sizes: 16×16, 32×32, 48×48, 256×256) used consistently across the app.
+- Tray `NotifyIcon` uses the Kiosa icon with coloured status-dot overlays for connected / reconnecting / error per PRD §7.1.
+- Installed app executable and Start Menu shortcut show the same icon (MSI / `ApplicationIcon` in App project).
+- Icon readable at 16×16 in the tray overflow area.
+
+**Notes:** Design assets in `kiosa-marketing/brand-pack/`. Implementation plan: [`docs/plans/sprint-4-kiosa-brand-icons.md`](docs/plans/sprint-4-kiosa-brand-icons.md). Related: PRD §7.1 tray states, `docs/INSTALLER.md` Start Menu shortcut checklist.
 
 ---
 

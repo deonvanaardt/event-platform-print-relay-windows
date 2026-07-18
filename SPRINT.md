@@ -136,3 +136,77 @@ _(none yet — mark W-01-S11 Done after signed release + Windows acceptance)_
 - **SignPath OSS declined 2026-07-18** — insufficient external reputation; not a code/policy rejection. **Paid signing deferred** until first paying customer (Certum OSS cloud ~$50–58/yr; sole trader). Reapply SignPath when visibility grows (`docs/SIGNPATH.md`).
 - CI falls back to unsigned prerelease when `SIGNPATH_API_TOKEN` is not set
 - Target first signed release: tag `v0.4.0` after SignPath reapproval **or** paid signing CI is wired
+- **Sprint 4** (Kiosa brand icons) runs **in parallel** — not blocked on signing
+
+---
+
+# Sprint 4 — Kiosa brand icons (FR-001)
+
+**Dates:** 2026-07-18 → TBD  
+**Epic:** [W-01 — Windows print relay MVP](BACKLOG.md#w-01--windows-print-relay-mvp)  
+**Phase:** [Phase 2 — M2 tray polish](IMPLEMENTATION_PLAN.md#phase-2--m2-tray-app) (parallel to Sprint 3 signing)  
+**Story:** **W-01-S12** — Kiosa brand icons (tray + exe + Start Menu)  
+**Spec:** `docs/PRINT_RELAY_WINDOWS_PRD.md` §7.1 · `kiosa-marketing/brand-pack/Kiosa_Brand_Pack.md`  
+**Plan:** [`docs/plans/sprint-4-kiosa-brand-icons.md`](docs/plans/sprint-4-kiosa-brand-icons.md)
+
+## Goal
+
+Replace placeholder `SystemIcons` with the Kiosa icon from `kiosa-marketing/brand-pack`. Tray shows the Kiosa mark with coloured status-dot overlays (green / amber / red per PRD §7.1). Executable, WinForms title bars, and Start Menu shortcut use the same branded icon.
+
+**Naming unchanged:** window and installer text stay "Event Platform Print Relay" / "Print Relay"; only visuals switch to Kiosa.
+
+## In scope (Sprint 4)
+
+- [ ] **W-01-S12** — Kiosa brand icons (tray + exe + Start Menu)
+
+### Session 1 — Assets + base icon wiring (Mac agent)
+
+- [ ] Copy SVGs from `kiosa-marketing/brand-pack/` into `src/EventPlatform.PrintRelay.App/Assets/brand/`
+- [ ] Add `scripts/generate-app-icons.sh`; generate and commit `app.ico` (16, 32, 48, 256) + `tray/base-32.png`
+- [ ] Set `<ApplicationIcon>` in `EventPlatform.PrintRelay.App.csproj`
+- [ ] Add `RelayAppIcons.cs`; replace `SystemIcons` in `TrayApplicationContext`
+- [ ] Set `Form.Icon` on Setup, Status, and Settings forms
+- [ ] Log decision in `DECISIONS.md` (asset source, overlay strategy, committed ICO)
+
+**Windows verify (one step per operator reply):** pull → publish → confirm tray, `.exe` Properties, and form title-bar icons show Kiosa.
+
+### Session 2 — Tray state overlays (Mac agent)
+
+- [ ] Draw status dot on Kiosa icon: green (connected), amber (reconnecting), red (error)
+- [ ] Map `RelayTrayIconState` to PRD §7.1 colours in `RelayAppIcons.CreateTrayIcon`
+- [ ] If 16×16 accent is unreadable, fall back to monochrome base per brand pack §3
+
+**Windows verify:** force reconnect → amber; error state → red; normal → green; check 16×16 in tray overflow (`^`).
+
+### Session 3 — MSI + closure (Mac docs + Windows MSI)
+
+- [ ] Add Start Menu / Add/Remove Programs icon check to `docs/INSTALLER.md`
+- [ ] Windows: rebuild MSI, install, confirm Start Menu shortcut icon; upgrade over existing install
+- [ ] Mark W-01-S12 Done; update `CHANGELOG.md`
+
+## Stretch (if time remains)
+
+- [ ] Setup wizard header with `kiosa-logo-primary.svg` lockup (min 120px wide per brand pack)
+- [ ] `SetupRequired` grey tray state (PRD §7.1 row — enum not implemented today)
+
+## In progress
+
+_(none — update when Session 1 starts)_
+
+## Done
+
+_(none yet)_
+
+## Out of scope this sprint
+
+- WiX installer banner/dialog custom artwork (`WixUI_Minimal` stays generic)
+- `--about` dialog custom logo (still `MessageBoxIcon.Information`)
+- Product rename to "Kiosa Print Relay" (text stays Event Platform)
+- SignPath signing (Sprint 3 / W-01-S11)
+
+## Blockers / notes
+
+- **Asset source:** `kiosa-marketing/brand-pack/kiosa-logo-icon.svg` (primary); regenerate ICO/PNG in-repo — brand pack §8 open item
+- **Tray approach:** Kiosa icon + coloured status dot overlay (not separate icon files per state)
+- **CI impact:** none — Core tests unchanged; `release.yml` picks up new exe icon on next tag automatically
+- **Handoff:** Mac agent pushes after each session; Windows operator verifies one step at a time per `windows-operator-steps.mdc`

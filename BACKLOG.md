@@ -33,6 +33,7 @@ Sprint-ready stories for the **event-platform-print-relay-windows** repository. 
 | W-01-S09 | MSI + release CI (unsigned) (M3) | WiX `.msi`; HKCU auto-start; unsigned GitHub Release artifact |
 | W-01-S11 | SignPath OSS signing CI (M3) | Signed `.msi` via SignPath; customer-ready GitHub Release |
 | W-01-S10 | Physical sign-off (M4) | Win 10 + 11 with USB/network printer; version matrix in README |
+| W-01-S12 | Kiosa brand icons (M2 polish) | Kiosa icon from `kiosa-marketing/brand-pack`; tray overlays; exe + Start Menu |
 
 ### W-01-S03 — JSON Schema pinning + contract tests
 
@@ -120,6 +121,23 @@ Sprint-ready stories for the **event-platform-print-relay-windows** repository. 
   - Full flow on Windows 10 and 11 with physical printer (not PDF driver only).
   - README documents minimum platform version per Windows release.
   - Pilot checklist in `INTEGRATION.md` Phase D complete.
+
+### W-01-S12 — Kiosa brand icons (M2 polish)
+
+- **Origin:** [FR-001](FEATURE_REQUESTS.md#fr-001--branded-app-icon-tray--start-menu) · Sprint 4
+- **PRD:** §7.1 (tray icon states)
+- **Brand:** `kiosa-marketing/brand-pack/` (`kiosa-logo-icon.svg`, `Kiosa_Brand_Pack.md`)
+- **Dependencies:** W-01-S07 (tray UI exists); design assets available in brand pack
+- **Plan:** [`docs/plans/sprint-4-kiosa-brand-icons.md`](docs/plans/sprint-4-kiosa-brand-icons.md)
+- **Acceptance:**
+  - `app.ico` generated from `kiosa-logo-icon.svg` with sizes 16, 32, 48, 256; committed under `src/EventPlatform.PrintRelay.App/Assets/brand/`.
+  - `<ApplicationIcon>` set on App project — `EventPlatform.PrintRelay.exe` shows Kiosa icon in Explorer and Task Manager.
+  - Tray `NotifyIcon` uses Kiosa icon with coloured status-dot overlays: green (connected), amber (reconnecting), red (error) per PRD §7.1.
+  - Setup, Status, and Settings forms set `Icon` to the same branded icon.
+  - Start Menu shortcut (MSI install) shows Kiosa icon via embedded exe icon; verified per `docs/INSTALLER.md`.
+  - Icon readable at 16×16 in tray overflow area.
+  - `scripts/generate-app-icons.sh` documents regeneration from SVG source.
+- **Out of scope:** WiX installer banner/dialog artwork; product rename; `--about` custom logo.
 
 ---
 
