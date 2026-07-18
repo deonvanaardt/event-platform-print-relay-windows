@@ -109,4 +109,4 @@ When a bug becomes sprint work, add the story ID to the bug entry (e.g. `W-01-S1
 **Expected:** App restarts (or returns to setup flow); setup wizard appears so the operator can paste a new desk code and printer.  
 **Actual:** App does not restart; setup wizard does not appear. Operator remains on the tray with prior configuration still in effect (or app exits without wizard).
 
-**Notes:** Fixed in `e7695b7` — `RelayRestartReason.ResetSetup`, settings delete after tray dispose, spawn new process via `RestartProcess()`. Windows retest confirmed wizard opens. Follow-up: wizard opened behind other windows — `SetupWizardForm.BringToForeground()` on `Shown`. Regression: printer save restarts tray without wizard.
+**Notes:** Fixed in `e7695b7` (`RelayRestartReason.ResetSetup`, settings delete after tray dispose, `RestartProcess()`). Foreground on restart: `fda54e9` (`SetupWizardForm.BringToForeground`). **Windows verified 2026-07-18** on `fda54e9` — wizard restarts in front. Regression: printer save restarts tray without wizard.
