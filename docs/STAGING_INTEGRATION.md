@@ -40,7 +40,7 @@ Runbook for **W-01-S06** sign-off: Windows relay against Event Platform **stagin
 
 ## Copy diagnostics
 
-Tray menu → **Copy diagnostics** — JSON for support (hostname, connection state, last job IDs; **no secrets**). Paste into a ticket or chat when asking for help.
+Tray → **Status** → **Copy diagnostics** — copies JSON for support (hostname, connection state, last job IDs; **no secrets**). Paste into a ticket or chat when asking for help.
 
 ## Failure cases to verify
 

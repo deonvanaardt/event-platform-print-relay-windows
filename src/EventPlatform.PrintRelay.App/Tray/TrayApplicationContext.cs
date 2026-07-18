@@ -16,11 +16,9 @@ internal sealed class TrayApplicationContext : ApplicationContext
     private bool _restartRequested;
     private RelayRestartReason _restartReason;
     private bool _startupFailed;
-    private readonly int _uiThreadId;
 
     public TrayApplicationContext(RelaySettings settings, string settingsPath)
     {
-        _uiThreadId = Environment.CurrentManagedThreadId;
         _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         _settingsPath = settingsPath ?? throw new ArgumentNullException(nameof(settingsPath));
 
@@ -222,7 +220,6 @@ internal sealed class TrayApplicationContext : ApplicationContext
         menu.Items.Add("Select printer", null, (_, _) => ShowSettingsForm());
         menu.Items.Add("Print test badge", null, async (_, _) => await RunSafeAsync(PrintTestBadgeAsync));
         menu.Items.Add("Test connection", null, async (_, _) => await RunSafeAsync(TestConnectionAsync));
-        menu.Items.Add("Copy diagnostics", null, (_, _) => CopyDiagnostics());
         menu.Items.Add(new ToolStripSeparator());
         menu.Items.Add("Settings", null, (_, _) => ShowSettingsForm());
         menu.Items.Add("Quit", null, (_, _) => ExitThread());
@@ -356,40 +353,6 @@ internal sealed class TrayApplicationContext : ApplicationContext
         {
             instance.Dispose();
         }
-    }
-
-    private void CopyDiagnostics()
-    {
-        try
-        {
-            var json = RequireRuntime().BuildDiagnosticsJson();
-            StaClipboard.SetText(json, _syncForm, _uiThreadId);
-            ShowDiagnosticsCopiedBalloon();
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(
-                ex.Message,
-                "Print Relay",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error);
-        }
-    }
-
-    private void ShowDiagnosticsCopiedBalloon()
-    {
-        if (_syncForm.IsDisposed)
-        {
-            return;
-        }
-
-        UiThreadSync.Post(
-            _syncForm,
-            () => _notifyIcon.ShowBalloonTip(
-                3000,
-                "Print Relay",
-                "Diagnostics copied to clipboard.",
-                ToolTipIcon.Info));
     }
 
     private async Task PrintTestBadgeAsync()

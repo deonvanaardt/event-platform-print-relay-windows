@@ -34,6 +34,14 @@ Chronological record of **implementation-time** decisions for the Windows print 
 
 ## Log
 
+## 2026-07-18 — Copy diagnostics on Status panel, not tray menu
+
+**Status:** accepted  
+**Context:** BUG-002 — tray **Copy diagnostics** failed on Windows with STA/OLE errors. Multiple marshaling fixes (`BeginInvoke`, dedicated STA thread, `Control.Invoke`, `UiThreadSync`) still failed because `NotifyIcon` context-menu callbacks run on a non-STA thread where `InvokeRequired` is unreliable.  
+**Decision:** Remove **Copy diagnostics** from the tray menu. Add a **Copy diagnostics** button on the **Status** form; button `Click` runs on the form UI thread where `Clipboard` works. Same JSON export via `RelayRuntime.BuildDiagnosticsJson()`.  
+**Alternatives considered:** Persistent STA worker thread with message pump (WebView2 pattern) — heavier than needed for MVP; keep fighting tray marshaling — rejected after repeated Windows failures.  
+**Consequences:** `StatusForm.cs`, `TrayApplicationContext.cs`; `StaClipboard.cs` removed. PRD §7 tray menu list differs slightly; diagnostics export capability unchanged. Update `docs/STAGING_INTEGRATION.md` operator path.
+
 ## 2026-07-18 — Defer paid signing until first paying customer (sole trader)
 
 **Context:** SignPath OSS declined for reputation (not policy). Operator is a UK sole trader — Azure Artifact Signing Public Trust is org-only in the UK (individual path US/Canada). Cheapest paid path when needed: Certum Open Source Code Signing in the Cloud (~$50–58/year).

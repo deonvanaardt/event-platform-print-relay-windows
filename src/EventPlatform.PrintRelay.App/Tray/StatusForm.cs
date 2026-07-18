@@ -91,10 +91,25 @@ internal sealed class StatusForm : Form
         root.Controls.Add(CreateSection("Live activity", _activityBox), 0, 2);
         root.Controls.Add(CreateSection("Recent jobs", _recentJobsGrid), 0, 3);
 
-        var footer = new Panel { Dock = DockStyle.Fill, AutoSize = true };
+        var footer = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            AutoSize = true,
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = false,
+            Padding = new Padding(0, 8, 0, 0),
+        };
+
+        var copyDiagnosticsButton = new Button
+        {
+            AutoSize = true,
+            Text = "Copy diagnostics",
+        };
+        copyDiagnosticsButton.Click += (_, _) => CopyDiagnosticsToClipboard();
+
+        footer.Controls.Add(copyDiagnosticsButton);
         footer.Controls.Add(_technicalToggle);
         footer.Controls.Add(_technicalPanel);
-        _technicalToggle.Dock = DockStyle.Top;
         _technicalPanel.Dock = DockStyle.Top;
         root.Controls.Add(footer, 0, 4);
 
@@ -186,6 +201,31 @@ internal sealed class StatusForm : Form
                 $"Event ID: {snapshot.LastJob?.EventId ?? "(waiting for first job)"}{Environment.NewLine}" +
                 $"Job ID: {snapshot.LastJob?.JobId ?? "(none)"}{Environment.NewLine}" +
                 $"Registration ID: {snapshot.LastJob?.RegistrationId ?? "(none)"}";
+        }
+    }
+
+    private void CopyDiagnosticsToClipboard()
+    {
+        try
+        {
+            var json = _runtime.BuildDiagnosticsJson();
+            Clipboard.SetDataObject(json, copy: true, retryTimes: 10, retryDelay: 100);
+
+            MessageBox.Show(
+                this,
+                "Diagnostics copied to clipboard.",
+                "Print Relay",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                this,
+                ex.Message,
+                "Print Relay",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
         }
     }
 

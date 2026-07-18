@@ -65,31 +65,32 @@ When a bug becomes sprint work, add the story ID to the bug entry (e.g. `W-01-S1
 
 <!-- Add entries above this line, newest first. Next ID: BUG-003 -->
 
-### BUG-002 — Copy diagnostics fails with STA thread error
-
-**Status:** investigating  
-**Reported:** 2026-07-18  
-**App version:** 0.4.0 (or current published build)  
-**Environment:** Windows (venue PC)  
-**Story:** W-01-S08 (diagnostics export)
-
-**Summary:** Tray menu **Copy diagnostics** shows an error dialog instead of copying support JSON to the clipboard.
-
-**Steps to reproduce:**
-1. Complete setup so Print Relay is running in the tray.
-2. Right-click the tray icon.
-3. Click **Copy diagnostics**.
-
-**Expected:** Diagnostics JSON is copied to the clipboard; balloon tip confirms “Diagnostics copied to clipboard.” (per PRD §9.3).  
-**Actual:** Error dialog: *“Current thread must be set to single thread apartment (STA) mode before OLE calls can be made. Ensure that your Main function has STAThreadAttribute marked on it.”* Nothing is copied.
-
-**Notes:** `BeginInvoke` guard (`d7aa0ef`) and `Control.Invoke` (`dbd988a`) both fail when `InvokeRequired` is false on a non-STA NotifyIcon menu thread — `Invoke` runs inline on the caller. Current fix: `UiThreadSync` uses `BeginInvoke` (always posts to UI thread) with thread-id fast path; balloon uses `BeginInvoke` unconditionally. Awaiting Windows verify.
-
 ---
 
 ## Resolved
 
 <!-- Move fixed/wontfix/duplicate entries here, newest first. Keep original ID. -->
+
+### BUG-002 — Copy diagnostics fails with STA thread error
+
+**Status:** fixed  
+**Reported:** 2026-07-18  
+**App version:** 0.4.0 (or current published build)  
+**Environment:** Windows (venue PC)  
+**Story:** W-01-S08 (diagnostics export)
+
+**Summary:** Tray menu **Copy diagnostics** showed an error dialog instead of copying support JSON to the clipboard.
+
+**Steps to reproduce:**
+1. Complete setup so Print Relay is running in the tray.
+2. Right-click the tray icon → **Status** → **Copy diagnostics** (tray menu shortcut removed).
+
+**Expected:** Diagnostics JSON is copied to the clipboard; operator is told it succeeded (per PRD §9.3).  
+**Actual:** Error dialog: *“Current thread must be set to single thread apartment (STA) mode…”* or *“Requested Clipboard operation did not succeed.”*
+
+**Notes:** NotifyIcon context-menu callbacks run on a non-STA thread; marshaling failed on Windows retest 2026-07-18. Fixed in commit TBD: tray menu item removed; **Copy diagnostics** button on **Status** panel. Awaiting Windows verify.
+
+---
 
 ### BUG-001 — Re-run setup wizard does not restart app or show wizard
 

@@ -21,7 +21,7 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 
 ### Fixed
 
-- Copy diagnostics uses BeginInvoke UI marshaling with OLE retries (BUG-002, W-01-S08)
+- Copy diagnostics moved from tray menu to **Status** panel button — avoids NotifyIcon non-STA clipboard failure (BUG-002, W-01-S08)
 - Re-run setup wizard restarts relay and opens setup flow again (`RelayRestartReason`, process restart) (BUG-001, W-01-S08)
 - Setup wizard brings itself to the foreground when shown after process restart (BUG-001)
 
