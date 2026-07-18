@@ -88,7 +88,7 @@ When a bug becomes sprint work, add the story ID to the bug entry (e.g. `W-01-S1
 **Expected:** Diagnostics JSON is copied to the clipboard; operator is told it succeeded (per PRD §9.3).  
 **Actual:** Error dialog: *“Current thread must be set to single thread apartment (STA) mode…”* or *“Requested Clipboard operation did not succeed.”*
 
-**Notes:** NotifyIcon context-menu callbacks run on a non-STA thread; marshaling failed on Windows retest 2026-07-18. Fixed in commit TBD: tray menu item removed; **Copy diagnostics** button on **Status** panel. Awaiting Windows verify.
+**Notes:** NotifyIcon context-menu callbacks run on a non-STA thread; marshaling failed on Windows retest 2026-07-18. Fixed in `83ae09e`: tray menu item removed; **Copy diagnostics** button on **Status** panel. Awaiting Windows verify.
 
 ---
 
