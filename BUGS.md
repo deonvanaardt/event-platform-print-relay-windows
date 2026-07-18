@@ -63,9 +63,47 @@ When a bug becomes sprint work, add the story ID to the bug entry (e.g. `W-01-S1
 
 ## Open
 
-<!-- Add entries above this line, newest first. Next ID: BUG-001 -->
+<!-- Add entries above this line, newest first. Next ID: BUG-003 -->
 
-_(none yet)_
+### BUG-002 — Copy diagnostics fails with STA thread error
+
+**Status:** open  
+**Reported:** 2026-07-18  
+**App version:** 0.4.0 (or current published build)  
+**Environment:** Windows (venue PC)  
+**Story:** W-01-S08 (diagnostics export)
+
+**Summary:** Tray menu **Copy diagnostics** shows an error dialog instead of copying support JSON to the clipboard.
+
+**Steps to reproduce:**
+1. Complete setup so Print Relay is running in the tray.
+2. Right-click the tray icon.
+3. Click **Copy diagnostics**.
+
+**Expected:** Diagnostics JSON is copied to the clipboard; balloon tip confirms “Diagnostics copied to clipboard.” (per PRD §9.3).  
+**Actual:** Error dialog: *“Current thread must be set to single thread apartment (STA) mode before OLE calls can be made. Ensure that your Main function has STAThreadAttribute marked on it.”* Nothing is copied.
+
+**Notes:** `Program.Main` already has `[STAThread]`; likely `Clipboard.SetText` in `TrayApplicationContext.CopyDiagnostics` is invoked from a non-STA context menu callback. Compare with other tray actions that marshal to the UI thread. Logs: `%AppData%\EventPlatform\PrintRelay\logs\`. Workaround: open **Status** and copy details manually, or read `relay.log` for support.
+
+### BUG-001 — Re-run setup wizard does not restart app or show wizard
+
+**Status:** open  
+**Reported:** 2026-07-18  
+**App version:** 0.4.0 (or current published build)  
+**Environment:** Windows (venue PC)  
+**Story:** W-01-S08 (settings — re-run setup wizard)
+
+**Summary:** Choosing **Re-run setup wizard** in Settings does not restart the relay and open the setup wizard again as promised.
+
+**Steps to reproduce:**
+1. Complete initial setup (paste `DESK-` code, pick printer) so the tray app is running.
+2. Open **Settings** from the tray menu.
+3. Click **Re-run setup wizard** and confirm **Yes** on the prompt (“This clears saved settings and opens the setup wizard again…”).
+
+**Expected:** App restarts (or returns to setup flow); setup wizard appears so the operator can paste a new desk code and printer.  
+**Actual:** App does not restart; setup wizard does not appear. Operator remains on the tray with prior configuration still in effect (or app exits without wizard).
+
+**Notes:** Settings copy promises wizard reopens after clearing saved settings (`SettingsForm.RerunSetup`). Printer save path uses the same `_requestRestart()` hook and may behave differently — compare when triaging. Logs: `%AppData%\EventPlatform\PrintRelay\logs\`. Workaround: quit tray, delete `%AppData%\EventPlatform\PrintRelay\settings.json`, relaunch exe.
 
 ---
 
