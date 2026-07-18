@@ -16,9 +16,11 @@ internal sealed class TrayApplicationContext : ApplicationContext
     private bool _restartRequested;
     private RelayRestartReason _restartReason;
     private bool _startupFailed;
+    private readonly int _uiThreadId;
 
     public TrayApplicationContext(RelaySettings settings, string settingsPath)
     {
+        _uiThreadId = Environment.CurrentManagedThreadId;
         _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         _settingsPath = settingsPath ?? throw new ArgumentNullException(nameof(settingsPath));
 
@@ -361,7 +363,7 @@ internal sealed class TrayApplicationContext : ApplicationContext
         try
         {
             var json = RequireRuntime().BuildDiagnosticsJson();
-            StaClipboard.SetText(json, _syncForm);
+            StaClipboard.SetText(json, _syncForm, _uiThreadId);
             ShowDiagnosticsCopiedBalloon();
         }
         catch (Exception ex)
@@ -381,22 +383,13 @@ internal sealed class TrayApplicationContext : ApplicationContext
             return;
         }
 
-        void Show()
-        {
-            _notifyIcon.ShowBalloonTip(
+        UiThreadSync.Post(
+            _syncForm,
+            () => _notifyIcon.ShowBalloonTip(
                 3000,
                 "Print Relay",
                 "Diagnostics copied to clipboard.",
-                ToolTipIcon.Info);
-        }
-
-        if (_syncForm.InvokeRequired)
-        {
-            _syncForm.BeginInvoke(Show);
-            return;
-        }
-
-        Show();
+                ToolTipIcon.Info));
     }
 
     private async Task PrintTestBadgeAsync()

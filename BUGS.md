@@ -83,7 +83,7 @@ When a bug becomes sprint work, add the story ID to the bug entry (e.g. `W-01-S1
 **Expected:** Diagnostics JSON is copied to the clipboard; balloon tip confirms “Diagnostics copied to clipboard.” (per PRD §9.3).  
 **Actual:** Error dialog: *“Current thread must be set to single thread apartment (STA) mode before OLE calls can be made. Ensure that your Main function has STAThreadAttribute marked on it.”* Nothing is copied.
 
-**Notes:** `BeginInvoke` (`d7aa0ef`) failed — menu thread non-STA with `InvokeRequired` false. Dedicated STA thread without message pump (`34ac735`) failed with “Requested Clipboard operation did not succeed.” Current fix: always `Control.Invoke` on `_syncForm` (UI message pump) + `Clipboard.SetDataObject` retries. Awaiting Windows verify.
+**Notes:** `BeginInvoke` guard (`d7aa0ef`) and `Control.Invoke` (`dbd988a`) both fail when `InvokeRequired` is false on a non-STA NotifyIcon menu thread — `Invoke` runs inline on the caller. Current fix: `UiThreadSync` uses `BeginInvoke` (always posts to UI thread) with thread-id fast path; balloon uses `BeginInvoke` unconditionally. Awaiting Windows verify.
 
 ---
 
