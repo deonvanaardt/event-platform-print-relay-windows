@@ -34,6 +34,22 @@ Chronological record of **implementation-time** decisions for the Windows print 
 
 ## Log
 
+## 2026-07-18 — Diagnostics export to file, not clipboard
+
+**Status:** accepted (supersedes same-day “Copy diagnostics on Status panel” entry for export mechanism)  
+**Context:** BUG-002 — even **Status** panel **Copy diagnostics** failed with STA errors because `ShowStatusForm()` was invoked from the NotifyIcon menu thread, so the form and its controls were created on a non-STA thread. Clipboard cannot be made reliable from that path without a full UI-thread form host.  
+**Decision:** **Export diagnostics** writes `diagnostics-export.json` under `%AppData%\EventPlatform\PrintRelay\logs\`. Status panel button shows the path; operator attaches file or copies contents manually. Marshal `ShowStatusForm` / `ShowSettingsForm` via `_syncForm.BeginInvoke` so child forms are always created on the main UI thread.  
+**Alternatives considered:** Clipboard after UI-thread form host — rejected after Status-button retest still failed; persistent STA worker — overkill for support export.  
+**Consequences:** `RelayDiagnosticsExporter.cs`, `StatusForm.cs`, `TrayApplicationContext.cs`; PRD §9.3 clipboard wording deferred — file export meets support needs.
+
+## 2026-07-18 — Copy diagnostics on Status panel, not tray menu
+
+**Status:** accepted  
+**Context:** BUG-002 — tray **Copy diagnostics** failed on Windows with STA/OLE errors. Multiple marshaling fixes (`BeginInvoke`, dedicated STA thread, `Control.Invoke`, `UiThreadSync`) still failed because `NotifyIcon` context-menu callbacks run on a non-STA thread where `InvokeRequired` is unreliable.  
+**Decision:** Remove **Copy diagnostics** from the tray menu. Add a **Copy diagnostics** button on the **Status** form; button `Click` runs on the form UI thread where `Clipboard` works. Same JSON export via `RelayRuntime.BuildDiagnosticsJson()`.  
+**Alternatives considered:** Persistent STA worker thread with message pump (WebView2 pattern) — heavier than needed for MVP; keep fighting tray marshaling — rejected after repeated Windows failures.  
+**Consequences:** `StatusForm.cs`, `TrayApplicationContext.cs`; `StaClipboard.cs` removed. PRD §7 tray menu list differs slightly; diagnostics export capability unchanged. Update `docs/STAGING_INTEGRATION.md` operator path.
+
 ## 2026-07-18 — Defer paid signing until first paying customer (sole trader)
 
 **Context:** SignPath OSS declined for reputation (not policy). Operator is a UK sole trader — Azure Artifact Signing Public Trust is org-only in the UK (individual path US/Canada). Cheapest paid path when needed: Certum Open Source Code Signing in the Cloud (~$50–58/year).
@@ -47,6 +63,22 @@ Chronological record of **implementation-time** decisions for the Windows print 
 **Decision:** Record decline in `docs/SIGNPATH.md`, `SPRINT.md`, README. **Do not** wire `.pfx` or paid signing in CI until an explicit provider choice is made and `Tech_Stack_Decision_Record.md` is updated. Continue unsigned prereleases for staging. Reapply to SignPath when visibility grows, **or** adopt paid signing (Azure Artifact Signing for EU/UK org, Certum cloud OV) if customer MSI is needed sooner.
 **Alternatives considered:** Argue with SignPath — rejected (they state they generally don't discuss policy). Block all MSI work — rejected (W-01-S09 unsigned path already ships).
 **Consequences:** W-01-S11 remains open; first signed `v0.4.0` blocked; platform MSI URL (E-05-S09) waits on signing provider.
+
+## 2026-07-18 — Process restart for tray reload (BUG-001, supersedes in-process loop)
+
+**Status:** accepted  
+**Context:** Windows retest of BUG-001 fix (`7d6d095`, `8c70191`): after `ExitThread()`, the tray exited but a second `Application.Run(SetupWizardForm)` in the same process did not stay open — app vanished from Task Manager. WinForms does not reliably run a fresh message loop after `ApplicationContext.ExitThread()`.  
+**Decision:** On tray restart (`Reload` or `ResetSetup`), delete settings when `ResetSetup`, then spawn a new process via `Environment.ProcessPath` and `Environment.Exit(0)`. New process runs normal startup (wizard when settings incomplete, tray when complete). Remove `while (true)` in-process restart loop.  
+**Alternatives considered:** Keep in-process loop and clear WM_QUIT / `ExitOnLastFormClosed` hacks — rejected (fragile). `--setup` CLI flag only — rejected (process restart alone is enough; settings delete before spawn).  
+**Consequences:** `Program.RestartProcess()`; supersedes in-process loop portion of *Explicit restart reason for setup reset* entry.
+
+## 2026-07-18 — Explicit restart reason for setup reset (BUG-001)
+
+**Status:** superseded (restart transport — see *Process restart for tray reload*)  
+**Context:** Re-run setup wizard deleted `settings.json` from `SettingsForm` then called `ExitThread()` synchronously from the Settings button handler. On Windows the tray often did not restart cleanly; settings could remain on disk or the wizard never appeared.  
+**Decision:** Introduce `RelayRestartReason` (`Reload` vs `ResetSetup`). Settings UI signals intent only; `Program.RunAsync` deletes settings via `RelaySettingsStore.DeleteAsync` **after** the tray context disposes. `RequestRestart` closes child forms and defers `ExitThread()` with `BeginInvoke` on the sync form.  
+**Alternatives considered:** Full process restart with `--setup` flag — rejected for this fix (heavier UX; in-process loop already designed for restart).  
+**Consequences:** `RelaySettingsStore.DeleteAsync`, `RelayRestartReason.cs`, `RelaySettingsStoreTests`; startup.log lines for restart transitions.
 
 <!-- Add entries above this line, newest first. -->
 

@@ -91,10 +91,25 @@ internal sealed class StatusForm : Form
         root.Controls.Add(CreateSection("Live activity", _activityBox), 0, 2);
         root.Controls.Add(CreateSection("Recent jobs", _recentJobsGrid), 0, 3);
 
-        var footer = new Panel { Dock = DockStyle.Fill, AutoSize = true };
+        var footer = new FlowLayoutPanel
+        {
+            Dock = DockStyle.Fill,
+            AutoSize = true,
+            FlowDirection = FlowDirection.LeftToRight,
+            WrapContents = false,
+            Padding = new Padding(0, 8, 0, 0),
+        };
+
+        var copyDiagnosticsButton = new Button
+        {
+            AutoSize = true,
+            Text = "Export diagnostics",
+        };
+        copyDiagnosticsButton.Click += (_, _) => ExportDiagnostics();
+
+        footer.Controls.Add(copyDiagnosticsButton);
         footer.Controls.Add(_technicalToggle);
         footer.Controls.Add(_technicalPanel);
-        _technicalToggle.Dock = DockStyle.Top;
         _technicalPanel.Dock = DockStyle.Top;
         root.Controls.Add(footer, 0, 4);
 
@@ -186,6 +201,32 @@ internal sealed class StatusForm : Form
                 $"Event ID: {snapshot.LastJob?.EventId ?? "(waiting for first job)"}{Environment.NewLine}" +
                 $"Job ID: {snapshot.LastJob?.JobId ?? "(none)"}{Environment.NewLine}" +
                 $"Registration ID: {snapshot.LastJob?.RegistrationId ?? "(none)"}";
+        }
+    }
+
+    private void ExportDiagnostics()
+    {
+        try
+        {
+            var json = _runtime.BuildDiagnosticsJson();
+            var path = RelayDiagnosticsExporter.SaveExport(json);
+
+            MessageBox.Show(
+                this,
+                $"Diagnostics saved to:{Environment.NewLine}{path}{Environment.NewLine}{Environment.NewLine}" +
+                "Attach this file to a support ticket or open it and copy the contents.",
+                "Print Relay",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Information);
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show(
+                this,
+                ex.Message,
+                "Print Relay",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Error);
         }
     }
 

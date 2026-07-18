@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using EventPlatform.PrintRelay.App.Printing;
 using EventPlatform.PrintRelay.App.Setup;
 using EventPlatform.PrintRelay.App.Tray;
@@ -81,39 +82,68 @@ internal static class Program
 
     private static async Task<int> RunAsync()
     {
-        while (true)
+        var settingsPath = RelaySettingsStore.GetDefaultSettingsPath();
+        var settings = await RelaySettingsStore.LoadAsync(settingsPath).ConfigureAwait(true);
+
+        if (!settings.IsComplete())
         {
-            var settingsPath = RelaySettingsStore.GetDefaultSettingsPath();
-            var settings = await RelaySettingsStore.LoadAsync(settingsPath).ConfigureAwait(true);
-
-            if (!settings.IsComplete())
-            {
-                RelayStartupLog.Write("Setup wizard required — settings incomplete.");
-                using var http = new HttpClient();
-                Application.Run(new SetupWizardForm(http, settingsPath));
-                settings = await RelaySettingsStore.LoadAsync(settingsPath).ConfigureAwait(true);
-            }
-
-            if (settings is null || !settings.IsComplete())
-            {
-                RelayStartupLog.Write("Exiting — setup was not completed.");
-                return 0;
-            }
-
-            RelayStartupLog.Write("Starting tray application context.");
-            var restart = RunRelay(settings, settingsPath);
-
-            if (!restart)
-            {
-                return 0;
-            }
+            RelayStartupLog.Write("Setup wizard required — settings incomplete.");
+            using var http = new HttpClient();
+            Application.Run(new SetupWizardForm(http, settingsPath));
+            settings = await RelaySettingsStore.LoadAsync(settingsPath).ConfigureAwait(true);
         }
+
+        if (settings is null || !settings.IsComplete())
+        {
+            RelayStartupLog.Write("Exiting — setup was not completed.");
+            return 0;
+        }
+
+        RelayStartupLog.Write("Starting tray application context.");
+        var (restart, restartReason) = RunRelay(settings, settingsPath);
+
+        if (!restart)
+        {
+            return 0;
+        }
+
+        RelayStartupLog.Write($"Restart requested: {restartReason}.");
+
+        if (restartReason == RelayRestartReason.ResetSetup)
+        {
+            await RelaySettingsStore.DeleteAsync(settingsPath).ConfigureAwait(true);
+            RelayStartupLog.Write("Settings cleared for setup reset.");
+        }
+
+        RelayStartupLog.Write("Spawning new process for restart.");
+        RestartProcess();
+        return 0;
     }
 
-    private static bool RunRelay(RelaySettings settings, string settingsPath)
+    private static void RestartProcess()
+    {
+        var exePath = Environment.ProcessPath ?? Application.ExecutablePath;
+
+        if (string.IsNullOrEmpty(exePath))
+        {
+            throw new InvalidOperationException("Could not determine executable path for restart.");
+        }
+
+        Process.Start(new ProcessStartInfo(exePath)
+        {
+            UseShellExecute = true,
+            WorkingDirectory = AppContext.BaseDirectory,
+        });
+
+        Environment.Exit(0);
+    }
+
+    private static (bool Restart, RelayRestartReason Reason) RunRelay(
+        RelaySettings settings,
+        string settingsPath)
     {
         using var tray = new TrayApplicationContext(settings, settingsPath);
         Application.Run(tray);
-        return tray.RestartRequested;
+        return (tray.RestartRequested, tray.RestartReason);
     }
 }

@@ -63,9 +63,7 @@ When a bug becomes sprint work, add the story ID to the bug entry (e.g. `W-01-S1
 
 ## Open
 
-<!-- Add entries above this line, newest first. Next ID: BUG-001 -->
-
-_(none yet)_
+<!-- Add entries above this line, newest first. Next ID: BUG-003 -->
 
 ---
 
@@ -73,4 +71,43 @@ _(none yet)_
 
 <!-- Move fixed/wontfix/duplicate entries here, newest first. Keep original ID. -->
 
-_(none yet)_
+### BUG-002 — Copy diagnostics fails with STA thread error
+
+**Status:** fixed  
+**Reported:** 2026-07-18  
+**App version:** 0.4.0 (or current published build)  
+**Environment:** Windows (venue PC)  
+**Story:** W-01-S08 (diagnostics export)
+
+**Summary:** Tray menu **Copy diagnostics** showed an error dialog instead of copying support JSON to the clipboard.
+
+**Steps to reproduce:**
+1. Complete setup so Print Relay is running in the tray.
+2. Right-click the tray icon → **Status** → **Export diagnostics**.
+
+**Expected:** Diagnostics JSON saved to `%AppData%\EventPlatform\PrintRelay\logs\diagnostics-export.json`; dialog shows path (per PRD §9.3 intent — support bundle without secrets).  
+**Actual:** Error dialog: *“Current thread must be set to single thread apartment (STA) mode…”* when using clipboard from tray or Status (wrong-thread form host).
+
+**Notes:** Root cause: NotifyIcon menu creates forms on non-STA thread. Fixed in `d0c35b0`: marshal Status/Settings to UI thread; export to file (no clipboard). **Windows verified 2026-07-18** on `e711e31` — Status → Export diagnostics saves JSON and shows path dialog.
+
+---
+
+### BUG-001 — Re-run setup wizard does not restart app or show wizard
+
+**Status:** fixed  
+**Reported:** 2026-07-18  
+**App version:** 0.4.0  
+**Environment:** Windows (venue PC)  
+**Story:** W-01-S08 (settings — re-run setup wizard)
+
+**Summary:** Choosing **Re-run setup wizard** in Settings does not restart the relay and open the setup wizard again as promised.
+
+**Steps to reproduce:**
+1. Complete initial setup (paste `DESK-` code, pick printer) so the tray app is running.
+2. Open **Settings** from the tray menu.
+3. Click **Re-run setup wizard** and confirm **Yes** on the prompt (“This clears saved settings and opens the setup wizard again…”).
+
+**Expected:** App restarts (or returns to setup flow); setup wizard appears so the operator can paste a new desk code and printer.  
+**Actual:** App does not restart; setup wizard does not appear. Operator remains on the tray with prior configuration still in effect (or app exits without wizard).
+
+**Notes:** Fixed in `e7695b7` (`RelayRestartReason.ResetSetup`, settings delete after tray dispose, `RestartProcess()`). Foreground on restart: `fda54e9` (`SetupWizardForm.BringToForeground`). **Windows verified 2026-07-18** on `fda54e9` — wizard restarts in front. Regression: printer save restarts tray without wizard.

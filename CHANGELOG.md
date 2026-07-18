@@ -19,8 +19,15 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 - Signed MSI verification section in `docs/INSTALLER.md` (`Get-AuthenticodeSignature`) (W-01-S11)
 - App version `0.4.0` (W-01-S11)
 
+### Fixed
+
+- Diagnostics export saves JSON to `%AppData%\EventPlatform\PrintRelay\logs\diagnostics-export.json` from Status panel — avoids NotifyIcon STA/clipboard issues (BUG-002, W-01-S08)
+- Re-run setup wizard restarts relay and opens setup flow again (`RelayRestartReason`, process restart) (BUG-001, W-01-S08)
+- Setup wizard brings itself to the foreground when shown after process restart (BUG-001)
+
 ### Not yet built
 
+- Kiosa brand icons — tray, exe, Start Menu; status-dot overlays (W-01-S12, Sprint 4, FR-001)
 - First signed GitHub Release (`v0.4.0`) — blocked on signing provider (SignPath OSS declined 2026-07-18; reapply or paid signing) + Windows verify
 - Physical sign-off Win 10 + 11 (W-01-S10)
 - Full list: [BACKLOG.md](BACKLOG.md)

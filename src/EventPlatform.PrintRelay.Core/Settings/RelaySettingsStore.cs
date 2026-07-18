@@ -49,4 +49,16 @@ public static class RelaySettingsStore
             .SerializeAsync(stream, settings, JsonOptions, cancellationToken)
             .ConfigureAwait(false);
     }
+
+    public static Task DeleteAsync(string path, CancellationToken cancellationToken = default)
+    {
+        cancellationToken.ThrowIfCancellationRequested();
+
+        if (File.Exists(path))
+        {
+            File.Delete(path);
+        }
+
+        return Task.CompletedTask;
+    }
 }

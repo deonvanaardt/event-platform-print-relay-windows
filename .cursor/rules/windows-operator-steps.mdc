@@ -1,64 +1,165 @@
 ---
-description: After each change, tell the user plainly what to do on the Windows machine
+description: Step-by-step Windows operator guidance during Mac ↔ Windows handoff
 alwaysApply: true
 ---
 
-# Windows operator steps (required in every reply)
+# Windows operator steps
 
-After **every** action you take (code change, doc update, plan, investigation, or “no changes needed”), end the reply with a section titled:
+This repo is edited on **macOS** (agent) and tested on **Windows** (operator). Use this rule when the operator needs to run or verify something on the Windows PC.
 
+---
+
+## When to include the section
+
+End replies with **## What to do on your Windows machine** when:
+
+| Situation | What to write |
+|---|---|
+| **Active Windows handoff** — agent pushed App/Spike changes, bug retest, spike, MSI, staging E2E | **One step only** (see below) |
+| **Mac-only work** — Core tests, docs, plans, investigations, no Windows test yet | Brief: **Required now:** Nothing on Windows. Say when it will matter. |
+| **Operator reported from Windows** — triage, next repro step, or waiting on Mac fix | **One step only** if they can do something now; otherwise explain wait state |
+
+Do **not** list a full multi-step checklist in one reply during active handoff. The operator is a beginner — guide them **one step at a time**.
+
+---
+
+## One step at a time (active handoff)
+
+During Mac ↔ Windows work:
+
+1. Give **exactly one** action per reply (open, run, click, or verify).
+2. End with: **Report back** — what to paste or describe (command output, error text, yes/no).
+3. **Wait** for the operator’s reply before giving the next step.
+4. On the next reply, acknowledge their result, then give **only** the next single step.
+
+**Exception:** After an agent **push**, the first Windows step is always **pull latest** (one command block). Do not bundle pull + publish + run in the same reply unless the operator explicitly asks for the full sequence.
+
+### PowerShell commands
+
+- Put every Windows command in its **own** fenced code block tagged `powershell`.
+- Commands must be **complete and copy-pasteable** — no `...`, no “then run the rest.”
+- Say **where** to run it (e.g. “Open PowerShell in the repo folder”) before the block.
+- One logical command (or one short sequence the operator runs as one paste) per block per step.
+
+Example (good — one step):
+
+```markdown
 ## What to do on your Windows machine
 
-Write it in **plain English**. Use short numbered steps. No jargon without explanation.
+**Step 1 of sync** — confirm you are in the repo folder and fetch latest from GitHub.
 
-### Rules
+Open PowerShell and run:
 
-1. **Always include this section** — even when the answer is “nothing right now.”
-2. **Be explicit** — say exactly what to open, run, click, or verify; name printers, paths, and commands when relevant.
-3. **Match the work** — tie steps to what you just changed:
-   - **Core-only / tests / docs / CI** → usually “Nothing on Windows yet” plus when it will matter (e.g. after S05 wizard or S06 print path).
-   - **Spike / WebView2 / WinForms / MSI** → give full Windows steps (build, run, printer check, staging setup code, etc.).
-4. **Separate must-do vs optional** — label **Required now** vs **Optional / when you test later**.
-5. **Prerequisites** — if Windows steps need staging, a desk setup code, or a physical printer, say so first.
-6. **No secrets in steps** — never tell the user to paste relay secrets into chat or logs; refer to setup wizard or saved settings.
-7. **After agent pushed App changes** — include the **sync checklist** from `git-sync.mdc` (fetch → checkout branch → pull → match `git log -1` to agent’s SHA → taskkill → publish → `--version` → run). Do not skip pull.
+```powershell
+cd C:\Users\Deon\event-platform-print-relay-windows
+git fetch origin
+```
 
-### Standard sync (after agent push — App / tray / Spike)
+**Report back:** Paste the full output (or say if you see an error).
+```
+
+Example (bad — do not do this during handoff):
+
+```markdown
+1. git pull
+2. taskkill
+3. dotnet publish
+4. run exe
+```
+
+---
+
+## Step content rules
+
+1. **Plain English** — no jargon without a short explanation.
+2. **Match the work** — tie the step to what changed or what you are debugging.
+3. **Prerequisites first** — if staging, setup code, or a printer is needed, say so before the first actionable step.
+4. **No secrets** — never ask the operator to paste relay secrets or full setup codes into chat.
+5. **After agent push** — first step is pull/sync; give `git log -1 --oneline` as a separate step after pull so they can confirm SHA. Full sync sequence lives in `git-sync.mdc` — **split across replies**, not one wall of steps.
+
+### Standard commands (reference — deliver one step at a time)
+
+Pull (typical first step after push):
 
 ```powershell
 cd C:\Users\Deon\event-platform-print-relay-windows
 git fetch origin
 git checkout feature/sprint-1-m1
 git pull origin feature/sprint-1-m1
+```
+
+Confirm commit (separate step):
+
+```powershell
 git log -1 --oneline
+```
+
+Stop old app (before publish):
+
+```powershell
 taskkill /IM EventPlatform.PrintRelay.exe /F
+```
+
+Publish:
+
+```powershell
 dotnet publish src\EventPlatform.PrintRelay.App -c Release -r win-x64 --self-contained -o artifacts\app
+```
+
+Verify build:
+
+```powershell
 .\artifacts\app\EventPlatform.PrintRelay.exe --version
+```
+
+Run:
+
+```powershell
 .\artifacts\app\EventPlatform.PrintRelay.exe
 ```
 
 Full detail: `.cursor/rules/git-sync.mdc`.
 
-### Example (Core-only change)
+---
+
+## Examples
+
+### Mac-only (no stepping)
 
 ```markdown
 ## What to do on your Windows machine
 
-**Required now:** Nothing. This change only affects automated tests on macOS/Linux CI.
+**Required now:** Nothing. This change only affects tests on macOS CI.
 
-**When you test later (after W-01-S05/S06):** On the venue PC, install the relay app, paste your `DESK-` setup code, pick a printer, and trigger a test print from staging.
+**When it matters:** After the next App push, we will sync and test on your PC step by step.
 ```
 
-### Example (Spike / print change)
+### Active handoff — first step after push
 
 ```markdown
 ## What to do on your Windows machine
 
-**Required now:**
-1. Open PowerShell in the repo folder.
-2. Run: `dotnet run --project src/EventPlatform.PrintRelay.Spike -- list-printers`
-3. Note your printer name, then run: `dotnet run --project src/EventPlatform.PrintRelay.Spike -- print-test "Your Printer Name"`
-4. Confirm one badge prints with **no** print dialog.
+**Step 1** — Open PowerShell in the repo folder and pull the branch the agent pushed.
 
-**Optional:** If nothing prints, check the printer is online in Windows Settings → Printers.
+```powershell
+cd C:\Users\Deon\event-platform-print-relay-windows
+git fetch origin
+git checkout feature/sprint-1-m1
+git pull origin feature/sprint-1-m1
+```
+
+**Report back:** Paste the output of `git log -1 --oneline` (we will confirm it matches the agent’s commit).
+```
+
+### Bug retest — one action
+
+```markdown
+## What to do on your Windows machine
+
+**Step 1** — Reproduce the bug.
+
+1. Right-click the Print Relay tray icon (near the clock; click **^** if hidden).
+2. Click **Copy diagnostics**.
+
+**Report back:** Did you get a balloon tip saying copied, or the STA error dialog? Paste the exact error text if any.
 ```

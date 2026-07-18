@@ -14,6 +14,7 @@ internal sealed class TrayApplicationContext : ApplicationContext
     private StatusForm? _statusForm;
     private SettingsForm? _settingsForm;
     private bool _restartRequested;
+    private RelayRestartReason _restartReason;
     private bool _startupFailed;
 
     public TrayApplicationContext(RelaySettings settings, string settingsPath)
@@ -62,6 +63,8 @@ internal sealed class TrayApplicationContext : ApplicationContext
     }
 
     public bool RestartRequested => _restartRequested;
+
+    public RelayRestartReason RestartReason => _restartReason;
 
     protected override void Dispose(bool disposing)
     {
@@ -217,7 +220,6 @@ internal sealed class TrayApplicationContext : ApplicationContext
         menu.Items.Add("Select printer", null, (_, _) => ShowSettingsForm());
         menu.Items.Add("Print test badge", null, async (_, _) => await RunSafeAsync(PrintTestBadgeAsync));
         menu.Items.Add("Test connection", null, async (_, _) => await RunSafeAsync(TestConnectionAsync));
-        menu.Items.Add("Copy diagnostics", null, (_, _) => CopyDiagnostics());
         menu.Items.Add(new ToolStripSeparator());
         menu.Items.Add("Settings", null, (_, _) => ShowSettingsForm());
         menu.Items.Add("Quit", null, (_, _) => ExitThread());
@@ -253,6 +255,16 @@ internal sealed class TrayApplicationContext : ApplicationContext
 
     private void ShowStatusForm()
     {
+        if (_syncForm.IsDisposed)
+        {
+            return;
+        }
+
+        _syncForm.BeginInvoke(ShowStatusFormCore);
+    }
+
+    private void ShowStatusFormCore()
+    {
         try
         {
             var runtime = RequireRuntime();
@@ -280,6 +292,16 @@ internal sealed class TrayApplicationContext : ApplicationContext
 
     private void ShowSettingsForm()
     {
+        if (_syncForm.IsDisposed)
+        {
+            return;
+        }
+
+        _syncForm.BeginInvoke(ShowSettingsFormCore);
+    }
+
+    private void ShowSettingsFormCore()
+    {
         try
         {
             var runtime = RequireRuntime();
@@ -304,31 +326,52 @@ internal sealed class TrayApplicationContext : ApplicationContext
         }
     }
 
-    private void RequestRestart()
+    private void RequestRestart(RelayRestartReason reason)
     {
         _restartRequested = true;
+        _restartReason = reason;
+
+        if (_syncForm.IsDisposed)
+        {
+            return;
+        }
+
+        _syncForm.BeginInvoke(PerformRestart);
+    }
+
+    private void PerformRestart()
+    {
+        if (_syncForm.IsDisposed)
+        {
+            return;
+        }
+
+        CloseChildForms();
         ExitThread();
     }
 
-    private void CopyDiagnostics()
+    private void CloseChildForms()
     {
-        try
-        {
-            Clipboard.SetText(RequireRuntime().BuildDiagnosticsJson());
+        CloseForm(ref _settingsForm);
+        CloseForm(ref _statusForm);
+    }
 
-            _notifyIcon.ShowBalloonTip(
-                3000,
-                "Print Relay",
-                "Diagnostics copied to clipboard.",
-                ToolTipIcon.Info);
-        }
-        catch (Exception ex)
+    private static void CloseForm<T>(ref T? form)
+        where T : Form
+    {
+        var instance = form;
+        form = null;
+
+        if (instance is null || instance.IsDisposed)
         {
-            MessageBox.Show(
-                ex.Message,
-                "Print Relay",
-                MessageBoxButtons.OK,
-                MessageBoxIcon.Error);
+            return;
+        }
+
+        instance.Close();
+
+        if (!instance.IsDisposed)
+        {
+            instance.Dispose();
         }
     }
 

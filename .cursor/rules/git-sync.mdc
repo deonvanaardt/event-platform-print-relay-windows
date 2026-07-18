@@ -32,7 +32,7 @@ Use one commit per logical fix/feature. Message: what/why (not a file list).
 
 1. **Branch:** e.g. `feature/sprint-1-m1`
 2. **Commit:** short SHA + subject line, e.g. `cb22916 Fix tray startup deadlock…`
-3. **Reminder:** run the Windows sync steps below before `dotnet publish`
+3. **Reminder:** Windows sync is **one step at a time** — first reply gives pull only; wait for operator report before publish/run (see `windows-operator-steps.mdc`).
 
 Core-only / tests / docs-only changes: push is optional; say **“Not pushed — Windows exe unchanged”** or push if bundled with App changes in the same session.
 

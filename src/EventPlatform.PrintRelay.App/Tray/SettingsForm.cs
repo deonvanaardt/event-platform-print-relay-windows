@@ -6,7 +6,7 @@ namespace EventPlatform.PrintRelay.App.Tray;
 internal sealed class SettingsForm : Form
 {
     private readonly RelayRuntime _runtime;
-    private readonly Action _requestRestart;
+    private readonly Action<RelayRestartReason> _requestRestart;
 
     private readonly Label _deskNameLabel = new();
     private readonly ComboBox _printerComboBox = new();
@@ -14,7 +14,7 @@ internal sealed class SettingsForm : Form
     private readonly Button _saveButton = new();
     private readonly Button _rerunSetupButton = new();
 
-    public SettingsForm(RelayRuntime runtime, Action requestRestart)
+    public SettingsForm(RelayRuntime runtime, Action<RelayRestartReason> requestRestart)
     {
         _runtime = runtime ?? throw new ArgumentNullException(nameof(runtime));
         _requestRestart = requestRestart ?? throw new ArgumentNullException(nameof(requestRestart));
@@ -128,7 +128,7 @@ internal sealed class SettingsForm : Form
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
 
-            _requestRestart();
+            _requestRestart(RelayRestartReason.Reload);
         }
         catch (Exception ex)
         {
@@ -153,19 +153,6 @@ internal sealed class SettingsForm : Form
             return;
         }
 
-        try
-        {
-            if (File.Exists(_runtime.SettingsPath))
-            {
-                File.Delete(_runtime.SettingsPath);
-            }
-        }
-        catch (Exception ex)
-        {
-            MessageBox.Show(ex.Message, Text, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return;
-        }
-
-        _requestRestart();
+        _requestRestart(RelayRestartReason.ResetSetup);
     }
 }
