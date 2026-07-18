@@ -48,9 +48,17 @@ Chronological record of **implementation-time** decisions for the Windows print 
 **Alternatives considered:** Argue with SignPath — rejected (they state they generally don't discuss policy). Block all MSI work — rejected (W-01-S09 unsigned path already ships).
 **Consequences:** W-01-S11 remains open; first signed `v0.4.0` blocked; platform MSI URL (E-05-S09) waits on signing provider.
 
-## 2026-07-18 — Explicit restart reason for setup reset (BUG-001)
+## 2026-07-18 — Process restart for tray reload (BUG-001, supersedes in-process loop)
 
 **Status:** accepted  
+**Context:** Windows retest of BUG-001 fix (`7d6d095`, `8c70191`): after `ExitThread()`, the tray exited but a second `Application.Run(SetupWizardForm)` in the same process did not stay open — app vanished from Task Manager. WinForms does not reliably run a fresh message loop after `ApplicationContext.ExitThread()`.  
+**Decision:** On tray restart (`Reload` or `ResetSetup`), delete settings when `ResetSetup`, then spawn a new process via `Environment.ProcessPath` and `Environment.Exit(0)`. New process runs normal startup (wizard when settings incomplete, tray when complete). Remove `while (true)` in-process restart loop.  
+**Alternatives considered:** Keep in-process loop and clear WM_QUIT / `ExitOnLastFormClosed` hacks — rejected (fragile). `--setup` CLI flag only — rejected (process restart alone is enough; settings delete before spawn).  
+**Consequences:** `Program.RestartProcess()`; supersedes in-process loop portion of *Explicit restart reason for setup reset* entry.
+
+## 2026-07-18 — Explicit restart reason for setup reset (BUG-001)
+
+**Status:** superseded (restart transport — see *Process restart for tray reload*)  
 **Context:** Re-run setup wizard deleted `settings.json` from `SettingsForm` then called `ExitThread()` synchronously from the Settings button handler. On Windows the tray often did not restart cleanly; settings could remain on disk or the wizard never appeared.  
 **Decision:** Introduce `RelayRestartReason` (`Reload` vs `ResetSetup`). Settings UI signals intent only; `Program.RunAsync` deletes settings via `RelaySettingsStore.DeleteAsync` **after** the tray context disposes. `RequestRestart` closes child forms and defers `ExitThread()` with `BeginInvoke` on the sync form.  
 **Alternatives considered:** Full process restart with `--setup` flag — rejected for this fix (heavier UX; in-process loop already designed for restart).  
