@@ -88,7 +88,7 @@ When a bug becomes sprint work, add the story ID to the bug entry (e.g. `W-01-S1
 **Expected:** Diagnostics JSON saved to `%AppData%\EventPlatform\PrintRelay\logs\diagnostics-export.json`; dialog shows path (per PRD §9.3 intent — support bundle without secrets).  
 **Actual:** Error dialog: *“Current thread must be set to single thread apartment (STA) mode…”* when using clipboard from tray or Status (wrong-thread form host).
 
-**Notes:** Root cause: NotifyIcon menu creates forms on non-STA thread. Fixed in `TBD`: marshal Status/Settings to UI thread; export to file (no clipboard). Awaiting Windows verify.
+**Notes:** Root cause: NotifyIcon menu creates forms on non-STA thread. Fixed in `d0c35b0`: marshal Status/Settings to UI thread; export to file (no clipboard). Awaiting Windows verify.
 
 ---
 
