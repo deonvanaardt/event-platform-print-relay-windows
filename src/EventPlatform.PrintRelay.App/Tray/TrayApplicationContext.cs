@@ -358,26 +358,11 @@ internal sealed class TrayApplicationContext : ApplicationContext
 
     private void CopyDiagnostics()
     {
-        if (_syncForm.IsDisposed)
-        {
-            return;
-        }
-
-        if (_syncForm.InvokeRequired)
-        {
-            _syncForm.BeginInvoke(CopyDiagnostics);
-            return;
-        }
-
         try
         {
-            Clipboard.SetText(RequireRuntime().BuildDiagnosticsJson());
-
-            _notifyIcon.ShowBalloonTip(
-                3000,
-                "Print Relay",
-                "Diagnostics copied to clipboard.",
-                ToolTipIcon.Info);
+            var json = RequireRuntime().BuildDiagnosticsJson();
+            StaClipboard.SetText(json);
+            ShowDiagnosticsCopiedBalloon();
         }
         catch (Exception ex)
         {
@@ -387,6 +372,31 @@ internal sealed class TrayApplicationContext : ApplicationContext
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
         }
+    }
+
+    private void ShowDiagnosticsCopiedBalloon()
+    {
+        if (_syncForm.IsDisposed)
+        {
+            return;
+        }
+
+        void Show()
+        {
+            _notifyIcon.ShowBalloonTip(
+                3000,
+                "Print Relay",
+                "Diagnostics copied to clipboard.",
+                ToolTipIcon.Info);
+        }
+
+        if (_syncForm.InvokeRequired)
+        {
+            _syncForm.BeginInvoke(Show);
+            return;
+        }
+
+        Show();
     }
 
     private async Task PrintTestBadgeAsync()

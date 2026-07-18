@@ -65,15 +65,9 @@ When a bug becomes sprint work, add the story ID to the bug entry (e.g. `W-01-S1
 
 <!-- Add entries above this line, newest first. Next ID: BUG-003 -->
 
----
-
-## Resolved
-
-<!-- Move fixed/wontfix/duplicate entries here, newest first. Keep original ID. -->
-
 ### BUG-002 — Copy diagnostics fails with STA thread error
 
-**Status:** fixed  
+**Status:** investigating  
 **Reported:** 2026-07-18  
 **App version:** 0.4.0 (or current published build)  
 **Environment:** Windows (venue PC)  
@@ -89,9 +83,13 @@ When a bug becomes sprint work, add the story ID to the bug entry (e.g. `W-01-S1
 **Expected:** Diagnostics JSON is copied to the clipboard; balloon tip confirms “Diagnostics copied to clipboard.” (per PRD §9.3).  
 **Actual:** Error dialog: *“Current thread must be set to single thread apartment (STA) mode before OLE calls can be made. Ensure that your Main function has STAThreadAttribute marked on it.”* Nothing is copied.
 
-**Notes:** Fixed in `d7aa0ef` by marshaling `Clipboard.SetText` to the STA UI thread via `_syncForm.BeginInvoke` in `TrayApplicationContext.CopyDiagnostics`. Awaiting Windows verify.
+**Notes:** First fix (`d7aa0ef`, `_syncForm.BeginInvoke`) failed Windows retest 2026-07-18 — menu callback thread is non-STA even when `InvokeRequired` is false. Second fix: `StaClipboard` helper spawns a dedicated STA thread for `Clipboard.SetText`. Awaiting Windows verify.
 
 ---
+
+## Resolved
+
+<!-- Move fixed/wontfix/duplicate entries here, newest first. Keep original ID. -->
 
 ### BUG-001 — Re-run setup wizard does not restart app or show wizard
 

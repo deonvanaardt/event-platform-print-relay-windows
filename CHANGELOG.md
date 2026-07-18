@@ -21,7 +21,7 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 
 ### Fixed
 
-- Copy diagnostics marshaled to UI thread so clipboard access works from tray menu (BUG-002, W-01-S08)
+- Copy diagnostics uses dedicated STA thread for clipboard when tray menu runs off UI thread (BUG-002, W-01-S08)
 - Re-run setup wizard restarts relay and opens setup flow again (`RelayRestartReason`, process restart) (BUG-001, W-01-S08)
 - Setup wizard brings itself to the foreground when shown after process restart (BUG-001)
 
