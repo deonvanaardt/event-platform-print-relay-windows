@@ -43,6 +43,17 @@ internal sealed class SetupWizardForm : Form
 
         Controls.Add(_step1Panel);
         Controls.Add(_step2Panel);
+
+        Shown += (_, _) => BringToForeground();
+    }
+
+    private void BringToForeground()
+    {
+        WindowState = FormWindowState.Normal;
+        TopMost = true;
+        Activate();
+        BringToFront();
+        TopMost = false;
     }
 
     private static Panel CreateStepPanel(bool visible = true)

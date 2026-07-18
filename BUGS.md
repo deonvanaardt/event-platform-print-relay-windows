@@ -85,11 +85,17 @@ When a bug becomes sprint work, add the story ID to the bug entry (e.g. `W-01-S1
 
 **Notes:** `Program.Main` already has `[STAThread]`; likely `Clipboard.SetText` in `TrayApplicationContext.CopyDiagnostics` is invoked from a non-STA context menu callback. Compare with other tray actions that marshal to the UI thread. Logs: `%AppData%\EventPlatform\PrintRelay\logs\`. Workaround: open **Status** and copy details manually, or read `relay.log` for support.
 
+---
+
+## Resolved
+
+<!-- Move fixed/wontfix/duplicate entries here, newest first. Keep original ID. -->
+
 ### BUG-001 — Re-run setup wizard does not restart app or show wizard
 
-**Status:** investigating  
+**Status:** fixed  
 **Reported:** 2026-07-18  
-**App version:** 0.4.0 (or current published build)  
+**App version:** 0.4.0  
 **Environment:** Windows (venue PC)  
 **Story:** W-01-S08 (settings — re-run setup wizard)
 
@@ -103,12 +109,4 @@ When a bug becomes sprint work, add the story ID to the bug entry (e.g. `W-01-S1
 **Expected:** App restarts (or returns to setup flow); setup wizard appears so the operator can paste a new desk code and printer.  
 **Actual:** App does not restart; setup wizard does not appear. Operator remains on the tray with prior configuration still in effect (or app exits without wizard).
 
-**Notes:** Fix in progress: `RelayRestartReason.ResetSetup` + process restart (`RestartProcess`) after tray dispose — in-process `while` loop could not reliably show wizard after `ExitThread` on Windows. Retest after next push. Regression: printer save should restart tray without wizard. Workaround until verified: quit tray, delete `%AppData%\EventPlatform\PrintRelay\settings.json`, relaunch exe.
-
----
-
-## Resolved
-
-<!-- Move fixed/wontfix/duplicate entries here, newest first. Keep original ID. -->
-
-_(none yet)_
+**Notes:** Fixed in `e7695b7` — `RelayRestartReason.ResetSetup`, settings delete after tray dispose, spawn new process via `RestartProcess()`. Windows retest confirmed wizard opens. Follow-up: wizard opened behind other windows — `SetupWizardForm.BringToForeground()` on `Shown`. Regression: printer save restarts tray without wizard.
