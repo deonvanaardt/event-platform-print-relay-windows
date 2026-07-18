@@ -103,7 +103,7 @@ When a bug becomes sprint work, add the story ID to the bug entry (e.g. `W-01-S1
 **Expected:** App restarts (or returns to setup flow); setup wizard appears so the operator can paste a new desk code and printer.  
 **Actual:** App does not restart; setup wizard does not appear. Operator remains on the tray with prior configuration still in effect (or app exits without wizard).
 
-**Notes:** Fix in progress: `RelayRestartReason.ResetSetup` clears settings in `Program.RunAsync` after tray dispose; deferred `ExitThread` via `BeginInvoke`. Retest on Windows — confirm `startup.log` shows “Restart requested: ResetSetup” and “Settings cleared for setup reset.” Regression: printer save should restart tray without wizard. Workaround until verified: quit tray, delete `%AppData%\EventPlatform\PrintRelay\settings.json`, relaunch exe.
+**Notes:** Fix in progress: `RelayRestartReason.ResetSetup` clears settings in `Program.RunAsync` after tray dispose; deferred `ExitThread` via `BeginInvoke`. Windows retest (7d6d095) hit `NullReferenceException` in `CloseChildForms` — `FormClosed` handler nulls `_settingsForm` before `Dispose()`; fixed by capturing form reference before `Close()`. Retest after next push. Regression: printer save should restart tray without wizard. Workaround until verified: quit tray, delete `%AppData%\EventPlatform\PrintRelay\settings.json`, relaunch exe.
 
 ---
 

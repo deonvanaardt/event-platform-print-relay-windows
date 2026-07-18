@@ -333,18 +333,26 @@ internal sealed class TrayApplicationContext : ApplicationContext
 
     private void CloseChildForms()
     {
-        if (_settingsForm is { IsDisposed: false })
+        CloseForm(ref _settingsForm);
+        CloseForm(ref _statusForm);
+    }
+
+    private static void CloseForm<T>(ref T? form)
+        where T : Form
+    {
+        var instance = form;
+        form = null;
+
+        if (instance is null || instance.IsDisposed)
         {
-            _settingsForm.Close();
-            _settingsForm.Dispose();
-            _settingsForm = null;
+            return;
         }
 
-        if (_statusForm is { IsDisposed: false })
+        instance.Close();
+
+        if (!instance.IsDisposed)
         {
-            _statusForm.Close();
-            _statusForm.Dispose();
-            _statusForm = null;
+            instance.Dispose();
         }
     }
 
