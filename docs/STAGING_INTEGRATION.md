@@ -66,6 +66,8 @@ After deploying the dynamic page-size fix (W-01-S13), confirm walk-in relay prin
 ### Prerequisites
 
 - Relay build with `BadgePageDimensionResolver` wired (Session 2+)
+- **Build VM:** `git pull` → `dotnet publish` → zip `artifacts\app` (see `.cursor/rules/git-sync.mdc`)
+- **Print-test PC:** extract zip, run `.exe` — physical compares happen here only (no git/build on that machine)
 - Staging events using each template format you need to support (platform badge designer options):
   - **CR80** — 85.6 × 54 mm
   - **A6 Landscape** — 148 × 105 mm
@@ -95,9 +97,7 @@ After deploying the dynamic page-size fix (W-01-S13), confirm walk-in relay prin
 4. **Log check** — open `%AppData%\EventPlatform\PrintRelay\logs\relay.log` (or **Export diagnostics**). On `PrintCompleted` lines, confirm `page_width_mm`, `page_height_mm`, and `page_size_source` match the table above for each format tested.
 5. **Record results** in the table below when closing W-01-S13.
 
-| Date | App version | CR80 | A6 Landscape | A5 Portrait | A5 Landscape | Notes |
-|------|-------------|------|--------------|-------------|--------------|-------|
-| | | | | | | |
+| 2026-07-19 | 0.4.1 (`85d99f5`) | N/A | **Pass** | **Pass** | **Pass** | Print-test PC; CR80 N/A (printer cannot print CR80 stock). `relay.log` confirms mm + `page_size_source: html`. |
 
 ## Related
 

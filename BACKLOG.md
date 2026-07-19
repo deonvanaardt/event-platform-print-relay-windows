@@ -34,7 +34,7 @@ Sprint-ready stories for the **event-platform-print-relay-windows** repository. 
 | W-01-S11 | SignPath OSS signing CI (M3) | Signed `.msi` via SignPath; customer-ready GitHub Release |
 | W-01-S10 | Physical sign-off (M4) | Win 10 + 11 with USB/network printer; version matrix in README |
 | W-01-S12 | Kiosa brand icons (M2 polish) | Kiosa icon from `kiosa-marketing/brand-pack`; tray overlays; exe + Start Menu |
-| W-01-S13 | Dynamic badge page size (BUG-003) | Resolve mm from `badge_html` `@page` / `badge_document`; WYSIWYG with designer test print |
+| W-01-S13 | Dynamic badge page size (BUG-003) | ✅ Done — `@page` / `badge_document` resolver; physical sign-off A6 + A5 (2026-07-19) |
 
 ### W-01-S03 — JSON Schema pinning + contract tests
 

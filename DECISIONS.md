@@ -34,6 +34,22 @@ Chronological record of **implementation-time** decisions for the Windows print 
 
 ## Log
 
+## 2026-07-19 — Two Windows machines: build VM vs print-test PC
+
+**Status:** accepted  
+**Context:** Operator has a Windows VM on Mac (git + .NET, no printer) and a separate physical Windows PC (printer, insufficient resources for git/build). Prior rules assumed one Windows box did pull, publish, and physical print.  
+**Decision:** **Build VM** — `git pull`, `dotnet publish`, verify via `build-info.txt`, zip `artifacts\app`. **Print-test PC** — extract zip, run `.exe`, physical staging sign-off and `relay.log` only; no git or SDK. Agent handoff steps must label which machine.  
+**Alternatives considered:** Install git/SDK on print-test PC — rejected (hardware constraints). Build on Mac cross-compile only — rejected; WebView2/print path still needs Windows publish.  
+**Consequences:** `.cursor/rules/windows-operator-steps.mdc`, `.cursor/rules/git-sync.mdc`, `conventions.mdc`.
+
+## 2026-07-19 — WinExe `--version` is blank in PowerShell (use build-info.txt)
+
+**Status:** accepted  
+**Context:** Operator repeatedly runs `EventPlatform.PrintRelay.exe --version` after publish and sees no output — looks like a failed build. App is `OutputType` WinExe; `Console.WriteLine` in `--version` has no attached console in PowerShell.  
+**Decision:** Operator verify step uses `Get-Content build-info.txt` + `FileVersion` on the exe. Document in `git-sync.mdc` and `windows-operator-steps.mdc`. Do not treat blank `--version` as publish failure.  
+**Alternatives considered:** Change to `OutputType` Exe — rejected (would flash console on normal tray launch). `AllocConsole()` for `--version` only — deferred.  
+**Consequences:** Rules + README; `--version` flag kept for possible future fix.
+
 ## 2026-07-18 — Diagnostics export to file, not clipboard
 
 **Status:** accepted (supersedes same-day “Copy diagnostics on Status panel” entry for export mechanism)  

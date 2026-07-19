@@ -5,13 +5,31 @@ alwaysApply: true
 
 # Windows operator steps
 
-This repo is edited on **macOS** (agent) and tested on **Windows** (operator). Use this rule when the operator needs to run or verify something on the Windows PC.
+This repo is edited on **macOS** (agent) and built/tested on **two Windows machines** (operator). Use this rule when the operator needs to run or verify something on Windows.
+
+---
+
+## Two Windows machines — which box does what
+
+| Machine | Role | Has | Does **not** have |
+|---|---|---|---|
+| **Build VM** | Compile and package | Git clone, .NET SDK, repo at `C:\Users\Deon\event-platform-print-relay-windows` | Physical printer |
+| **Print-test PC** | Physical print sign-off | Printer, staging desk setup | Git, .NET, enough resources to build |
+
+**Handoff between boxes:** After `dotnet publish` on the **build VM**, zip `artifacts\app\` and copy to the **print-test PC** (USB, cloud drive, or network share). The print-test PC runs the extracted `.exe` only — **no** `git pull` or `dotnet publish` there.
+
+**Agent must label every handoff step** with the machine name:
+
+- `## What to do on your build VM (Windows)` — git sync, publish, verify via `build-info.txt`, zip for transfer
+- `## What to do on your print-test PC (Windows)` — extract build, run relay, physical prints, `relay.log`
+
+If the operator’s reply does not say which machine they are on, ask before giving git/build vs print steps.
 
 ---
 
 ## When to include the section
 
-End replies with **## What to do on your Windows machine** when:
+End replies with a **machine-labelled** section (`build VM` or `print-test PC`) when:
 
 | Situation | What to write |
 |---|---|
@@ -38,17 +56,17 @@ During Mac ↔ Windows work:
 
 - Put every Windows command in its **own** fenced code block tagged `powershell`.
 - Commands must be **complete and copy-pasteable** — no `...`, no “then run the rest.”
-- Say **where** to run it (e.g. “Open PowerShell in the repo folder”) before the block.
+- Say **which machine** and **where** to run it (e.g. “On your **build VM**, open PowerShell in the repo folder”) before the block.
 - One logical command (or one short sequence the operator runs as one paste) per block per step.
 
 Example (good — one step):
 
 ```markdown
-## What to do on your Windows machine
+## What to do on your build VM (Windows)
 
 **Step 1 of sync** — confirm you are in the repo folder and fetch latest from GitHub.
 
-Open PowerShell and run:
+On your **build VM**, open PowerShell and run:
 
 ```powershell
 cd C:\Users\Deon\event-platform-print-relay-windows
@@ -106,16 +124,37 @@ Publish:
 dotnet publish src\EventPlatform.PrintRelay.App -c Release -r win-x64 --self-contained -o artifacts\app
 ```
 
-Verify build:
+Verify build (**use build-info.txt — not `--version`**; WinExe has no console in PowerShell):
 
 ```powershell
-.\artifacts\app\EventPlatform.PrintRelay.exe --version
+Get-Content .\artifacts\app\build-info.txt
+(Get-Item .\artifacts\app\EventPlatform.PrintRelay.exe).VersionInfo.FileVersion
 ```
 
-Run:
+Run (build VM — smoke only, no printer):
 
 ```powershell
 .\artifacts\app\EventPlatform.PrintRelay.exe
+```
+
+Zip for transfer to print-test PC:
+
+```powershell
+Compress-Archive -Path artifacts\app\* -DestinationPath artifacts\print-relay-build.zip -Force
+```
+
+On print-test PC — extract and run (example folder `C:\PrintRelay`):
+
+```powershell
+Expand-Archive -Path .\print-relay-build.zip -DestinationPath C:\PrintRelay -Force
+C:\PrintRelay\EventPlatform.PrintRelay.exe
+```
+
+Confirm build on print-test PC without git (**build-info.txt — not `--version`**):
+
+```powershell
+Get-Content C:\PrintRelay\build-info.txt
+(Get-Item C:\PrintRelay\EventPlatform.PrintRelay.exe).VersionInfo.FileVersion
 ```
 
 Full detail: `.cursor/rules/git-sync.mdc`.
@@ -127,17 +166,17 @@ Full detail: `.cursor/rules/git-sync.mdc`.
 ### Mac-only (no stepping)
 
 ```markdown
-## What to do on your Windows machine
+## Windows machines
 
 **Required now:** Nothing. This change only affects tests on macOS CI.
 
-**When it matters:** After the next App push, we will sync and test on your PC step by step.
+**When it matters:** Build VM sync first, then transfer to print-test PC for physical prints.
 ```
 
-### Active handoff — first step after push
+### Active handoff — first step after push (build VM)
 
 ```markdown
-## What to do on your Windows machine
+## What to do on your build VM (Windows)
 
 **Step 1** — Open PowerShell in the repo folder and pull the branch the agent pushed.
 
@@ -151,10 +190,23 @@ git pull origin feature/sprint-1-m1
 **Report back:** Paste the output of `git log -1 --oneline` (we will confirm it matches the agent’s commit).
 ```
 
-### Bug retest — one action
+### Physical print sign-off — print-test PC
 
 ```markdown
-## What to do on your Windows machine
+## What to do on your print-test PC (Windows)
+
+**Step 1** — Run the relay from the folder you extracted from the build VM zip.
+
+1. Double-click `C:\PrintRelay\EventPlatform.PrintRelay.exe` (or your extract path).
+2. Confirm the tray icon appears (click **^** near the clock if hidden).
+
+**Report back:** Does the tray icon appear? Is Status checklist green?
+```
+
+### Bug retest — one action (usually print-test PC)
+
+```markdown
+## What to do on your print-test PC (Windows)
 
 **Step 1** — Reproduce the bug.
 

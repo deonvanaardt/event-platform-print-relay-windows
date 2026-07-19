@@ -11,6 +11,10 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 
 ## [Unreleased]
 
+### Fixed
+
+- Dynamic badge page size from `badge_html` `@page` CSS with `badge_document` format fallback — walk-in prints match designer test size for A6/A5 formats (W-01-S13, BUG-003)
+
 ### Not yet built
 
 - Kiosa brand icons — tray, exe, Start Menu; status-dot overlays (W-01-S12, Sprint 4, FR-001)

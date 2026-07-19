@@ -4,7 +4,7 @@ sprint: 5
 story: W-01-S13
 bug: BUG-003
 platform_bug: BUG-011
-status: planned
+status: closed
 created: 2026-07-19
 companion: SPRINT.md, BACKLOG.md, BUGS.md
 ---

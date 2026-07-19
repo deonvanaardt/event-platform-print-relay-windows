@@ -78,7 +78,7 @@ git pull origin feature/sprint-1-m1
 git log -1 --oneline          # must match commit agent reported
 taskkill /IM EventPlatform.PrintRelay.exe /F
 dotnet publish src\EventPlatform.PrintRelay.App -c Release -r win-x64 --self-contained -o artifacts\app
-.\artifacts\app\EventPlatform.PrintRelay.exe --version
+Get-Content .\artifacts\app\build-info.txt
 .\artifacts\app\EventPlatform.PrintRelay.exe
 ```
 
