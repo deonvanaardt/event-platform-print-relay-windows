@@ -78,7 +78,7 @@ _(none)_
 **Status:** fixed  
 **Reported:** 2026-07-19  
 **Fixed:** 2026-07-19  
-**App version:** 0.4.1 (unreleased build with fix; commits `6a2f9fb`, `45eaa81`, `85d99f5` on `bug-fixes`)  
+**App version:** 0.4.2  
 **Environment:** Windows print relay (WebView2 → PrintToPdf → Pdfium spool); print-test PC  
 **Story:** W-01-S13 (Sprint 5)  
 **Plan:** [`docs/plans/sprint-5-bug-003-dynamic-page-size.md`](docs/plans/sprint-5-bug-003-dynamic-page-size.md)  

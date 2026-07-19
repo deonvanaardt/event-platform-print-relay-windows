@@ -11,16 +11,28 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 
 ## [Unreleased]
 
-### Fixed
-
-- Dynamic badge page size from `badge_html` `@page` CSS with `badge_document` format fallback — walk-in prints match designer test size for A6/A5 formats (W-01-S13, BUG-003)
-
 ### Not yet built
 
 - Kiosa brand icons — tray, exe, Start Menu; status-dot overlays (W-01-S12, Sprint 4, FR-001)
 - First signed GitHub Release — blocked on signing provider (SignPath OSS declined 2026-07-18; reapply or paid signing) + Windows verify
 - Physical sign-off Win 10 + 11 (W-01-S10)
 - Full list: [BACKLOG.md](BACKLOG.md)
+
+---
+
+## 0.4.2 — 2026-07-19 — Sprint 5 — BUG-003 dynamic page size
+
+**Stories:** W-01-S13
+
+### Fixed
+
+- Dynamic badge page size from `badge_html` `@page` CSS with `badge_document` format fallback — walk-in prints match designer test size for A6/A5 formats (W-01-S13, BUG-003)
+
+### Added
+
+- `BadgePageDimensionResolver` in Core with xUnit coverage; `relay.log` records `page_width_mm`, `page_height_mm`, `page_size_source` per print job
+- Multi-format test fixtures (A6 landscape, A5 portrait/landscape); Spike `print-html` uses same resolver as production
+- Operator docs: two-box Windows workflow (build VM + print-test PC); verify builds via `build-info.txt` not `--version`
 
 ---
 
