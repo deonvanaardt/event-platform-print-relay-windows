@@ -1,4 +1,4 @@
-using EventPlatform.PrintRelay.Core;
+using EventPlatform.PrintRelay.Core.Printing;
 using Microsoft.Web.WebView2.Core;
 using Microsoft.Web.WebView2.WinForms;
 
@@ -38,14 +38,17 @@ public sealed class WebView2SilentPrinter : IDisposable
     public Task PrintHtmlAsync(
         string html,
         string printerName,
+        BadgePageDimensions dimensions,
         CancellationToken cancellationToken = default)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(html);
         ArgumentException.ThrowIfNullOrWhiteSpace(printerName);
+        ArgumentNullException.ThrowIfNull(dimensions);
 
         return InvokeAsync(() => PrintLoadedContentAsync(
             navigate: webView => webView.CoreWebView2!.NavigateToString(html),
             printerName,
+            dimensions,
             cancellationToken));
     }
 
@@ -164,6 +167,7 @@ public sealed class WebView2SilentPrinter : IDisposable
     private async Task PrintLoadedContentAsync(
         Action<WebView2> navigate,
         string printerName,
+        BadgePageDimensions dimensions,
         CancellationToken cancellationToken)
     {
         if (_webView?.CoreWebView2 is null)
@@ -192,10 +196,10 @@ public sealed class WebView2SilentPrinter : IDisposable
             throw new InvalidOperationException("Failed to load badge HTML in WebView2.");
         }
 
-        ConfigureWebViewForPageLayout();
+        ConfigureWebViewForPageLayout(dimensions);
         await WaitForDocumentReadyAsync(_webView.CoreWebView2).ConfigureAwait(true);
 
-        var settings = CreatePrintSettings(_webView.CoreWebView2.Environment);
+        var settings = CreatePrintSettings(_webView.CoreWebView2.Environment, dimensions);
 
         if (IsPrintToPdfDriver(printerName))
         {
@@ -254,7 +258,8 @@ public sealed class WebView2SilentPrinter : IDisposable
         printerName.Contains("print to pdf", StringComparison.OrdinalIgnoreCase);
 
     private static CoreWebView2PrintSettings CreatePrintSettings(
-        CoreWebView2Environment environment)
+        CoreWebView2Environment environment,
+        BadgePageDimensions dimensions)
     {
         var settings = environment.CreatePrintSettings();
         settings.ShouldPrintBackgrounds = true;
@@ -264,16 +269,16 @@ public sealed class WebView2SilentPrinter : IDisposable
         settings.MarginLeft = 0;
         settings.MarginRight = 0;
         settings.MediaSize = CoreWebView2PrintMediaSize.Custom;
-        settings.PageWidth = RelayConstants.Cr80WidthInches;
-        settings.PageHeight = RelayConstants.Cr80HeightInches;
+        settings.PageWidth = dimensions.WidthInches;
+        settings.PageHeight = dimensions.HeightInches;
         settings.ScaleFactor = 1.0;
         return settings;
     }
 
-    private void ConfigureWebViewForPageLayout()
+    private void ConfigureWebViewForPageLayout(BadgePageDimensions dimensions)
     {
-        var widthPx = (int)Math.Round(RelayConstants.Cr80WidthInches * 96);
-        var heightPx = (int)Math.Round(RelayConstants.Cr80HeightInches * 96);
+        var widthPx = (int)Math.Round(dimensions.WidthInches * 96);
+        var heightPx = (int)Math.Round(dimensions.HeightInches * 96);
 
         _hostForm!.Size = new Size(widthPx, heightPx);
         _webView!.Size = new Size(widthPx, heightPx);

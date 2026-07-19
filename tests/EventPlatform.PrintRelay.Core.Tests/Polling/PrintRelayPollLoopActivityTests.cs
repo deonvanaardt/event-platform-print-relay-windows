@@ -1,5 +1,6 @@
 using EventPlatform.PrintRelay.Core.Diagnostics;
 using EventPlatform.PrintRelay.Core.Polling;
+using EventPlatform.PrintRelay.Core.Printing;
 
 namespace EventPlatform.PrintRelay.Core.Tests.Polling;
 
@@ -37,7 +38,10 @@ public sealed class PrintRelayPollLoopActivityTests
     Assert.Contains(
       sink.Events,
       activity => activity.Kind == RelayActivityKind.PrintCompleted
-        && activity.JobId == "job-activity-1");
+        && activity.JobId == "job-activity-1"
+        && activity.PageWidthMm == 85.6
+        && activity.PageHeightMm == 54.0
+        && activity.PageSizeSource == BadgePageSizeSource.Html);
   }
 
   private static string PendingJobJson(string jobId)
@@ -55,7 +59,7 @@ public sealed class PrintRelayPollLoopActivityTests
             "is_reprint": false,
             "created_at": "2026-06-30T12:00:00.000Z",
             "badge_document": {},
-            "badge_html": "<!DOCTYPE html><html></html>"
+            "badge_html": "<!DOCTYPE html><html><style>@page { size: 85.6mm 54mm; }</style></html>"
           }
         ]
       }
@@ -73,8 +77,11 @@ public sealed class PrintRelayPollLoopActivityTests
   {
     public Task<PrintJobOutcome> ProcessAsync(
       Core.Api.PrintQueuePendingJob job,
-      CancellationToken cancellationToken = default) =>
-        Task.FromResult(PrintJobOutcome.Success());
+      CancellationToken cancellationToken = default)
+    {
+      var dimensions = BadgePageDimensionResolver.Resolve(job.BadgeHtml, job.BadgeDocument);
+      return Task.FromResult(PrintJobOutcome.Success(dimensions));
+    }
   }
 
   private sealed class ActivityRecordingDelay

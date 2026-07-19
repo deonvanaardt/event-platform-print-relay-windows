@@ -2,6 +2,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using EventPlatform.PrintRelay.Core.Diagnostics;
+using EventPlatform.PrintRelay.Core.Printing;
 
 namespace EventPlatform.PrintRelay.Core.Logging;
 
@@ -67,6 +68,9 @@ public sealed class RelayFileLogger : IRelayActivitySink, IDisposable
             PendingJobCount = activityEvent.PendingJobCount,
             FailureMessage = activityEvent.FailureMessage,
             BadgeHtmlPresent = activityEvent.BadgeHtmlPresent ? true : null,
+            PageWidthMm = activityEvent.PageWidthMm,
+            PageHeightMm = activityEvent.PageHeightMm,
+            PageSizeSource = FormatPageSizeSource(activityEvent.PageSizeSource),
         };
 
         var json = JsonSerializer.Serialize(entry, JsonOptions);
@@ -193,6 +197,15 @@ public sealed class RelayFileLogger : IRelayActivitySink, IDisposable
         };
     }
 
+    private static string? FormatPageSizeSource(BadgePageSizeSource? source) =>
+        source switch
+        {
+            BadgePageSizeSource.Html => "html",
+            BadgePageSizeSource.Document => "document",
+            BadgePageSizeSource.Default => "default",
+            _ => null,
+        };
+
     public void Dispose()
     {
         _writer.Dispose();
@@ -236,4 +249,13 @@ internal sealed record RelayLogEntry
 
     [JsonPropertyName("badge_html_present")]
     public bool? BadgeHtmlPresent { get; init; }
+
+    [JsonPropertyName("page_width_mm")]
+    public double? PageWidthMm { get; init; }
+
+    [JsonPropertyName("page_height_mm")]
+    public double? PageHeightMm { get; init; }
+
+    [JsonPropertyName("page_size_source")]
+    public string? PageSizeSource { get; init; }
 }

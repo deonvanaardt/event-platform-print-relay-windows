@@ -80,6 +80,14 @@ Chronological record of **implementation-time** decisions for the Windows print 
 **Alternatives considered:** Full process restart with `--setup` flag — rejected for this fix (heavier UX; in-process loop already designed for restart).  
 **Consequences:** `RelaySettingsStore.DeleteAsync`, `RelayRestartReason.cs`, `RelaySettingsStoreTests`; startup.log lines for restart transitions.
 
+## 2026-07-19 — Dynamic badge page size from `badge_html` / `badge_document` metadata
+
+**Status:** accepted  
+**Context:** BUG-003 — walk-in badges printed smaller than designer test prints because `WebView2SilentPrinter` hardcoded CR80 regardless of template `@page` CSS.  
+**Decision:** `BadgePageDimensionResolver` in Core resolves mm in order: `@page` in `badge_html` → `badge_document.template.canvas_config.format.physicalWidth`/`physicalHeight` → CR80 default. App passes resolved `BadgePageDimensions` to `PrintHtmlAsync` for `PageWidth`/`PageHeight` and viewport px. `PrintJobOutcome` carries dimensions back to poll loop; `relay.log` records `page_width_mm`, `page_height_mm`, `page_size_source` on `PrintCompleted`. No layout rendering from `badge_document`.  
+**Alternatives considered:** Parse dimensions only in App — rejected; keeps business logic in Core and testable on macOS CI. Log inside printer — rejected; poll loop owns job activity.  
+**Consequences:** `BadgePageDimensionResolver.cs`, `WebView2SilentPrinter.cs`, `BadgeHtmlPrintJobProcessor.cs`, `PrintJobOutcome.cs`, `RelayFileLogger.cs`; Spike alignment deferred to Sprint 5 Session 3.
+
 <!-- Add entries above this line, newest first. -->
 
 ## 2026-07-04 — MIT license + code signing policy for SignPath OSS eligibility

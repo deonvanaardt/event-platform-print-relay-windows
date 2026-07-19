@@ -242,10 +242,10 @@ Fix walk-in badges printing **smaller** than designer test prints by replacing h
 
 ### Session 2 — App print path wiring (Mac agent)
 
-- [ ] `WebView2SilentPrinter` accepts resolved dimensions (mm → inches + viewport)
-- [ ] `BadgeHtmlPrintJobProcessor` calls resolver and passes dimensions
-- [ ] Log `page_width_mm`, `page_height_mm`, `page_size_source` on print jobs
-- [ ] Log decision in `DECISIONS.md`
+- [x] `WebView2SilentPrinter` accepts resolved dimensions (mm → inches + viewport)
+- [x] `BadgeHtmlPrintJobProcessor` calls resolver and passes dimensions
+- [x] Log `page_width_mm`, `page_height_mm`, `page_size_source` on print jobs
+- [x] Log decision in `DECISIONS.md`
 
 **Windows verify (one step per reply):** pull → publish → Print test badge (CR80) + staging walk-in on CR80 event; compare to designer test print.
 
@@ -269,7 +269,7 @@ Fix walk-in badges printing **smaller** than designer test prints by replacing h
 
 ## In progress
 
-- **W-01-S13** — Dynamic badge page size (BUG-003): Session 1 — Core resolver + unit tests
+- **W-01-S13** — Dynamic badge page size (BUG-003): Session 3 — Multi-format fixtures + Spike parity + staging doc
 
 ## Done
 
