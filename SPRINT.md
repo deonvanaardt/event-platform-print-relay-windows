@@ -251,16 +251,16 @@ Fix walk-in badges printing **smaller** than designer test prints by replacing h
 
 ### Session 3 — Multi-format fixtures + Spike parity + staging doc (Mac agent)
 
-- [ ] Add `test-badge-a6-landscape.html` fixture (148 × 105 mm)
-- [ ] Align Spike `print-html` with resolver (regression CLI)
-- [ ] Extend resolver tests from `schemas/fixtures/pending-response.valid.json`
-- [ ] Update `docs/STAGING_INTEGRATION.md` dimension sign-off steps
+- [x] Add `test-badge-a6-landscape.html` fixture (148 × 105 mm)
+- [x] Align Spike `print-html` with resolver (regression CLI)
+- [x] Extend resolver tests from `schemas/fixtures/pending-response.valid.json`
+- [x] Update `docs/STAGING_INTEGRATION.md` dimension sign-off steps
 
 **Windows verify:** none until Session 4.
 
 ### Session 4 — Physical sign-off + closure (Mac docs + Windows operator)
 
-- [ ] Windows: CR80 + A6 (or other non-CR80) — walk-in matches designer test size
+- [ ] Windows: all platform template formats — CR80, A6 Landscape, A5 Portrait, A5 Landscape (minimum: CR80 + one non-CR80, e.g. A6 Landscape)
 - [ ] Mark W-01-S13 Done; resolve BUG-003; update `CHANGELOG.md`
 
 ## Stretch (if time remains)
@@ -269,7 +269,7 @@ Fix walk-in badges printing **smaller** than designer test prints by replacing h
 
 ## In progress
 
-- **W-01-S13** — Dynamic badge page size (BUG-003): Session 3 — Multi-format fixtures + Spike parity + staging doc
+- **W-01-S13** — Dynamic badge page size (BUG-003): Session 4 — Physical sign-off + closure
 
 ## Done
 

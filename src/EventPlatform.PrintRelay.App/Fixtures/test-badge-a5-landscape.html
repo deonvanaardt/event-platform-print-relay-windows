@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test Badge</title>
+<style>
+@page {
+  size: 210mm 148mm;
+  margin: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.badge-sheet {
+  position: relative;
+  width: 210mm;
+  height: 148mm;
+  margin: 0;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #111827;
+}
+
+.badge-side {
+  position: absolute;
+  overflow: hidden;
+  left: 0mm;
+  top: 0mm;
+  width: 210mm;
+  height: 148mm;
+  background: #ffffff;
+}
+
+.badge-label {
+  position: absolute;
+  left: 12mm;
+  top: 12mm;
+  right: 12mm;
+  font-size: 18pt;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.badge-desk {
+  position: absolute;
+  left: 12mm;
+  top: 30mm;
+  right: 12mm;
+  font-size: 14pt;
+}
+
+.badge-qr {
+  position: absolute;
+  right: 12mm;
+  bottom: 12mm;
+  width: 32mm;
+  height: 32mm;
+  border: 0.4mm solid #111827;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 9pt;
+  text-align: center;
+}
+
+@media print {
+  html, body {
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background: transparent;
+  }
+
+  .badge-sheet,
+  .badge-side {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
+</style>
+</head>
+<body>
+<div class="badge-sheet">
+  <div class="badge-side">
+    <div class="badge-label">A5 landscape test</div>
+    <div class="badge-desk" id="desk-name">Desk</div>
+    <div class="badge-qr">QR</div>
+  </div>
+</div>
+</body>
+</html>

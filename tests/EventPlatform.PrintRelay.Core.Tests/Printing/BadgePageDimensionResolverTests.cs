@@ -24,6 +24,24 @@ public sealed class BadgePageDimensionResolverTests
         </style>
         """;
 
+    private const string A5PortraitHtmlSnippet = """
+        <style>
+        @page {
+          size: 148mm 210mm;
+          margin: 0;
+        }
+        </style>
+        """;
+
+    private const string A5LandscapeHtmlSnippet = """
+        <style>
+        @page {
+          size: 210mm 148mm;
+          margin: 0;
+        }
+        </style>
+        """;
+
     [Fact]
     public void Resolve_parses_cr80_from_badge_html_atpage()
     {
@@ -41,6 +59,26 @@ public sealed class BadgePageDimensionResolverTests
 
         Assert.Equal(148.0, result.WidthMm);
         Assert.Equal(105.0, result.HeightMm);
+        Assert.Equal(BadgePageSizeSource.Html, result.Source);
+    }
+
+    [Fact]
+    public void Resolve_parses_a5_portrait_from_badge_html_atpage()
+    {
+        var result = BadgePageDimensionResolver.Resolve(A5PortraitHtmlSnippet, null);
+
+        Assert.Equal(148.0, result.WidthMm);
+        Assert.Equal(210.0, result.HeightMm);
+        Assert.Equal(BadgePageSizeSource.Html, result.Source);
+    }
+
+    [Fact]
+    public void Resolve_parses_a5_landscape_from_badge_html_atpage()
+    {
+        var result = BadgePageDimensionResolver.Resolve(A5LandscapeHtmlSnippet, null);
+
+        Assert.Equal(210.0, result.WidthMm);
+        Assert.Equal(148.0, result.HeightMm);
         Assert.Equal(BadgePageSizeSource.Html, result.Source);
     }
 
@@ -169,6 +207,20 @@ public sealed class BadgePageDimensionResolverTests
         Assert.Equal(85.6, result.WidthMm);
         Assert.Equal(54.0, result.HeightMm);
         Assert.Equal(BadgePageSizeSource.Html, result.Source);
+    }
+
+    [Fact]
+    public void Resolve_uses_platform_fixture_badge_document_when_atpage_stripped()
+    {
+        var fixture = LoadPendingResponseFixture();
+        var job = fixture.GetProperty("jobs")[0];
+        var badgeDocument = job.GetProperty("badge_document");
+
+        var result = BadgePageDimensionResolver.Resolve("<html><body></body></html>", badgeDocument);
+
+        Assert.Equal(148.0, result.WidthMm);
+        Assert.Equal(105.0, result.HeightMm);
+        Assert.Equal(BadgePageSizeSource.Document, result.Source);
     }
 
     [Fact]
