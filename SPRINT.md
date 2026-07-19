@@ -234,9 +234,9 @@ Fix walk-in badges printing **smaller** than designer test prints by replacing h
 
 ### Session 1 — Core resolver + unit tests (Mac agent)
 
-- [ ] Add `BadgePageDimensions` + `BadgePageDimensionResolver` in Core
-- [ ] Parse `@page { size: Wmm Hmm; }` from `badge_html`; fallback `badge_document` format; fallback CR80
-- [ ] xUnit tests (macOS CI) — no App/WebView2 changes
+- [x] Add `BadgePageDimensions` + `BadgePageDimensionResolver` in Core
+- [x] Parse `@page { size: Wmm Hmm; }` from `badge_html`; fallback `badge_document` format; fallback CR80
+- [x] xUnit tests (macOS CI) — no App/WebView2 changes
 
 **Windows verify:** none (Core-only).
 
@@ -269,7 +269,7 @@ Fix walk-in badges printing **smaller** than designer test prints by replacing h
 
 ## In progress
 
-_(none — update when Session 1 starts)_
+- **W-01-S13** — Dynamic badge page size (BUG-003): Session 1 — Core resolver + unit tests
 
 ## Done
 
