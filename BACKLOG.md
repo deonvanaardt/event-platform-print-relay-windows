@@ -34,6 +34,7 @@ Sprint-ready stories for the **event-platform-print-relay-windows** repository. 
 | W-01-S11 | SignPath OSS signing CI (M3) | Signed `.msi` via SignPath; customer-ready GitHub Release |
 | W-01-S10 | Physical sign-off (M4) | Win 10 + 11 with USB/network printer; version matrix in README |
 | W-01-S12 | Kiosa brand icons (M2 polish) | Kiosa icon from `kiosa-marketing/brand-pack`; tray overlays; exe + Start Menu |
+| W-01-S13 | Dynamic badge page size (BUG-003) | Resolve mm from `badge_html` `@page` / `badge_document`; WYSIWYG with designer test print |
 
 ### W-01-S03 — JSON Schema pinning + contract tests
 
@@ -138,6 +139,21 @@ Sprint-ready stories for the **event-platform-print-relay-windows** repository. 
   - Icon readable at 16×16 in tray overflow area.
   - `scripts/generate-app-icons.sh` documents regeneration from SVG source.
 - **Out of scope:** WiX installer banner/dialog artwork; product rename; `--about` custom logo.
+
+### W-01-S13 — Dynamic badge page size (BUG-003)
+
+- **Origin:** [BUG-003](BUGS.md#bug-003--relay-walk-in-badge-prints-smaller-than-designer-test-print-hardcoded-page-size) · platform BUG-011 · Sprint 5
+- **PRD:** §8.2 (silent print dimensions); W-01-S06 acceptance (page size from HTML `@page`)
+- **Dependencies:** W-01-S06 (print path exists); platform staging with `badge_html` + `badge_document`
+- **Plan:** [`docs/plans/sprint-5-bug-003-dynamic-page-size.md`](docs/plans/sprint-5-bug-003-dynamic-page-size.md)
+- **Acceptance:**
+  - `BadgePageDimensionResolver` in Core: `@page` mm parse → `badge_document` `physicalWidth`/`physicalHeight` → CR80 default.
+  - No client-side layout from `badge_document` — metadata only for page size.
+  - `WebView2SilentPrinter` uses resolved dimensions for `PrintToPdfAsync` page size and viewport.
+  - Walk-in badge **physical size** matches designer **Print test badge** on Windows for CR80 and at least one non-CR80 format (e.g. A6 landscape).
+  - `relay.log` records resolved width, height, and source per print job.
+  - xUnit coverage for resolver on macOS CI.
+- **Out of scope:** Node relay BUG-011 fix (platform repo); MSI rebuild; printer driver scaling overrides.
 
 ---
 

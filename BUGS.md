@@ -63,7 +63,38 @@ When a bug becomes sprint work, add the story ID to the bug entry (e.g. `W-01-S1
 
 ## Open
 
-<!-- Add entries above this line, newest first. Next ID: BUG-003 -->
+<!-- Add entries above this line, newest first. Next ID: BUG-004 -->
+
+### BUG-003 — Relay walk-in badge prints smaller than designer test print (hardcoded page size)
+
+**Status:** open  
+**Reported:** 2026-07-19  
+**App version:** 0.4.0 (current published build)  
+**Environment:** Windows print relay (WebView2 → PrintToPdf → Pdfium spool)  
+**Story:** W-01-S13 (Sprint 5)  
+**Plan:** [`docs/plans/sprint-5-bug-003-dynamic-page-size.md`](docs/plans/sprint-5-bug-003-dynamic-page-size.md)  
+**Related:** event-management-platform **BUG-011**
+
+**Summary:** Walk-in badges printed by the Windows relay come out **smaller** than the designer **Print test badge** for the same event template — likely because the relay ignores per-template page dimensions and always uses CR80.
+
+**Steps to reproduce:**
+1. In platform admin, open **Badge designer** for an event and note the template format (e.g. A6 landscape, CR80, custom mm).
+2. Click **Print test badge** in the designer — confirm correct physical size on paper.
+3. Configure the Windows print relay for that desk (setup code + printer).
+4. Complete a **walk-in** check-in for the same event and let the relay print the badge (or reprint from check-in).
+5. Compare the walk-in badge to the designer test print.
+
+**Expected:** Walk-in badge matches designer test print — same physical dimensions (WYSIWYG). Relay should honour the template size embedded in server `badge_html` (`@page` mm CSS) or, at minimum, `badge_document.template.canvas_config.format.physicalWidth` / `physicalHeight` (same metadata the Node relay uses via `resolveBadgeFormatDimensions`).
+
+**Actual:** Walk-in badge prints **smaller** than the designer test print (reported on platform as BUG-011; may reproduce on Windows relay).
+
+**Notes:**
+- **Platform BUG-011** compares designer `window.print()` (browser `@page` CSS) vs Node relay `page.pdf()` with explicit mm from `badge_document`. Windows relay uses a **third pipeline**: load `badge_html` → `CoreWebView2.PrintToPdfAsync` → `PdfiumPrinter` spool — no `window.print()`.
+- `WebView2SilentPrinter.CreatePrintSettings` and `ConfigureWebViewForPageLayout` **hardcode** `RelayConstants.Cr80WidthInches` / `Cr80HeightInches` regardless of template or `@page` in `badge_html` (`src/EventPlatform.PrintRelay.App/Printing/WebView2SilentPrinter.cs`). `badge_document` is validated but **not** used for sizing.
+- Backlog acceptance for W-01-S06 says dimensions from HTML `@page` / CSS; implementation does not parse `@page` — CR80 only.
+- Non-CR80 templates (A6, A5, custom mm) are especially likely to scale down when forced into a CR80 PDF page.
+- Capture for triage: template format id + mm from designer; relay `relay.log` job line; physical measurements of both prints; whether Node relay on another desk shows the same symptom.
+- Fix direction (not implemented): derive page width/height from `badge_html` `@page` and/or `badge_document` format fields before `PrintToPdfAsync`; align viewport with resolved mm; regression fixtures per format preset.
 
 ---
 
