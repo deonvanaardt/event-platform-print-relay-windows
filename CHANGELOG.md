@@ -11,13 +11,18 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 
 ## [Unreleased]
 
-### Added
+### Not yet built
 
-- SignPath OSS signing in `release.yml`: conditional `signpath/github-action-submit-signing-request`, signed MSI on tag release when secrets set, unsigned prerelease fallback (W-01-S11)
-- `docs/SIGNPATH.md` operator runbook: OSS application, dashboard setup, GitHub secrets, first signed `v0.4.0` release steps (W-01-S11)
-- SignPath OSS approval prep: MIT `LICENSE`, `docs/CODE_SIGNING_POLICY.md`, tag release body with SignPath attribution, `docs/SIGNPATH_OSS_APPROVAL.md` (W-01-S11)
-- Signed MSI verification section in `docs/INSTALLER.md` (`Get-AuthenticodeSignature`) (W-01-S11)
-- App version `0.4.0` (W-01-S11)
+- Kiosa brand icons — tray, exe, Start Menu; status-dot overlays (W-01-S12, Sprint 4, FR-001)
+- First signed GitHub Release — blocked on signing provider (SignPath OSS declined 2026-07-18; reapply or paid signing) + Windows verify
+- Physical sign-off Win 10 + 11 (W-01-S10)
+- Full list: [BACKLOG.md](BACKLOG.md)
+
+---
+
+## 0.4.1 — 2026-07-19 — MVP test fixes
+
+**Stories:** W-01-S08 (bug fixes from venue testing)
 
 ### Fixed
 
@@ -25,12 +30,23 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 - Re-run setup wizard restarts relay and opens setup flow again (`RelayRestartReason`, process restart) (BUG-001, W-01-S08)
 - Setup wizard brings itself to the foreground when shown after process restart (BUG-001)
 
-### Not yet built
+### Added
 
-- Kiosa brand icons — tray, exe, Start Menu; status-dot overlays (W-01-S12, Sprint 4, FR-001)
-- First signed GitHub Release (`v0.4.0`) — blocked on signing provider (SignPath OSS declined 2026-07-18; reapply or paid signing) + Windows verify
-- Physical sign-off Win 10 + 11 (W-01-S10)
-- Full list: [BACKLOG.md](BACKLOG.md)
+- App version `0.4.1`; GitHub Release MSI for multi-machine testing
+
+---
+
+## 0.4.0 — 2026-07-18 — Sprint 3 — SignPath signing CI
+
+**Stories:** W-01-S11 (CI wired; signing blocked — SignPath OSS declined)
+
+### Added
+
+- SignPath OSS signing in `release.yml`: conditional `signpath/github-action-submit-signing-request`, signed MSI on tag release when secrets set, unsigned prerelease fallback (W-01-S11)
+- `docs/SIGNPATH.md` operator runbook: OSS application, dashboard setup, GitHub secrets, first signed release steps (W-01-S11)
+- SignPath OSS approval prep: MIT `LICENSE`, `docs/CODE_SIGNING_POLICY.md`, tag release body with SignPath attribution, `docs/SIGNPATH_OSS_APPROVAL.md` (W-01-S11)
+- Signed MSI verification section in `docs/INSTALLER.md` (`Get-AuthenticodeSignature`) (W-01-S11)
+- App version `0.4.0`; unsigned prerelease MSI on GitHub Releases
 
 ---
 
