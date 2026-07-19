@@ -59,9 +59,26 @@ When a request is approved for implementation, create or reference a `W-01-Sxx` 
 
 ## Proposed / under review
 
-<!-- Add entries above this line, newest first. Next ID: FR-002 -->
+<!-- Add entries above this line, newest first. Next ID: FR-003 -->
 
-_(none)_
+### FR-002 — Version number on installer window
+
+**Status:** proposed  
+**Requested:** 2026-07-19  
+**Requested by:** internal  
+
+**Summary:** Show the app/product version (e.g. `0.4.1`) on the MSI installer UI so operators and support can confirm which build they are installing without opening the installed exe or GitHub.
+
+**User story:** As a desk operator or IT person installing Print Relay, I want the installer window to show the version number so I can verify I have the correct release before or during setup.
+
+**Acceptance hints:**
+- WiX installer UI (e.g. welcome or finish dialog, or a consistent footer) displays the product version matching `EventPlatform.PrintRelay.App` / MSI `ProductVersion`.
+- Version visible on a default install path without opening logs or file Properties.
+- Documented in `docs/INSTALLER.md` acceptance checklist.
+
+**Notes:** WiX `Package.wxs` / `WixUI_Minimal` — likely `Product` `@Version` or `!(bind.FileVersion.EventPlatform.PrintRelay.exe)` in a `WixVariable` or custom dialog text. Related: PRD installer finish UI (W-01-S09); Settings screen already shows app version post-install.
+
+---
 
 ---
 

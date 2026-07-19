@@ -63,13 +63,34 @@ When a bug becomes sprint work, add the story ID to the bug entry (e.g. `W-01-S1
 
 ## Open
 
-<!-- Add entries above this line, newest first. Next ID: BUG-003 -->
+<!-- Add entries above this line, newest first. Next ID: BUG-004 -->
+
+_(none)_
 
 ---
 
 ## Resolved
 
 <!-- Move fixed/wontfix/duplicate entries here, newest first. Keep original ID. -->
+
+### BUG-003 — Relay walk-in badge prints smaller than designer test print (hardcoded page size)
+
+**Status:** fixed  
+**Reported:** 2026-07-19  
+**Fixed:** 2026-07-19  
+**App version:** 0.4.2  
+**Environment:** Windows print relay (WebView2 → PrintToPdf → Pdfium spool); print-test PC  
+**Story:** W-01-S13 (Sprint 5)  
+**Plan:** [`docs/plans/sprint-5-bug-003-dynamic-page-size.md`](docs/plans/sprint-5-bug-003-dynamic-page-size.md)  
+**Related:** event-management-platform **BUG-011** — may still affect Node relay; Windows path fixed
+
+**Summary:** Walk-in badges printed by the Windows relay came out **smaller** than the designer **Print test badge** for non-CR80 templates because `WebView2SilentPrinter` hardcoded CR80 page size.
+
+**Fix:** `BadgePageDimensionResolver` in Core resolves mm from `@page` in `badge_html` → `badge_document` format fields → CR80 default. App passes resolved dimensions to `PrintToPdfAsync` and logs `page_width_mm`, `page_height_mm`, `page_size_source` per job.
+
+**Verification (2026-07-19):** Print-test PC, app 0.4.1 build from `85d99f5`. A6 Landscape, A5 Portrait, A5 Landscape — walk-in matches designer test physical size. `relay.log` confirms 148×105, 148×210, 210×148 mm with `page_size_source: html`. CR80 physical not tested (printer cannot print CR80 stock).
+
+---
 
 ### BUG-002 — Copy diagnostics fails with STA thread error
 

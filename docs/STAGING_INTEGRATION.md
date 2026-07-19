@@ -59,6 +59,46 @@ Log date, platform version/commit, Windows app version, printer model, and pass/
 |------|-------------|--------|-------|
 | 2026-07-03 | 0.2.0 | **Pass** | Staging E2E on new physical Windows box — setup, test print, check-in job, `printed` on platform |
 
+## Dimension sign-off (BUG-003 / W-01-S13)
+
+After deploying the dynamic page-size fix (W-01-S13), confirm walk-in relay prints match designer **Print test badge** physical size — not smaller.
+
+### Prerequisites
+
+- Relay build with `BadgePageDimensionResolver` wired (Session 2+)
+- **Build VM:** `git pull` → `dotnet publish` → zip `artifacts\app` (see `.cursor/rules/git-sync.mdc`)
+- **Print-test PC:** extract zip, run `.exe` — physical compares happen here only (no git/build on that machine)
+- Staging events using each template format you need to support (platform badge designer options):
+  - **CR80** — 85.6 × 54 mm
+  - **A6 Landscape** — 148 × 105 mm
+  - **A5 Portrait** — 148 × 210 mm
+  - **A5 Landscape** — 210 × 148 mm
+- Minimum for W-01-S13 closure: **CR80** plus **at least one** non-CR80 format (recommend **A6 Landscape**). Full sign-off: compare all four formats you use in production.
+- Ruler or overlay for side-by-side comparison
+
+### Expected `relay.log` dimensions
+
+| Template | `page_width_mm` | `page_height_mm` | `page_size_source` |
+|---|---|---|---|
+| CR80 | 85.6 | 54 | `html` |
+| A6 Landscape | 148 | 105 | `html` |
+| A5 Portrait | 148 | 210 | `html` |
+| A5 Landscape | 210 | 148 | `html` |
+
+### Steps
+
+1. **Build and run** the relay app. Confirm setup, printer, and polling are healthy (Status checklist all green).
+2. Enable **Show technical details** in the Status panel.
+3. For **each template format** below, create or use a staging event with that badge template. From badge designer, run **Print test badge**. Then check in a delegate (or reprint) so the relay prints the same template. Compare physical size: walk-in badge must match designer test print — not smaller.
+   - **CR80** (85.6 × 54 mm)
+   - **A6 Landscape** (148 × 105 mm)
+   - **A5 Portrait** (148 × 210 mm) — optional but recommended
+   - **A5 Landscape** (210 × 148 mm) — optional but recommended
+4. **Log check** — open `%AppData%\EventPlatform\PrintRelay\logs\relay.log` (or **Export diagnostics**). On `PrintCompleted` lines, confirm `page_width_mm`, `page_height_mm`, and `page_size_source` match the table above for each format tested.
+5. **Record results** in the table below when closing W-01-S13.
+
+| 2026-07-19 | 0.4.1 (`85d99f5`) | N/A | **Pass** | **Pass** | **Pass** | Print-test PC; CR80 N/A (printer cannot print CR80 stock). `relay.log` confirms mm + `page_size_source: html`. |
+
 ## Related
 
 - Platform smoke: `pnpm smoke:print-queue` (from event-management-platform)

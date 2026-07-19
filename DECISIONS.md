@@ -34,6 +34,22 @@ Chronological record of **implementation-time** decisions for the Windows print 
 
 ## Log
 
+## 2026-07-19 — Two Windows machines: build VM vs print-test PC
+
+**Status:** accepted  
+**Context:** Operator has a Windows VM on Mac (git + .NET, no printer) and a separate physical Windows PC (printer, insufficient resources for git/build). Prior rules assumed one Windows box did pull, publish, and physical print.  
+**Decision:** **Build VM** — `git pull`, `dotnet publish`, verify via `build-info.txt`, zip `artifacts\app`. **Print-test PC** — extract zip, run `.exe`, physical staging sign-off and `relay.log` only; no git or SDK. Agent handoff steps must label which machine.  
+**Alternatives considered:** Install git/SDK on print-test PC — rejected (hardware constraints). Build on Mac cross-compile only — rejected; WebView2/print path still needs Windows publish.  
+**Consequences:** `.cursor/rules/windows-operator-steps.mdc`, `.cursor/rules/git-sync.mdc`, `conventions.mdc`.
+
+## 2026-07-19 — WinExe `--version` is blank in PowerShell (use build-info.txt)
+
+**Status:** accepted  
+**Context:** Operator repeatedly runs `EventPlatform.PrintRelay.exe --version` after publish and sees no output — looks like a failed build. App is `OutputType` WinExe; `Console.WriteLine` in `--version` has no attached console in PowerShell.  
+**Decision:** Operator verify step uses `Get-Content build-info.txt` + `FileVersion` on the exe. Document in `git-sync.mdc` and `windows-operator-steps.mdc`. Do not treat blank `--version` as publish failure.  
+**Alternatives considered:** Change to `OutputType` Exe — rejected (would flash console on normal tray launch). `AllocConsole()` for `--version` only — deferred.  
+**Consequences:** Rules + README; `--version` flag kept for possible future fix.
+
 ## 2026-07-18 — Diagnostics export to file, not clipboard
 
 **Status:** accepted (supersedes same-day “Copy diagnostics on Status panel” entry for export mechanism)  
@@ -79,6 +95,22 @@ Chronological record of **implementation-time** decisions for the Windows print 
 **Decision:** Introduce `RelayRestartReason` (`Reload` vs `ResetSetup`). Settings UI signals intent only; `Program.RunAsync` deletes settings via `RelaySettingsStore.DeleteAsync` **after** the tray context disposes. `RequestRestart` closes child forms and defers `ExitThread()` with `BeginInvoke` on the sync form.  
 **Alternatives considered:** Full process restart with `--setup` flag — rejected for this fix (heavier UX; in-process loop already designed for restart).  
 **Consequences:** `RelaySettingsStore.DeleteAsync`, `RelayRestartReason.cs`, `RelaySettingsStoreTests`; startup.log lines for restart transitions.
+
+## 2026-07-19 — Spike `print-html` uses Core dimension resolver
+
+**Status:** accepted  
+**Context:** Sprint 5 Session 3 — Spike `print-html` still hardcoded A5 page size while production App resolved dimensions per job (BUG-003 fix).  
+**Decision:** Spike `print-html` calls `BadgePageDimensionResolver.Resolve(html, null)` and passes `BadgePageDimensions` to `WebView2SilentPrinter.PrintHtmlAsync`. `print-test` keeps the bundled A5 fixture for Gate 3 regression.  
+**Alternatives considered:** CLI `--width-mm`/`--height-mm` overrides — deferred; auto-resolve from `@page` is sufficient for regression.  
+**Consequences:** `EventPlatform.PrintRelay.Spike` `Program.cs`, `WebView2SilentPrinter.cs`; `test-badge-a6-landscape.html` in App and Spike `Fixtures/`.
+
+## 2026-07-19 — Dynamic badge page size from `badge_html` / `badge_document` metadata
+
+**Status:** accepted  
+**Context:** BUG-003 — walk-in badges printed smaller than designer test prints because `WebView2SilentPrinter` hardcoded CR80 regardless of template `@page` CSS.  
+**Decision:** `BadgePageDimensionResolver` in Core resolves mm in order: `@page` in `badge_html` → `badge_document.template.canvas_config.format.physicalWidth`/`physicalHeight` → CR80 default. App passes resolved `BadgePageDimensions` to `PrintHtmlAsync` for `PageWidth`/`PageHeight` and viewport px. `PrintJobOutcome` carries dimensions back to poll loop; `relay.log` records `page_width_mm`, `page_height_mm`, `page_size_source` on `PrintCompleted`. No layout rendering from `badge_document`.  
+**Alternatives considered:** Parse dimensions only in App — rejected; keeps business logic in Core and testable on macOS CI. Log inside printer — rejected; poll loop owns job activity.  
+**Consequences:** `BadgePageDimensionResolver.cs`, `WebView2SilentPrinter.cs`, `BadgeHtmlPrintJobProcessor.cs`, `PrintJobOutcome.cs`, `RelayFileLogger.cs`.
 
 <!-- Add entries above this line, newest first. -->
 

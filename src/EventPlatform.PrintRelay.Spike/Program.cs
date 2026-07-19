@@ -1,3 +1,4 @@
+using EventPlatform.PrintRelay.Core.Printing;
 using EventPlatform.PrintRelay.Spike.Printing;
 
 namespace EventPlatform.PrintRelay.Spike;
@@ -100,12 +101,16 @@ internal static class Program
         }
 
         var html = await File.ReadAllTextAsync(filePath).ConfigureAwait(true);
+        var dimensions = BadgePageDimensionResolver.Resolve(html, badgeDocument: null);
+
+        Console.WriteLine(
+            $"Resolved page: {dimensions.WidthMm} x {dimensions.HeightMm} mm (source: {dimensions.Source.ToString().ToLowerInvariant()})");
 
         Console.WriteLine("Starting WebView2...");
         using var printer = new WebView2SilentPrinter();
 
         Console.WriteLine($"Loading HTML from \"{filePath}\"...");
-        await printer.PrintHtmlAsync(html, printerName).ConfigureAwait(true);
+        await printer.PrintHtmlAsync(html, printerName, dimensions).ConfigureAwait(true);
 
         Console.WriteLine($"Printed HTML from \"{filePath}\" to \"{printerName}\".");
         return 0;
@@ -153,6 +158,8 @@ internal static class Program
               list-printers
               print-test --printer "<name>" [--desk-name "<name>"]
               print-html --printer "<name>" --file <path>
+
+            print-html resolves page size from @page CSS in the HTML file (same resolver as production).
 
             Gate 3 validation (Windows VM or hardware):
               1. dotnet run --project src/EventPlatform.PrintRelay.Spike -- list-printers

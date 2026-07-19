@@ -3,6 +3,7 @@ using EventPlatform.PrintRelay.App.Printing;
 using EventPlatform.PrintRelay.Core.Diagnostics;
 using EventPlatform.PrintRelay.Core.Logging;
 using EventPlatform.PrintRelay.Core.Polling;
+using EventPlatform.PrintRelay.Core.Printing;
 using EventPlatform.PrintRelay.Core.Settings;
 using Microsoft.Web.WebView2.Core;
 
@@ -154,7 +155,8 @@ internal sealed class RelayRuntime : IDisposable
     public async Task PrintTestBadgeAsync()
     {
         var html = TestBadgeHtmlLoader.Load(Settings.DeskName);
-        await Printer.PrintHtmlAsync(html, Settings.PrinterName, _cancellation.Token)
+        var dimensions = BadgePageDimensionResolver.Resolve(html, badgeDocument: null);
+        await Printer.PrintHtmlAsync(html, Settings.PrinterName, dimensions, _cancellation.Token)
             .ConfigureAwait(true);
 
         ActivitySink.Record(new RelayActivityEvent

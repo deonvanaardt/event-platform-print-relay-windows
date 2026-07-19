@@ -210,3 +210,82 @@ _(none yet)_
 - **Tray approach:** Kiosa icon + coloured status dot overlay (not separate icon files per state)
 - **CI impact:** none — Core tests unchanged; `release.yml` picks up new exe icon on next tag automatically
 - **Handoff:** Mac agent pushes after each session; Windows operator verifies one step at a time per `windows-operator-steps.mdc`
+
+---
+
+# Sprint 5 — BUG-003 dynamic page size (W-01-S13) — **CLOSED**
+
+**Dates:** 2026-07-19 → 2026-07-19  
+**Epic:** [W-01 — Windows print relay MVP](BACKLOG.md#w-01--windows-print-relay-mvp)  
+**Phase:** [Phase 1 — M1](IMPLEMENTATION_PLAN.md#phase-1--m1-staging-integration) print-path fix (post-ship)  
+**Bug:** [BUG-003](BUGS.md#bug-003--relay-walk-in-badge-prints-smaller-than-designer-test-print-hardcoded-page-size) · platform **BUG-011**  
+**Story:** **W-01-S13** — Dynamic badge page size from `badge_html` / `badge_document`  
+**Plan:** [`docs/plans/sprint-5-bug-003-dynamic-page-size.md`](docs/plans/sprint-5-bug-003-dynamic-page-size.md)
+
+## Goal
+
+Fix walk-in badges printing **smaller** than designer test prints by replacing hardcoded CR80 page size in `WebView2SilentPrinter` with per-job dimensions resolved from server `badge_html` (`@page` mm CSS), with `badge_document` format fields as fallback.
+
+**Exit:** Windows physical compare passed for A6 Landscape, A5 Portrait, and A5 Landscape on print-test PC (2026-07-19). CR80 physical N/A — test printer cannot print CR80 stock; resolver + log fields verified for non-CR80 formats. BUG-003 resolved.
+
+## In scope (Sprint 5)
+
+- [x] **W-01-S13** — Dynamic badge page size (BUG-003)
+
+### Session 1 — Core resolver + unit tests (Mac agent)
+
+- [x] Add `BadgePageDimensions` + `BadgePageDimensionResolver` in Core
+- [x] Parse `@page { size: Wmm Hmm; }` from `badge_html`; fallback `badge_document` format; fallback CR80
+- [x] xUnit tests (macOS CI) — no App/WebView2 changes
+
+**Windows verify:** none (Core-only).
+
+### Session 2 — App print path wiring (Mac agent)
+
+- [x] `WebView2SilentPrinter` accepts resolved dimensions (mm → inches + viewport)
+- [x] `BadgeHtmlPrintJobProcessor` calls resolver and passes dimensions
+- [x] Log `page_width_mm`, `page_height_mm`, `page_size_source` on print jobs
+- [x] Log decision in `DECISIONS.md`
+
+**Windows verify (one step per reply):** pull → publish → Print test badge (CR80) + staging walk-in on CR80 event; compare to designer test print.
+
+### Session 3 — Multi-format fixtures + Spike parity + staging doc (Mac agent)
+
+- [x] Add `test-badge-a6-landscape.html` fixture (148 × 105 mm)
+- [x] Align Spike `print-html` with resolver (regression CLI)
+- [x] Extend resolver tests from `schemas/fixtures/pending-response.valid.json`
+- [x] Update `docs/STAGING_INTEGRATION.md` dimension sign-off steps
+
+**Windows verify:** none until Session 4.
+
+### Session 4 — Physical sign-off + closure (Mac docs + Windows operator)
+
+- [x] Windows: A6 Landscape, A5 Portrait, A5 Landscape — walk-in matches designer test size (print-test PC, app 0.4.1, 2026-07-19)
+- [x] CR80 physical — N/A (printer cannot print CR80 stock); non-CR80 sign-off satisfies W-01-S13 minimum
+- [x] Mark W-01-S13 Done; resolve BUG-003; update `CHANGELOG.md`
+
+## Stretch (if time remains)
+
+- [ ] Tray **Print test badge** menu picks format from last job's resolved size (today: CR80 fixture only)
+
+## In progress
+
+_(none)_
+
+## Done
+
+- **W-01-S13** — Dynamic badge page size (BUG-003): Core resolver, App wiring, Spike parity, physical sign-off A6/A5 on print-test PC (2026-07-19)
+
+## Out of scope this sprint
+
+- Client-side badge layout from `badge_document` JSON
+- Platform Node relay fix for BUG-011 (separate repo)
+- MSI / release tag (app fix ships on next publish)
+- SignPath signing (Sprint 3)
+
+## Blockers / notes
+
+- **2026-07-19:** Physical sign-off on print-test PC — A6 Landscape, A5 Portrait, A5 Landscape **pass**; `relay.log` shows correct `page_width_mm` / `page_size_source: html`. CR80 not tested on hardware (printer cannot print CR80 stock).
+- Runs **in parallel** with Sprint 3 (signing) and Sprint 4 (Kiosa icons)
+- Should complete **before** W-01-S10 physical sign-off matrix if print size was blocking confidence
+- Full plan: [`docs/plans/sprint-5-bug-003-dynamic-page-size.md`](docs/plans/sprint-5-bug-003-dynamic-page-size.md)

@@ -1,6 +1,7 @@
 using EventPlatform.PrintRelay.App.Printing;
 using EventPlatform.PrintRelay.Core.Api;
 using EventPlatform.PrintRelay.Core.Polling;
+using EventPlatform.PrintRelay.Core.Printing;
 
 namespace EventPlatform.PrintRelay.App.Polling;
 
@@ -29,11 +30,13 @@ public sealed class BadgeHtmlPrintJobProcessor : IPrintJobProcessor
 
         try
         {
+            var dimensions = BadgePageDimensionResolver.Resolve(job.BadgeHtml, job.BadgeDocument);
+
             await _printer
-                .PrintHtmlAsync(job.BadgeHtml, _printerName, cancellationToken)
+                .PrintHtmlAsync(job.BadgeHtml, _printerName, dimensions, cancellationToken)
                 .ConfigureAwait(false);
 
-            return PrintJobOutcome.Success();
+            return PrintJobOutcome.Success(dimensions);
         }
         catch (Exception)
         {

@@ -154,6 +154,9 @@ public sealed class PrintRelayPollLoop
                     DeskId = job.DeskId,
                     EventId = job.EventId,
                     RegistrationId = job.RegistrationId,
+                    PageWidthMm = outcome.PageDimensions?.WidthMm,
+                    PageHeightMm = outcome.PageDimensions?.HeightMm,
+                    PageSizeSource = outcome.PageDimensions?.Source,
                 });
 
                 await TryCompleteJobAsync(job.Id, cancellationToken).ConfigureAwait(false);

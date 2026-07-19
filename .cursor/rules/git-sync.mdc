@@ -3,11 +3,18 @@ description: When the agent commits/pushes; how Mac and Windows stay on the same
 alwaysApply: true
 ---
 
-# Git sync — Mac (agent) ↔ GitHub ↔ Windows (testing)
+# Git sync — Mac (agent) ↔ GitHub ↔ Windows (build + print-test)
 
-This repo is edited on **macOS** (agent) and tested on **Windows** (operator). GitHub is the handoff. `git pull` on Windows only works after the agent **pushes**.
+This repo is edited on **macOS** (agent). Windows work uses **two machines**:
 
-**Default branch for active work:** `feature/sprint-1-m1` (check `git branch` if unsure).
+| Machine | Git / build | Physical prints |
+|---|---|---|
+| **Build VM** (Windows VM on Mac) | Yes — pull, publish, zip | No printer |
+| **Print-test PC** (physical box) | No — receives zip only | Yes — staging sign-off |
+
+GitHub is the handoff from Mac to the **build VM**. The **print-test PC** gets `artifacts\app` as a zip — never `git pull`.
+
+**Default branch for active work:** check `git branch` on the build VM (e.g. `bug-fixes`, `feature/sprint-1-m1`).
 
 ---
 
@@ -32,23 +39,23 @@ Use one commit per logical fix/feature. Message: what/why (not a file list).
 
 1. **Branch:** e.g. `feature/sprint-1-m1`
 2. **Commit:** short SHA + subject line, e.g. `cb22916 Fix tray startup deadlock…`
-3. **Reminder:** Windows sync is **one step at a time** — first reply gives pull only; wait for operator report before publish/run (see `windows-operator-steps.mdc`).
+3. **Reminder:** Build VM sync is **one step at a time** — first reply gives pull only; wait for operator report before publish/zip (see `windows-operator-steps.mdc`). Physical prints happen on the **print-test PC** after zip transfer.
 
 Core-only / tests / docs-only changes: push is optional; say **“Not pushed — Windows exe unchanged”** or push if bundled with App changes in the same session.
 
 ---
 
-## Operator — sync Windows before every test
+## Build VM — sync and publish before every test
 
-Run in **PowerShell** on the Windows PC (`C:\Users\Deon\event-platform-print-relay-windows` or your clone path).
+Run in **PowerShell** on the **build VM** (`C:\Users\Deon\event-platform-print-relay-windows` or your clone path).
 
 ### 1. Pull latest (required after agent says it pushed)
 
 ```powershell
 cd C:\Users\Deon\event-platform-print-relay-windows
 git fetch origin
-git checkout feature/sprint-1-m1
-git pull origin feature/sprint-1-m1
+git checkout <branch-agent-gave-you>
+git pull origin <branch-agent-gave-you>
 git log -1 --oneline
 ```
 
@@ -82,27 +89,89 @@ At least one line must print `OK …`. If none do, the publish did not bundle Pd
 
 ### 4. Verify build (safe — no dialog)
 
+**Do not rely on `--version` in PowerShell** — `EventPlatform.PrintRelay.App` is `OutputType` **WinExe** (GUI subsystem). `Console.WriteLine` in `--version` has no attached console, so PowerShell often shows **no output** even when the exe exits 0. This is expected; not a failed build.
+
+Use these instead:
+
 ```powershell
-.\artifacts\app\EventPlatform.PrintRelay.exe --version
-(Get-Item .\artifacts\app\EventPlatform.PrintRelay.exe).VersionInfo.FileVersion
 Get-Content .\artifacts\app\build-info.txt
+(Get-Item .\artifacts\app\EventPlatform.PrintRelay.exe).VersionInfo.FileVersion
 ```
 
-Use **`--version`** (console text). Avoid **`--about`** unless troubleshooting UI.
+Optional (may still be blank in PowerShell):
 
-### 5. Run
+```powershell
+.\artifacts\app\EventPlatform.PrintRelay.exe --version
+```
+
+Avoid **`--about`** unless troubleshooting UI (shows a dialog).
+
+### 5. Zip for print-test PC
+
+```powershell
+Compress-Archive -Path artifacts\app\* -DestinationPath artifacts\print-relay-build.zip -Force
+```
+
+Copy `artifacts\print-relay-build.zip` to the print-test PC (USB, cloud, or network share). On the print-test PC, extract to a fixed folder (e.g. `C:\PrintRelay`) and run the `.exe` from there.
+
+---
+
+## Print-test PC — run transferred build (no git)
+
+The print-test PC does **not** clone the repo or run `dotnet publish`. It only runs the extracted publish output.
+
+### 1. Extract (first time or after each new zip)
+
+```powershell
+Expand-Archive -Path .\print-relay-build.zip -DestinationPath C:\PrintRelay -Force
+```
+
+Adjust paths if your zip lands elsewhere.
+
+### 2. Stop old relay before replacing files
+
+```powershell
+taskkill /IM EventPlatform.PrintRelay.exe /F
+```
+
+Then extract again (overwrites files in `C:\PrintRelay`).
+
+### 3. Verify build matches build VM
+
+**Do not rely on `--version` in PowerShell** — WinExe has no console; output is often blank. Use:
+
+```powershell
+Get-Content C:\PrintRelay\build-info.txt
+(Get-Item C:\PrintRelay\EventPlatform.PrintRelay.exe).VersionInfo.FileVersion
+```
+
+Compare `build-info.txt` commit SHA to what the agent reported from the build VM.
+
+### 4. Run
+
+```powershell
+C:\PrintRelay\EventPlatform.PrintRelay.exe
+```
+
+Always launch the **`.exe`** directly — do **not** use `dotnet EventPlatform.PrintRelay.dll`.
+
+Tray icon may be under the **^** overflow by the clock.
+
+Physical print sign-off (staging walk-in, designer compare, `relay.log`) happens **only** on the print-test PC.
+
+---
+
+## Build VM — optional smoke (no printer)
 
 ```powershell
 .\artifacts\app\EventPlatform.PrintRelay.exe
 ```
 
-Always launch the **`.exe`** directly — do **not** use `dotnet artifacts\app\EventPlatform.PrintRelay.dll` (that runs as native ARM64 on your laptop and looks for `win-arm64` Pdfium).
-
-Tray icon may be under the **^** overflow by the clock.
+Use for tray/UI smoke only. Do not use build VM output for physical dimension sign-off.
 
 ---
 
-## If Windows says “Already up to date” but behaviour is old
+## If build VM says “Already up to date” but behaviour is old
 
 - Confirm branch: `git branch --show-current` → must match agent’s branch
 - Confirm remote: `git log -1 --oneline` vs agent’s SHA

@@ -1,4 +1,5 @@
 using EventPlatform.PrintRelay.Core.Polling;
+using EventPlatform.PrintRelay.Core.Printing;
 
 namespace EventPlatform.PrintRelay.Core.Diagnostics;
 
@@ -27,4 +28,10 @@ public sealed record RelayActivityEvent
     public bool BadgeHtmlPresent { get; init; }
 
     public string? FailureMessage { get; init; }
+
+    public double? PageWidthMm { get; init; }
+
+    public double? PageHeightMm { get; init; }
+
+    public BadgePageSizeSource? PageSizeSource { get; init; }
 }

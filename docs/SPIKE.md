@@ -2,7 +2,16 @@
 
 Pre-coding gate **3** from `docs/PRINT_RELAY_WINDOWS_PRD.md` §12: prove silent printing of fixture HTML to a **named** printer with **no system dialog**.
 
-The spike currently uses an **A5** test fixture (`148mm × 210mm`) for office-paper validation. Production badges remain **CR80** (`85.6mm × 54mm`); see `Fixtures/test-badge-cr80.html` when CR80 stock is available.
+The spike currently uses an **A5 portrait** test fixture (`148mm × 210mm`) for office-paper validation via `print-test`. The production tray app resolves page size dynamically from each job's `@page` CSS (fallback: `badge_document` format metadata, then CR80 default). Local fixtures cover all platform template formats:
+
+| Fixture | Format | `@page` size |
+|---|---|---|
+| `test-badge-cr80.html` | CR80 | 85.6 × 54 mm |
+| `test-badge-a6-landscape.html` | A6 Landscape | 148 × 105 mm |
+| `test-badge-a5-portrait.html` | A5 Portrait | 148 × 210 mm |
+| `test-badge-a5-landscape.html` | A5 Landscape | 210 × 148 mm |
+
+App fixtures live under `src/EventPlatform.PrintRelay.App/Fixtures/`; Spike copies under `src/EventPlatform.PrintRelay.Spike/Fixtures/` (Gate 3 `print-test` still uses `test-badge-a5.html`, same as A5 portrait).
 
 Tray UI, MSI packaging, and code signing are **out of scope** until this gate passes.
 
@@ -45,12 +54,28 @@ dotnet run --project src/EventPlatform.PrintRelay.Spike -- print-test `
 
 Set the printer driver paper size to **A5** in *Printer properties → Preferences* when testing on physical paper.
 
-Print arbitrary HTML (e.g. `badge_html` saved from staging):
+Print arbitrary HTML (e.g. `badge_html` saved from staging). Page size is resolved from `@page` CSS in the file (same `BadgePageDimensionResolver` as production):
 
 ```powershell
 dotnet run --project src/EventPlatform.PrintRelay.Spike -- print-html `
   --printer "Microsoft Print to PDF" `
-  --file .\badge.html
+  --file .\src\EventPlatform.PrintRelay.App\Fixtures\test-badge-a6-landscape.html
+```
+
+For CR80:
+
+```powershell
+dotnet run --project src/EventPlatform.PrintRelay.Spike -- print-html `
+  --printer "Microsoft Print to PDF" `
+  --file .\src\EventPlatform.PrintRelay.App\Fixtures\test-badge-cr80.html
+```
+
+For A5 landscape:
+
+```powershell
+dotnet run --project src/EventPlatform.PrintRelay.Spike -- print-html `
+  --printer "Microsoft Print to PDF" `
+  --file .\src\EventPlatform.PrintRelay.App\Fixtures\test-badge-a5-landscape.html
 ```
 
 ## Pass criteria
@@ -59,7 +84,7 @@ dotnet run --project src/EventPlatform.PrintRelay.Spike -- print-html `
 |---|---|
 | No print dialog | Run `print-test`; badge HTML is rendered to A5 PDF, then sent to the printer. **Microsoft Print to PDF** writes `spike-print-*.pdf` in the current directory. |
 | Named printer | `--printer` must match an entry from `list-printers`; default printer is not used silently |
-| Page dimensions | Fixture uses `@page { size: 148mm 210mm; }` (A5). Production uses CR80 — see `test-badge-cr80.html`. |
+| Page dimensions | `print-test` uses A5 (`148mm × 210mm`). `print-html` auto-resolves from `@page` in the file. Production app uses the same resolver (`@page` → `badge_document` → CR80). |
 | Background/colour | `ShouldPrintBackgrounds = true`; CSS includes `print-color-adjust: exact` |
 | Physical sign-off | Repeat on a USB/network printer with **A5** loaded (or CR80 badge stock when available). ZPL-only thermal drivers may print blank pages with HTML — use a driver that supports Windows GDI/HTML printing. |
 

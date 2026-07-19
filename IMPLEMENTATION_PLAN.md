@@ -172,6 +172,7 @@ Operationalises [`DECISIONS.md`](DECISIONS.md) entries *SignPath Foundation OSS 
 ### Parallel work (not blocked on signing)
 
 - Fix open bugs from Windows MVP test (`BUGS.md`)
+- **W-01-S13** Dynamic badge page size — Sprint 5; [BUG-003](BUGS.md); plan [`docs/plans/sprint-5-bug-003-dynamic-page-size.md`](docs/plans/sprint-5-bug-003-dynamic-page-size.md)
 - **W-01-S12** Kiosa brand icons — Sprint 4; assets in `kiosa-marketing/brand-pack/` (FR-001)
 - Reapply to SignPath when visibility criteria met (operator action, no code)
 - W-01-S10 physical sign-off on unsigned MSI if needed for print-path confidence before customer ship

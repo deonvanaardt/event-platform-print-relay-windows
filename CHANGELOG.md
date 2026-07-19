@@ -20,6 +20,22 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 
 ---
 
+## 0.4.2 — 2026-07-19 — Sprint 5 — BUG-003 dynamic page size
+
+**Stories:** W-01-S13
+
+### Fixed
+
+- Dynamic badge page size from `badge_html` `@page` CSS with `badge_document` format fallback — walk-in prints match designer test size for A6/A5 formats (W-01-S13, BUG-003)
+
+### Added
+
+- `BadgePageDimensionResolver` in Core with xUnit coverage; `relay.log` records `page_width_mm`, `page_height_mm`, `page_size_source` per print job
+- Multi-format test fixtures (A6 landscape, A5 portrait/landscape); Spike `print-html` uses same resolver as production
+- Operator docs: two-box Windows workflow (build VM + print-test PC); verify builds via `build-info.txt` not `--version`
+
+---
+
 ## 0.4.1 — 2026-07-19 — MVP test fixes
 
 **Stories:** W-01-S08 (bug fixes from venue testing)
