@@ -6,15 +6,18 @@
 #
 # Outputs (committed to repo — Windows CI does not need SVG tooling):
 #   src/EventPlatform.PrintRelay.App/Assets/brand/app.ico (16, 32, 48, 256)
-#   src/EventPlatform.PrintRelay.App/Assets/brand/tray/base-32.png
+#   src/EventPlatform.PrintRelay.App/Assets/brand/tray/base-32.png (monochrome icon-only — tray overlays)
 #
-# Source: kiosa-marketing/brand-pack/kiosa-logo-icon.svg (copied into Assets/brand/)
+# Sources (copied from kiosa-marketing/brand-pack/ into Assets/brand/):
+#   kiosa-logo-icon.svg — app.ico / exe / forms
+#   kiosa-tray-icon.svg — tray base (monochrome, no amber accent; brand pack §3)
 
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BRAND_DIR="$ROOT/src/EventPlatform.PrintRelay.App/Assets/brand"
 ICON_SVG="$BRAND_DIR/kiosa-logo-icon.svg"
+TRAY_SVG="$BRAND_DIR/kiosa-tray-icon.svg"
 TRAY_DIR="$BRAND_DIR/tray"
 TMP_DIR="$(mktemp -d)"
 
@@ -38,13 +41,18 @@ if [[ ! -f "$ICON_SVG" ]]; then
   exit 1
 fi
 
+if [[ ! -f "$TRAY_SVG" ]]; then
+  echo "error: missing $TRAY_SVG — icon-only monochrome tray source." >&2
+  exit 1
+fi
+
 mkdir -p "$TRAY_DIR"
 
 for size in 16 32 48 256; do
   rsvg-convert -w "$size" -h "$size" "$ICON_SVG" -o "$TMP_DIR/icon-${size}.png"
 done
 
-cp "$TMP_DIR/icon-32.png" "$TRAY_DIR/base-32.png"
+rsvg-convert -w 32 -h 32 "$TRAY_SVG" -o "$TRAY_DIR/base-32.png"
 
 magick "$TMP_DIR/icon-16.png" "$TMP_DIR/icon-32.png" "$TMP_DIR/icon-48.png" "$TMP_DIR/icon-256.png" "$BRAND_DIR/app.ico"
 

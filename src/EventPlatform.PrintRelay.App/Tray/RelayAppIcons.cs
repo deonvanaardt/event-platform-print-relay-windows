@@ -57,12 +57,15 @@ internal static class RelayAppIcons
                 _ => ConnectedColor,
             };
 
-            var dotSize = Math.Max(6, baseBitmap.Width / 4);
-            var dotX = baseBitmap.Width - dotSize - 1;
-            var dotY = baseBitmap.Height - dotSize - 1;
+            // Monochrome tray base (brand pack §3) — slightly larger dot for 16–32px readability.
+            var dotSize = Math.Max(8, (baseBitmap.Width * 10) / 32);
+            var dotX = baseBitmap.Width - dotSize;
+            var dotY = baseBitmap.Height - dotSize;
 
             using var brush = new SolidBrush(dotColor);
             graphics.FillEllipse(brush, dotX, dotY, dotSize, dotSize);
+            using var outline = new Pen(Color.White, 1f);
+            graphics.DrawEllipse(outline, dotX, dotY, dotSize, dotSize);
         }
 
         return BitmapToIcon(composed);

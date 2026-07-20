@@ -176,7 +176,7 @@ _(none yet — mark W-01-S11 Done after signed release + Windows acceptance)_
 
 - [x] Draw status dot on Kiosa icon: green (connected), amber (reconnecting), red (error)
 - [x] Map `RelayTrayIconState` to PRD §7.1 colours in `RelayAppIcons.CreateTrayIcon`
-- [ ] If 16×16 accent is unreadable, fall back to monochrome base per brand pack §3 (verify on Windows)
+- [x] If 16×16 accent is unreadable, fall back to monochrome base per brand pack §3 (tray uses `kiosa-tray-icon.svg`; verify on Windows)
 
 **Windows verify:** force reconnect → amber; error state → red; normal → green; check 16×16 in tray overflow (`^`).
 
