@@ -34,6 +34,14 @@ Chronological record of **implementation-time** decisions for the Windows print 
 
 ## Log
 
+## 2026-07-20 — Kiosa brand icons + product rename (W-01-S12)
+
+**Status:** accepted  
+**Context:** Sprint 4 FR-001 required Kiosa icons (tray, exe, forms, Start Menu) and operator-facing rename from "Event Platform" to Kiosa (ARP, Task Manager, UI strings).  
+**Decision:** Copy `kiosa-logo-icon.svg` from `kiosa-marketing/brand-pack` into `Assets/brand/`; generate committed `app.ico` (16/32/48/256) and `tray/base-32.png` via `scripts/generate-app-icons.sh` (rsvg-convert + ImageMagick). Set `<ApplicationIcon>` plus `AssemblyTitle`/`Product`/`Company` metadata for Task Manager display name **Kiosa Print Relay**. `RelayAppIcons` draws PRD §7.1 status-dot overlays (green/amber/red) on the Kiosa base at runtime. Central `RelayProductName.DisplayName` constant for App strings; WiX `Package/@Name`, `Manufacturer`, Start Menu folder/shortcut, and `ARPPRODUCTICON` updated to match. **Exe filename stays `EventPlatform.PrintRelay.exe`** (HKCU Run key and MSI upgrade path unchanged).  
+**Alternatives considered:** Separate icon file per tray state (rejected — overlay on one base per sprint plan); exe rename to `Kiosa.PrintRelay.exe` (deferred — breaking for registry/scripts).  
+**Consequences:** `RelayAppIcons.cs`, `RelayProductName.cs`, `Package.wxs`, operator UI strings; Windows verify Task Manager friendly name on hardware.
+
 ## 2026-07-19 — Two Windows machines: build VM vs print-test PC
 
 **Status:** accepted  

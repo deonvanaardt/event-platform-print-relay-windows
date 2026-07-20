@@ -40,7 +40,7 @@ internal sealed class TrayApplicationContext : ApplicationContext
         _notifyIcon = new NotifyIcon
         {
             Visible = true,
-            Text = "Print Relay — Starting…",
+            Text = RelayProductName.TrayTooltip("Starting…"),
             Icon = startingIcon,
             ContextMenuStrip = _menu,
         };
@@ -101,7 +101,7 @@ internal sealed class TrayApplicationContext : ApplicationContext
                     when (IsWebView2RuntimeMissing(ex))
                 {
                     throw new InvalidOperationException(
-                        "Print Relay needs the Microsoft Edge WebView2 Runtime.",
+                        $"{RelayProductName.DisplayName} needs the Microsoft Edge WebView2 Runtime.",
                         ex);
                 }
             })
@@ -143,8 +143,8 @@ internal sealed class TrayApplicationContext : ApplicationContext
 
                         _notifyIcon.ShowBalloonTip(
                             4000,
-                            "Print Relay",
-                            "Print Relay is running. Right-click the tray icon for Status.",
+                            RelayProductName.DisplayName,
+                            $"{RelayProductName.DisplayName} is running. Right-click the tray icon for Status.",
                             ToolTipIcon.Info);
                     }
 
@@ -165,17 +165,17 @@ internal sealed class TrayApplicationContext : ApplicationContext
     private void HandleStartupFailure(Exception? error)
     {
         _startupFailed = true;
-        _notifyIcon.Text = "Print Relay — Error";
+        _notifyIcon.Text = RelayProductName.TrayTooltip("Error");
         AssignTrayIcon(RelayTrayIconState.Error);
 
-        var message = error?.Message ?? "Print Relay could not start.";
+        var message = error?.Message ?? $"{RelayProductName.DisplayName} could not start.";
         RelayStartupLog.Write($"Startup failed: {error}");
 
         if (message.Contains("needs the Microsoft Edge WebView2 Runtime", StringComparison.Ordinal))
         {
             var result = MessageBox.Show(
                 message + "\n\nOpen the WebView2 download page now?",
-                "Print Relay",
+                RelayProductName.DisplayName,
                 MessageBoxButtons.YesNo,
                 MessageBoxIcon.Warning);
 
@@ -194,7 +194,7 @@ internal sealed class TrayApplicationContext : ApplicationContext
                 {
                     MessageBox.Show(
                         ex.Message,
-                        "Print Relay",
+                        RelayProductName.DisplayName,
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
                 }
@@ -204,7 +204,7 @@ internal sealed class TrayApplicationContext : ApplicationContext
         {
             MessageBox.Show(
                 message,
-                "Print Relay",
+                RelayProductName.DisplayName,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
         }
@@ -246,8 +246,8 @@ internal sealed class TrayApplicationContext : ApplicationContext
         {
             throw new InvalidOperationException(
                 _startupFailed
-                    ? "Print Relay failed to start."
-                    : "Print Relay is still starting. Try again in a moment.");
+                    ? $"{RelayProductName.DisplayName} failed to start."
+                    : $"{RelayProductName.DisplayName} is still starting. Try again in a moment.");
         }
 
         return _runtime;
@@ -284,7 +284,7 @@ internal sealed class TrayApplicationContext : ApplicationContext
         {
             MessageBox.Show(
                 ex.Message,
-                "Print Relay",
+                RelayProductName.DisplayName,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
         }
@@ -320,7 +320,7 @@ internal sealed class TrayApplicationContext : ApplicationContext
         {
             MessageBox.Show(
                 ex.Message,
-                "Print Relay",
+                RelayProductName.DisplayName,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
         }
@@ -381,7 +381,7 @@ internal sealed class TrayApplicationContext : ApplicationContext
 
         _notifyIcon.ShowBalloonTip(
             3000,
-            "Print Relay",
+            RelayProductName.DisplayName,
             "Test badge sent to printer.",
             ToolTipIcon.Info);
     }
@@ -398,7 +398,7 @@ internal sealed class TrayApplicationContext : ApplicationContext
         {
             MessageBox.Show(
                 ex.Message,
-                "Print Relay",
+                RelayProductName.DisplayName,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
         }
@@ -441,17 +441,8 @@ internal sealed class TrayApplicationContext : ApplicationContext
         return icon;
     }
 
-    private static Icon CreateIcon(RelayTrayIconState state)
-    {
-        Icon source = state switch
-        {
-            RelayTrayIconState.Reconnecting => SystemIcons.Warning,
-            RelayTrayIconState.Error => SystemIcons.Error,
-            _ => SystemIcons.Information,
-        };
-
-        return (Icon)source.Clone();
-    }
+    private static Icon CreateIcon(RelayTrayIconState state) =>
+        RelayAppIcons.CreateTrayIcon(state);
 
     private static string TruncateTooltip(string text) =>
         text.Length <= 63 ? text : text[..60] + "…";

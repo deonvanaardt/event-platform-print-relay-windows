@@ -17,6 +17,6 @@ internal static class PdfSpooler
         }
 
         var printer = new PdfPrinter(printerName);
-        printer.Print(pdfPath, copies: 1, documentName: "Event Platform badge");
+        printer.Print(pdfPath, copies: 1, documentName: "Kiosa badge");
     }
 }

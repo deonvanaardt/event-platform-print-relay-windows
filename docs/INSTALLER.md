@@ -78,13 +78,13 @@ Get-AuthenticodeSignature "C:\Program Files\EventPlatform\PrintRelay\EventPlatfo
 2. Accept the UAC prompt (per-machine install to Program Files).
 3. SmartScreen may warn **"Windows protected your PC"** for unsigned builds — choose **More info** → **Run anyway** (internal/staging only).
 4. Follow the installer wizard: **Welcome** → accept license → **Install** → progress → **Finish**.
-5. On the finish screen, confirm the success message appears. **Start Print Relay now** is checked by default; click **Finish** to launch the tray app immediately (or uncheck to close without launching).
+5. On the finish screen, confirm the success message appears. **Start Kiosa Print Relay now** is checked by default; click **Finish** to launch the tray app immediately (or uncheck to close without launching).
 
 **Install location:** `C:\Program Files\EventPlatform\PrintRelay\`
 
 The release MSI is a **single file** (`EmbedCab="yes"`). You do not need to copy `cab1.cab` separately. If an older build prompts for a CAB, rebuild after pulling latest or copy `cab1.cab` next to the MSI as a temporary workaround.
 
-**Start Menu:** Event Platform → Print Relay
+**Start Menu:** Kiosa → Kiosa Print Relay
 
 **Auto-start:** installer writes HKCU  
 `Software\Microsoft\Windows\CurrentVersion\Run\EventPlatform.PrintRelay`  
@@ -102,10 +102,12 @@ Run after local or CI-built MSI:
 
 - [ ] MSI installs to `Program Files\EventPlatform\PrintRelay\` without errors
 - [ ] Installer wizard shows welcome, license, progress, and finish screens
-- [ ] Finish screen shows success text and **Start Print Relay now** checkbox (checked by default)
+- [ ] Finish screen shows success text and **Start Kiosa Print Relay now** checkbox (checked by default)
 - [ ] Click **Finish** with checkbox checked — tray app starts (setup wizard on first run); no second UAC on the launched app
-- [ ] Uncheck **Start Print Relay now**, click **Finish** — installer closes without launching the app
-- [ ] Start Menu shortcut launches the tray app (icon near clock)
+- [ ] Uncheck **Start Kiosa Print Relay now**, click **Finish** — installer closes without launching the app
+- [ ] Start Menu shortcut launches the tray app with Kiosa icon (icon near clock)
+- [ ] Settings → Apps lists **Kiosa Print Relay** (publisher **Kiosa**) with Kiosa icon
+- [ ] Task Manager shows **Kiosa Print Relay** as the process display name (exe file remains `EventPlatform.PrintRelay.exe`)
 - [ ] `reg query HKCU\Software\Microsoft\Windows\CurrentVersion\Run /v EventPlatform.PrintRelay` shows the install path
 - [ ] Sign out and back in (or reboot) — app auto-starts to tray without a main window
 - [ ] Staging smoke: setup code → poll → print `badge_html` → job `printed` on platform (see [`STAGING_INTEGRATION.md`](STAGING_INTEGRATION.md))
@@ -114,6 +116,29 @@ Run after local or CI-built MSI:
 - [ ] Silent install still works: `msiexec /i EventPlatform.PrintRelay.msi /qn` (no UI; no launch-on-finish)
 
 Mark **W-01-S09** Done in `SPRINT.md` when all boxes pass.
+
+---
+
+## W-01-S12 acceptance checklist (Kiosa icons + product rename)
+
+Run after publish (tray smoke) or MSI rebuild (installed-app checks):
+
+**Published app (build VM smoke or print-test PC zip)**
+
+- [ ] Tray notification area shows Kiosa icon (not yellow/blue system icons)
+- [ ] Connected → green status dot; reconnecting → amber; error → red
+- [ ] Icon readable at 16×16 in tray overflow (`^` near clock)
+- [ ] `EventPlatform.PrintRelay.exe` Properties → icon is Kiosa
+- [ ] Task Manager → process display name **Kiosa Print Relay** (Details may still show `EventPlatform.PrintRelay.exe` path)
+- [ ] Setup / Status / Settings windows: Kiosa title-bar icon and **Kiosa Print Relay** titles
+
+**MSI install (print-test PC or build VM)**
+
+- [ ] Settings → Apps: **Kiosa Print Relay**, publisher **Kiosa**, Kiosa icon
+- [ ] Start Menu: **Kiosa → Kiosa Print Relay** with Kiosa icon
+- [ ] Upgrade install over previous MSI preserves settings; ARP shows new name/icon
+
+Mark **W-01-S12** Done in `SPRINT.md` when all boxes pass.
 
 ---
 

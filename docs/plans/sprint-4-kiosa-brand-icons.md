@@ -28,7 +28,7 @@ companion: SPRINT.md, BACKLOG.md, FEATURE_REQUESTS.md
 
 Brand pack open item (section 8) notes ICO/PNG exports are **not yet generated** — we generate them in this repo from the SVG.
 
-**Naming stays as-is:** window and installer text remains "Event Platform Print Relay" / "Print Relay"; only visuals switch to Kiosa.
+**Naming:** operator-facing product name is **Kiosa Print Relay** (UI, ARP, Task Manager metadata). Window/installer strings use Kiosa branding; exe filename stays `EventPlatform.PrintRelay.exe` for upgrade compatibility.
 
 ---
 

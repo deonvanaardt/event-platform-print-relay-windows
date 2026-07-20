@@ -139,7 +139,8 @@ Sprint-ready stories for the **event-platform-print-relay-windows** repository. 
   - Start Menu shortcut (MSI install) shows Kiosa icon via embedded exe icon; verified per `docs/INSTALLER.md`.
   - Icon readable at 16×16 in tray overflow area.
   - `scripts/generate-app-icons.sh` documents regeneration from SVG source.
-- **Out of scope:** product rename; `--about` custom logo.
+  - Operator-facing product name **Kiosa Print Relay** in UI, Settings → Apps (ARP), and Task Manager display metadata; exe filename unchanged.
+- **Out of scope:** `--about` custom logo; exe filename rename.
 
 ### W-01-S14 — MSI installer branding (M3 polish)
 

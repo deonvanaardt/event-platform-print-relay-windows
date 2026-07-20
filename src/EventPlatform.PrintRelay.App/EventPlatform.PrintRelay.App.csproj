@@ -8,6 +8,11 @@
     <Nullable>enable</Nullable>
     <RootNamespace>EventPlatform.PrintRelay.App</RootNamespace>
     <AssemblyName>EventPlatform.PrintRelay</AssemblyName>
+    <ApplicationIcon>Assets\brand\app.ico</ApplicationIcon>
+    <AssemblyTitle>Kiosa Print Relay</AssemblyTitle>
+    <Product>Kiosa Print Relay</Product>
+    <Description>Silent badge printing for Kiosa check-in desks</Description>
+    <Company>Kiosa</Company>
     <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <Version>0.4.2</Version>
@@ -32,6 +37,11 @@
     <None Update="Fixtures\test-badge-cr80.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\brand\app.ico" />
+    <EmbeddedResource Include="Assets\brand\tray\base-32.png" />
   </ItemGroup>
 
   <Import Project="..\..\build\PdfiumNative.targets" />

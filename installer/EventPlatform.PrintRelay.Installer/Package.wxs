@@ -3,22 +3,25 @@
      xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
 
   <Package
-    Name="Event Platform Print Relay"
-    Manufacturer="Event Platform"
+    Name="Kiosa Print Relay"
+    Manufacturer="Kiosa"
     Version="$(var.ProductVersion)"
     UpgradeCode="A1B2C3D4-E5F6-7890-ABCD-EF1234567891"
     Scope="perMachine">
 
     <MajorUpgrade
-      DowngradeErrorMessage="A newer version of Event Platform Print Relay is already installed." />
+      DowngradeErrorMessage="A newer version of Kiosa Print Relay is already installed." />
     <MediaTemplate EmbedCab="yes" />
+
+    <Icon Id="AppIcon" SourceFile="..\..\src\EventPlatform.PrintRelay.App\Assets\brand\app.ico" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon" />
 
     <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
 
     <Property
       Id="WIXUI_EXITDIALOGOPTIONALTEXT"
-      Value="Event Platform Print Relay was installed successfully. You can start it now to enter your desk setup code and choose a printer." />
-    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Start Print Relay now" />
+      Value="Kiosa Print Relay was installed successfully. You can start it now to enter your desk setup code and choose a printer." />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Start Kiosa Print Relay now" />
     <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
 
     <Property
@@ -42,7 +45,7 @@
         Condition="WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 AND NOT Installed" />
     </UI>
 
-    <Feature Id="Main" Title="Print Relay" Level="1">
+    <Feature Id="Main" Title="Kiosa Print Relay" Level="1">
       <ComponentGroupRef Id="HarvestedComponents" />
       <ComponentRef Id="StartMenuShortcut" />
       <ComponentRef Id="AutoStartRegistry" />
@@ -55,7 +58,7 @@
     </StandardDirectory>
 
     <StandardDirectory Id="ProgramMenuFolder">
-      <Directory Id="ApplicationProgramsFolder" Name="Event Platform" />
+      <Directory Id="ApplicationProgramsFolder" Name="Kiosa" />
     </StandardDirectory>
 
     <Component
@@ -66,8 +69,8 @@
 
       <Shortcut
         Id="ApplicationStartMenuShortcut"
-        Name="Print Relay"
-        Description="Silent badge printing for Event Platform check-in desks"
+        Name="Kiosa Print Relay"
+        Description="Silent badge printing for Kiosa check-in desks"
         Target="[INSTALLFOLDER]EventPlatform.PrintRelay.exe"
         WorkingDirectory="INSTALLFOLDER" />
 
