@@ -14,6 +14,7 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 ### Not yet built
 
 - Kiosa brand icons — tray, exe, Start Menu; status-dot overlays (W-01-S12, Sprint 4, FR-001)
+- Installer version on MSI welcome/finish UI + Kiosa WiX banner/dialog branding (W-01-S14, Sprint 4, FR-002)
 - First signed GitHub Release — blocked on signing provider (SignPath OSS declined 2026-07-18; reapply or paid signing) + Windows verify
 - Physical sign-off Win 10 + 11 (W-01-S10)
 - Full list: [BACKLOG.md](BACKLOG.md)

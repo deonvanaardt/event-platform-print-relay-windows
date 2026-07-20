@@ -61,11 +61,18 @@ When a request is approved for implementation, create or reference a `W-01-Sxx` 
 
 <!-- Add entries above this line, newest first. Next ID: FR-003 -->
 
+---
+
+## Accepted / in backlog
+
+<!-- Move here when promoted to BACKLOG.md with W-01-Sxx. -->
+
 ### FR-002 — Version number on installer window
 
-**Status:** proposed  
+**Status:** accepted  
 **Requested:** 2026-07-19  
 **Requested by:** internal  
+**Story:** W-01-S14 · **Sprint 4**
 
 **Summary:** Show the app/product version (e.g. `0.4.1`) on the MSI installer UI so operators and support can confirm which build they are installing without opening the installed exe or GitHub.
 
@@ -74,17 +81,12 @@ When a request is approved for implementation, create or reference a `W-01-Sxx` 
 **Acceptance hints:**
 - WiX installer UI (e.g. welcome or finish dialog, or a consistent footer) displays the product version matching `EventPlatform.PrintRelay.App` / MSI `ProductVersion`.
 - Version visible on a default install path without opening logs or file Properties.
+- Installer wizard uses Kiosa-branded banner/dialog artwork and ARP icon (not stock WiX visuals) — same sprint, W-01-S14.
 - Documented in `docs/INSTALLER.md` acceptance checklist.
 
-**Notes:** WiX `Package.wxs` / `WixUI_Minimal` — likely `Product` `@Version` or `!(bind.FileVersion.EventPlatform.PrintRelay.exe)` in a `WixVariable` or custom dialog text. Related: PRD installer finish UI (W-01-S09); Settings screen already shows app version post-install.
+**Notes:** WiX `Package.wxs` / `WixUI_Minimal` — `$(var.ProductVersion)` from App csproj via `release.yml` / `-p:ProductVersion`; `WixUIBannerBmp` / `WixUIDialogBmp` from brand pack. Bundled with Sprint 4 Session 3 (MSI work). Related: PRD installer finish UI (W-01-S09); Settings screen already shows app version post-install.
 
 ---
-
----
-
-## Accepted / in backlog
-
-<!-- Move here when promoted to BACKLOG.md with W-01-Sxx. -->
 
 ### FR-001 — Branded app icon (tray + Start Menu)
 
