@@ -158,7 +158,7 @@ _(none yet — mark W-01-S11 Done after signed release + Windows acceptance)_
 ## In scope (Sprint 4)
 
 - [x] **W-01-S12** — Kiosa brand icons + product rename (tray + exe + Start Menu + ARP)
-- [ ] **W-01-S14** — MSI installer branding (Kiosa UI + version)
+- [x] **W-01-S14** — MSI installer branding (Kiosa UI + version)
 
 ### Session 1 — Assets + base icon wiring (Mac agent)
 
@@ -196,8 +196,8 @@ _(none yet — mark W-01-S11 Done after signed release + Windows acceptance)_
 - [x] Add installer branding + version checks to `docs/INSTALLER.md` acceptance checklist
 
 **Closure:**
-- [ ] Windows: interactive install — welcome/finish show Kiosa banner/dialog (not stock WiX); ARP icon is Kiosa; version matches `build-info.txt`
-- [ ] Mark W-01-S12 and W-01-S14 Done; update `CHANGELOG.md`
+- [x] Windows: interactive install — welcome/finish show Kiosa banner/dialog (not stock WiX); ARP icon is Kiosa; version matches `build-info.txt` (build VM 2026-07-20, commit `656c350`)
+- [x] Mark W-01-S12 and W-01-S14 Done; update `CHANGELOG.md`
 
 ## Stretch (if time remains)
 
@@ -206,11 +206,12 @@ _(none yet — mark W-01-S11 Done after signed release + Windows acceptance)_
 
 ## In progress
 
-- **W-01-S14** — MSI installer branding: Mac implementation complete; **Windows MSI interactive install verify pending**
+_(none)_
 
 ## Done
 
 - **W-01-S12** — Kiosa brand icons + product rename: assets, tray overlays (monochrome base + status dot), `RelayAppIcons`, `RelayProductName`, WiX ARP/Start Menu, assembly metadata; Windows verify passed build VM 2026-07-20 (app **0.4.3**)
+- **W-01-S14** — MSI installer branding: Kiosa `WixUIBannerBmp` / `WixUIDialogBmp`, version on finish dialog, `docs/INSTALLER.md` checklist; Windows MSI verify passed build VM 2026-07-20 (`656c350`)
 
 ## Out of scope this sprint
 
@@ -225,6 +226,7 @@ _(none yet — mark W-01-S11 Done after signed release + Windows acceptance)_
 - **Installer branding:** reuse `app.ico` for `ARPPRODUCTICON`; generate WiX banner (493×58) and dialog (493×312) BMPs from brand pack in Session 3
 - **Installer version:** `ProductVersion` flows from App csproj — CI via `release.yml`; local MSI needs `-p:ProductVersion` (wixproj default `0.3.1` is stale)
 - **CI impact:** none — Core tests unchanged; `release.yml` picks up new exe icon on next tag automatically
+- **2026-07-20:** W-01-S14 Windows MSI verify **passed** (build VM) — Kiosa left-strip dialog art, white progress banner, version on finish; BMP layout fix `656c350`.
 - **2026-07-20:** W-01-S12 Windows verify **passed** (build VM) — tray monochrome + status dots, Task Manager **Kiosa Print Relay**, MSI fresh install **0.4.3**; MSI harvest uses `artifacts/publish` not `artifacts/app`; same-version upgrade can leave stale DLLs — uninstall first or bump version.
 
 ---
