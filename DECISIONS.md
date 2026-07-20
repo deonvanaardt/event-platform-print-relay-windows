@@ -34,9 +34,17 @@ Chronological record of **implementation-time** decisions for the Windows print 
 
 ## Log
 
-## 2026-07-20 — WiX installer BMP branding (W-01-S14)
+## 2026-07-20 — WiX dialog/banner BMP layout fix (W-01-S14)
 
 **Status:** accepted  
+**Context:** Windows MSI verify showed license left panel as blank teal (no icon) and finish/progress dialogs with text overlapping a centred logo — full-canvas `#115E59` + centred icon does not match how `WixUI_Minimal` composites `WixUIDialogBmp` / `WixUIBannerBmp`.  
+**Decision:** Regenerate BMPs per stock WiX layout: dialog **493×312** = white right side for text overlay + **164×312** teal branding strip on the left with ~118px icon centred in that strip; banner **493×58** = white with ~50px icon on the **right** (progress text overlays the banner). Use `-depth 24` BMP3 output.  
+**Alternatives considered:** Custom WiX dialog XML (rejected — backlog stays on `WixUI_Minimal`); full-teal dialog with smaller centred icon (rejected — icon still outside 164px strip).  
+**Consequences:** `scripts/generate-app-icons.sh`, committed `wix-*.bmp`; operator must rebuild MSI and reinstall.
+
+## 2026-07-20 — WiX installer BMP branding (W-01-S14)
+
+**Status:** superseded — see layout fix entry above (2026-07-20)  
 **Context:** Sprint 4 FR-002 required Kiosa-branded `WixUI_Minimal` banner/dialog images and version text on the finish dialog; stock WiX artwork remained after W-01-S12.  
 **Decision:** Extend `scripts/generate-app-icons.sh` to emit committed 493×58 and 493×312 BMP3 files under `installer/EventPlatform.PrintRelay.Installer/Assets/brand/` — solid `#115E59` background (from `kiosa-logo-icon.svg`) with centred/resized Kiosa icon via ImageMagick; wire `WixUIBannerBmp` / `WixUIDialogBmp` in `Package.wxs`. Show `$(var.ProductVersion)` in `WIXUI_EXITDIALOGOPTIONALTEXT` on the finish dialog (no custom welcome dialog — stays within `WixUI_Minimal`).  
 **Alternatives considered:** Custom WiX welcome dialog fragment for version on welcome (deferred — finish text meets backlog “welcome and/or finish”); runtime-generated BMPs on Windows CI (rejected — Mac script + committed assets matches `app.ico` pattern).  
