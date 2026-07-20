@@ -28,7 +28,8 @@ dotnet publish src\EventPlatform.PrintRelay.App `
 ) | ForEach-Object { if (Test-Path $_) { "OK $_" } }
 
 # 3. Build MSI (x64 package — required for ProgramFiles64Folder)
-dotnet build installer\EventPlatform.PrintRelay.Installer\EventPlatform.PrintRelay.Installer.wixproj -c Release -p:Platform=x64
+$v = (Select-Xml -Path src\EventPlatform.PrintRelay.App\EventPlatform.PrintRelay.App.csproj -XPath '//Version').Node.InnerText
+dotnet build installer\EventPlatform.PrintRelay.Installer\EventPlatform.PrintRelay.Installer.wixproj -c Release -p:Platform=x64 -p:ProductVersion=$v
 
 # MSI output (under installer project bin):
 Get-ChildItem installer\EventPlatform.PrintRelay.Installer\bin -Recurse -Filter *.msi
@@ -36,6 +37,10 @@ Get-ChildItem installer\EventPlatform.PrintRelay.Installer\bin -Recurse -Filter 
 # 4. Backup copy for GitHub (fixed path — overwrite each build)
 Copy-Item -Force (Get-ChildItem installer\EventPlatform.PrintRelay.Installer\bin -Recurse -Filter *.msi | Select-Object -First 1).FullName releases\msi\EventPlatform.PrintRelay.msi
 ```
+
+**Tray smoke vs MSI:** `artifacts\app` (zip handoff to print-test PC) and `artifacts\publish` (MSI harvest) are **different folders**. Always publish to `artifacts\publish` before `dotnet build` on the installer project.
+
+**Same-version upgrade during dev:** rebuilding MSI at the same `ProductVersion` may leave stale DLLs in Program Files (symptom: `MissingMethodException` at runtime). **Uninstall** from Settings → Apps, then install again; or bump `<Version>` in the App csproj before rebuilding MSI.
 
 ---
 

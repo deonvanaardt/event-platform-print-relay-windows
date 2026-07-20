@@ -15,7 +15,7 @@
     <Company>Kiosa</Company>
     <LangVersion>latest</LangVersion>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <Version>0.4.2</Version>
+    <Version>0.4.3</Version>
   </PropertyGroup>
 
   <ItemGroup>
