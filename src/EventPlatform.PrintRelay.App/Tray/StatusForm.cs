@@ -1,3 +1,4 @@
+using EventPlatform.PrintRelay.App;
 using EventPlatform.PrintRelay.Core.Diagnostics;
 using EventPlatform.PrintRelay.Core.Polling;
 
@@ -18,7 +19,8 @@ internal sealed class StatusForm : Form
     {
         _runtime = runtime ?? throw new ArgumentNullException(nameof(runtime));
 
-        Text = "Print Relay — Status";
+        Text = RelayProductName.Title("Status");
+        Icon = RelayAppIcons.LoadAppIcon();
         StartPosition = FormStartPosition.CenterScreen;
         MinimumSize = new Size(640, 520);
         ClientSize = new Size(720, 560);
@@ -215,7 +217,7 @@ internal sealed class StatusForm : Form
                 this,
                 $"Diagnostics saved to:{Environment.NewLine}{path}{Environment.NewLine}{Environment.NewLine}" +
                 "Attach this file to a support ticket or open it and copy the contents.",
-                "Print Relay",
+                RelayProductName.DisplayName,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);
         }
@@ -224,7 +226,7 @@ internal sealed class StatusForm : Form
             MessageBox.Show(
                 this,
                 ex.Message,
-                "Print Relay",
+                RelayProductName.DisplayName,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
         }

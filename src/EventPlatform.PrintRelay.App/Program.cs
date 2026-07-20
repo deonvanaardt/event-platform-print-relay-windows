@@ -38,7 +38,7 @@ internal static class Program
             RelayStartupLog.Write($"Fatal error: {ex}");
             MessageBox.Show(
                 ex.Message,
-                "Print Relay",
+                RelayProductName.DisplayName,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Error);
             return 1;
@@ -62,7 +62,7 @@ internal static class Program
             ? File.ReadAllText(buildInfoPath).Trim()
             : "build-info.txt not found.";
 
-        return $"Print Relay {RelayAppInfo.AppVersion}{Environment.NewLine}{buildInfo}";
+        return $"{RelayProductName.DisplayName} {RelayAppInfo.AppVersion}{Environment.NewLine}{buildInfo}";
     }
 
     private static void WriteVersionToConsole()
@@ -75,7 +75,7 @@ internal static class Program
     {
         MessageBox.Show(
             BuildAboutText(),
-            "Print Relay",
+            RelayProductName.DisplayName,
             MessageBoxButtons.OK,
             MessageBoxIcon.Information);
     }

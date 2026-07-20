@@ -1,0 +1,89 @@
+#!/usr/bin/env bash
+# Generate Kiosa app icons from SVG source in Assets/brand/.
+#
+# Prerequisites (macOS):
+#   brew install librsvg imagemagick
+#
+# Outputs (committed to repo — Windows CI does not need SVG tooling):
+#   src/EventPlatform.PrintRelay.App/Assets/brand/app.ico (16, 32, 48, 256)
+#   src/EventPlatform.PrintRelay.App/Assets/brand/tray/base-32.png (monochrome icon-only — tray overlays)
+#   installer/EventPlatform.PrintRelay.Installer/Assets/brand/wix-banner.bmp (493×58, 24-bit)
+#   installer/EventPlatform.PrintRelay.Installer/Assets/brand/wix-dialog.bmp (493×312, 24-bit)
+#
+# Sources (copied from kiosa-marketing/brand-pack/ into Assets/brand/):
+#   kiosa-logo-icon.svg — app.ico / exe / forms
+#   kiosa-tray-icon.svg — tray base (monochrome, no amber accent; brand pack §3)
+
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+BRAND_DIR="$ROOT/src/EventPlatform.PrintRelay.App/Assets/brand"
+ICON_SVG="$BRAND_DIR/kiosa-logo-icon.svg"
+TRAY_SVG="$BRAND_DIR/kiosa-tray-icon.svg"
+TRAY_DIR="$BRAND_DIR/tray"
+WIX_BRAND_DIR="$ROOT/installer/EventPlatform.PrintRelay.Installer/Assets/brand"
+# Kiosa logo icon background (kiosa-logo-icon.svg) — solid, no gradients per brand pack §3
+WIX_BG_COLOR='#115E59'
+TMP_DIR="$(mktemp -d)"
+
+cleanup() {
+  rm -rf "$TMP_DIR"
+}
+trap cleanup EXIT
+
+require_cmd() {
+  if ! command -v "$1" >/dev/null 2>&1; then
+    echo "error: $1 not found. Install with: brew install librsvg imagemagick" >&2
+    exit 1
+  fi
+}
+
+require_cmd rsvg-convert
+require_cmd magick
+
+if [[ ! -f "$ICON_SVG" ]]; then
+  echo "error: missing $ICON_SVG — copy kiosa-logo-icon.svg from kiosa-marketing/brand-pack first." >&2
+  exit 1
+fi
+
+if [[ ! -f "$TRAY_SVG" ]]; then
+  echo "error: missing $TRAY_SVG — icon-only monochrome tray source." >&2
+  exit 1
+fi
+
+mkdir -p "$TRAY_DIR" "$WIX_BRAND_DIR"
+
+for size in 16 32 48 256; do
+  rsvg-convert -w "$size" -h "$size" "$ICON_SVG" -o "$TMP_DIR/icon-${size}.png"
+done
+
+rsvg-convert -w 32 -h 32 "$TRAY_SVG" -o "$TRAY_DIR/base-32.png"
+
+magick "$TMP_DIR/icon-16.png" "$TMP_DIR/icon-32.png" "$TMP_DIR/icon-48.png" "$TMP_DIR/icon-256.png" "$BRAND_DIR/app.ico"
+
+# WiX WixUI_Minimal assets — 24-bit BMP (BMP3) required by WiX.
+# Layout matches stock WiX dlgbmp/bannrbmp (see FireGiant WixUI docs):
+#   Dialog 493×312: left 164×312 = branding strip; remainder white (installer text overlays right side).
+#   Banner 493×58: mostly white; ~50×50 icon at the right (progress text overlays the banner).
+WIX_BANNER="$WIX_BRAND_DIR/wix-banner.bmp"
+WIX_DIALOG="$WIX_BRAND_DIR/wix-dialog.bmp"
+WIX_DIALOG_ICON_SIZE=118
+WIX_DIALOG_ICON_X=$(( (164 - WIX_DIALOG_ICON_SIZE) / 2 ))
+WIX_DIALOG_ICON_Y=$(( (312 - WIX_DIALOG_ICON_SIZE) / 2 ))
+
+magick -size 493x58 xc:white \
+  \( "$TMP_DIR/icon-48.png" -resize 50x50 \) \
+  -gravity east -geometry +20+0 -composite \
+  -depth 24 -type TrueColor BMP3:"$WIX_BANNER"
+
+magick -size 493x312 xc:white \
+  \( -size 164x312 "xc:$WIX_BG_COLOR" \) -geometry +0+0 -composite \
+  \( "$TMP_DIR/icon-256.png" -resize "${WIX_DIALOG_ICON_SIZE}x${WIX_DIALOG_ICON_SIZE}" \) \
+  -geometry "+${WIX_DIALOG_ICON_X}+${WIX_DIALOG_ICON_Y}" -composite \
+  -depth 24 -type TrueColor BMP3:"$WIX_DIALOG"
+
+echo "Generated:"
+echo "  $BRAND_DIR/app.ico"
+echo "  $TRAY_DIR/base-32.png"
+echo "  $WIX_BANNER"
+echo "  $WIX_DIALOG"

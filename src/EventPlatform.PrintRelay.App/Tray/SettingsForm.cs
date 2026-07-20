@@ -1,3 +1,4 @@
+using EventPlatform.PrintRelay.App;
 using EventPlatform.PrintRelay.App.Printing;
 using EventPlatform.PrintRelay.Core.Settings;
 
@@ -19,7 +20,8 @@ internal sealed class SettingsForm : Form
         _runtime = runtime ?? throw new ArgumentNullException(nameof(runtime));
         _requestRestart = requestRestart ?? throw new ArgumentNullException(nameof(requestRestart));
 
-        Text = "Print Relay — Settings";
+        Text = RelayProductName.Title("Settings");
+        Icon = RelayAppIcons.LoadAppIcon();
         FormBorderStyle = FormBorderStyle.FixedDialog;
         MaximizeBox = false;
         MinimizeBox = false;
@@ -123,7 +125,7 @@ internal sealed class SettingsForm : Form
             await _runtime.UpdatePrinterAsync(printerName).ConfigureAwait(true);
 
             MessageBox.Show(
-                "Printer saved. Print Relay will restart to apply the change.",
+                $"Printer saved. {RelayProductName.DisplayName} will restart to apply the change.",
                 Text,
                 MessageBoxButtons.OK,
                 MessageBoxIcon.Information);

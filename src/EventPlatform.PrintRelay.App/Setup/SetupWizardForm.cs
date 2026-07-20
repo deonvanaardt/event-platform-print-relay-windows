@@ -1,4 +1,6 @@
+using EventPlatform.PrintRelay.App;
 using EventPlatform.PrintRelay.App.Printing;
+using EventPlatform.PrintRelay.App.Tray;
 using EventPlatform.PrintRelay.Core.Setup;
 using EventPlatform.PrintRelay.Core.SetupCode;
 using EventPlatform.PrintRelay.Core.Settings;
@@ -26,7 +28,8 @@ internal sealed class SetupWizardForm : Form
         _http = http ?? throw new ArgumentNullException(nameof(http));
         _settingsPath = settingsPath ?? throw new ArgumentNullException(nameof(settingsPath));
 
-        Text = "Event Platform Print Relay — Setup";
+        Text = RelayProductName.Title("Setup");
+        Icon = RelayAppIcons.LoadAppIcon();
         FormBorderStyle = FormBorderStyle.FixedDialog;
         MaximizeBox = false;
         MinimizeBox = false;

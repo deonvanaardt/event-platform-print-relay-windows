@@ -116,11 +116,11 @@ internal sealed class RelayRuntime : IDisposable
     {
         return GetTrayIconState() switch
         {
-            RelayTrayIconState.Reconnecting => "Print Relay — Reconnecting…",
+            RelayTrayIconState.Reconnecting => RelayProductName.TrayTooltip("Reconnecting…"),
             RelayTrayIconState.Error when !SessionState.GetSnapshot(Settings).PrinterInstalled =>
-                "Print Relay — Error (printer not found)",
-            RelayTrayIconState.Error => "Print Relay — Error (click for details)",
-            _ => "Print Relay — Connected",
+                RelayProductName.TrayTooltip("Error (printer not found)"),
+            RelayTrayIconState.Error => RelayProductName.TrayTooltip("Error (click for details)"),
+            _ => RelayProductName.TrayTooltip("Connected"),
         };
     }
 

@@ -136,53 +136,68 @@ _(none yet — mark W-01-S11 Done after signed release + Windows acceptance)_
 - **SignPath OSS declined 2026-07-18** — insufficient external reputation; not a code/policy rejection. **Paid signing deferred** until first paying customer (Certum OSS cloud ~$50–58/yr; sole trader). Reapply SignPath when visibility grows (`docs/SIGNPATH.md`).
 - CI falls back to unsigned prerelease when `SIGNPATH_API_TOKEN` is not set
 - Target first signed release: tag `v0.4.0` after SignPath reapproval **or** paid signing CI is wired
-- **Sprint 4** (Kiosa brand icons) runs **in parallel** — not blocked on signing
+- **Sprint 4** (Kiosa brand icons + MSI installer branding) runs **in parallel** — not blocked on signing
 
 ---
 
-# Sprint 4 — Kiosa brand icons (FR-001)
+# Sprint 4 — Kiosa brand icons + MSI installer branding (FR-001, FR-002)
 
 **Dates:** 2026-07-18 → TBD  
 **Epic:** [W-01 — Windows print relay MVP](BACKLOG.md#w-01--windows-print-relay-mvp)  
-**Phase:** [Phase 2 — M2 tray polish](IMPLEMENTATION_PLAN.md#phase-2--m2-tray-app) (parallel to Sprint 3 signing)  
-**Story:** **W-01-S12** — Kiosa brand icons (tray + exe + Start Menu)  
-**Spec:** `docs/PRINT_RELAY_WINDOWS_PRD.md` §7.1 · `kiosa-marketing/brand-pack/Kiosa_Brand_Pack.md`  
+**Phase:** [Phase 2 — M2 tray polish](IMPLEMENTATION_PLAN.md#phase-2--m2-tray-app) + [Phase 3 — M3 installer polish](IMPLEMENTATION_PLAN.md#phase-3--m3-release-engineering) (parallel to Sprint 3 signing)  
+**Stories:** **W-01-S12** — Kiosa brand icons · **W-01-S14** — MSI installer branding (Kiosa UI + version)  
+**Spec:** `docs/PRINT_RELAY_WINDOWS_PRD.md` §4.1, §7.1 · `kiosa-marketing/brand-pack/Kiosa_Brand_Pack.md`  
 **Plan:** [`docs/plans/sprint-4-kiosa-brand-icons.md`](docs/plans/sprint-4-kiosa-brand-icons.md)
 
 ## Goal
 
-Replace placeholder `SystemIcons` with the Kiosa icon from `kiosa-marketing/brand-pack`. Tray shows the Kiosa mark with coloured status-dot overlays (green / amber / red per PRD §7.1). Executable, WinForms title bars, and Start Menu shortcut use the same branded icon.
+**FR-001 (W-01-S12):** Replace placeholder `SystemIcons` with the Kiosa icon from `kiosa-marketing/brand-pack`. Tray shows the Kiosa mark with coloured status-dot overlays (green / amber / red per PRD §7.1). Executable, WinForms title bars, and Start Menu shortcut use the same branded icon. Operator-facing product name is **Kiosa Print Relay** (ARP, Task Manager metadata, UI strings); exe filename unchanged.
 
-**Naming unchanged:** window and installer text stay "Event Platform Print Relay" / "Print Relay"; only visuals switch to Kiosa.
+**FR-002 (W-01-S14):** Brand the MSI installer UI with Kiosa visuals (not stock WiX artwork): custom banner and dialog images, and product version on welcome/finish so operators can confirm the build during setup.
 
 ## In scope (Sprint 4)
 
-- [ ] **W-01-S12** — Kiosa brand icons (tray + exe + Start Menu)
+- [x] **W-01-S12** — Kiosa brand icons + product rename (tray + exe + Start Menu + ARP)
+- [x] **W-01-S14** — MSI installer branding (Kiosa UI + version)
 
 ### Session 1 — Assets + base icon wiring (Mac agent)
 
-- [ ] Copy SVGs from `kiosa-marketing/brand-pack/` into `src/EventPlatform.PrintRelay.App/Assets/brand/`
-- [ ] Add `scripts/generate-app-icons.sh`; generate and commit `app.ico` (16, 32, 48, 256) + `tray/base-32.png`
-- [ ] Set `<ApplicationIcon>` in `EventPlatform.PrintRelay.App.csproj`
-- [ ] Add `RelayAppIcons.cs`; replace `SystemIcons` in `TrayApplicationContext`
-- [ ] Set `Form.Icon` on Setup, Status, and Settings forms
-- [ ] Log decision in `DECISIONS.md` (asset source, overlay strategy, committed ICO)
+- [x] Copy SVGs from `kiosa-marketing/brand-pack/` into `src/EventPlatform.PrintRelay.App/Assets/brand/`
+- [x] Add `scripts/generate-app-icons.sh`; generate and commit `app.ico` (16, 32, 48, 256) + `tray/base-32.png`
+- [x] Set `<ApplicationIcon>` in `EventPlatform.PrintRelay.App.csproj`
+- [x] Add `RelayAppIcons.cs`; replace `SystemIcons` in `TrayApplicationContext`
+- [x] Set `Form.Icon` on Setup, Status, and Settings forms
+- [x] Add `RelayProductName`; rebrand operator UI strings and WiX ARP/Start Menu metadata
+- [x] Log decision in `DECISIONS.md` (asset source, overlay strategy, committed ICO, rename scope)
 
-**Windows verify (one step per operator reply):** pull → publish → confirm tray, `.exe` Properties, and form title-bar icons show Kiosa.
+**Windows verify (one step per operator reply):** pull → publish → confirm tray, `.exe` Properties, form title-bar icons, and Task Manager name show Kiosa.
 
 ### Session 2 — Tray state overlays (Mac agent)
 
-- [ ] Draw status dot on Kiosa icon: green (connected), amber (reconnecting), red (error)
-- [ ] Map `RelayTrayIconState` to PRD §7.1 colours in `RelayAppIcons.CreateTrayIcon`
-- [ ] If 16×16 accent is unreadable, fall back to monochrome base per brand pack §3
+- [x] Draw status dot on Kiosa icon: green (connected), amber (reconnecting), red (error)
+- [x] Map `RelayTrayIconState` to PRD §7.1 colours in `RelayAppIcons.CreateTrayIcon`
+- [x] If 16×16 accent is unreadable, fall back to monochrome base per brand pack §3 (tray uses `kiosa-tray-icon.svg`; verify on Windows)
 
 **Windows verify:** force reconnect → amber; error state → red; normal → green; check 16×16 in tray overflow (`^`).
 
-### Session 3 — MSI + closure (Mac docs + Windows MSI)
+### Session 3 — MSI installer branding + closure (Mac agent + Windows MSI)
 
-- [ ] Add Start Menu / Add/Remove Programs icon check to `docs/INSTALLER.md`
-- [ ] Windows: rebuild MSI, install, confirm Start Menu shortcut icon; upgrade over existing install
-- [ ] Mark W-01-S12 Done; update `CHANGELOG.md`
+**W-01-S12 (installed app icons):**
+- [x] Add Start Menu / Add/Remove Programs icon + Kiosa naming checks to `docs/INSTALLER.md`
+- [x] `ARPPRODUCTICON` in `Package.wxs` from `app.ico`
+- [x] Windows: rebuild MSI, install, confirm Start Menu shortcut icon and ARP name; fresh install at 0.4.3 (2026-07-20 build VM)
+
+**W-01-S14 (installer UI branding):**
+- [x] Extend `scripts/generate-app-icons.sh` to produce WiX BMPs: `wix-banner.bmp` (493×58), `wix-dialog.bmp` (493×312) from brand pack colours + Kiosa icon
+- [x] Commit BMPs under `installer/EventPlatform.PrintRelay.Installer/Assets/brand/`
+- [x] Update `Package.wxs`: `WixUIBannerBmp`, `WixUIDialogBmp`, version text on welcome/finish (`ARPPRODUCTICON` shipped in W-01-S12)
+- [x] Show `$(var.ProductVersion)` on welcome and/or finish dialog (version text alongside branded UI)
+- [x] Document local MSI build: pass `-p:ProductVersion` from App csproj (CI already does via `release.yml`)
+- [x] Add installer branding + version checks to `docs/INSTALLER.md` acceptance checklist
+
+**Closure:**
+- [x] Windows: interactive install — welcome/finish show Kiosa banner/dialog (not stock WiX); ARP icon is Kiosa; version matches `build-info.txt` (build VM 2026-07-20, commit `656c350`)
+- [x] Mark W-01-S12 and W-01-S14 Done; update `CHANGELOG.md`
 
 ## Stretch (if time remains)
 
@@ -191,25 +206,28 @@ Replace placeholder `SystemIcons` with the Kiosa icon from `kiosa-marketing/bran
 
 ## In progress
 
-_(none — update when Session 1 starts)_
+_(none)_
 
 ## Done
 
-_(none yet)_
+- **W-01-S12** — Kiosa brand icons + product rename: assets, tray overlays (monochrome base + status dot), `RelayAppIcons`, `RelayProductName`, WiX ARP/Start Menu, assembly metadata; Windows verify passed build VM 2026-07-20 (app **0.4.3**)
+- **W-01-S14** — MSI installer branding: Kiosa `WixUIBannerBmp` / `WixUIDialogBmp`, version on finish dialog, `docs/INSTALLER.md` checklist; Windows MSI verify passed build VM 2026-07-20 (`656c350`)
 
 ## Out of scope this sprint
 
-- WiX installer banner/dialog custom artwork (`WixUI_Minimal` stays generic)
 - `--about` dialog custom logo (still `MessageBoxIcon.Information`)
-- Product rename to "Kiosa Print Relay" (text stays Event Platform)
+- Exe filename rename (`EventPlatform.PrintRelay.exe` kept for upgrade path)
 - SignPath signing (Sprint 3 / W-01-S11)
 
 ## Blockers / notes
 
 - **Asset source:** `kiosa-marketing/brand-pack/kiosa-logo-icon.svg` (primary); regenerate ICO/PNG in-repo — brand pack §8 open item
 - **Tray approach:** Kiosa icon + coloured status dot overlay (not separate icon files per state)
+- **Installer branding:** reuse `app.ico` for `ARPPRODUCTICON`; generate WiX banner (493×58) and dialog (493×312) BMPs from brand pack in Session 3
+- **Installer version:** `ProductVersion` flows from App csproj — CI via `release.yml`; local MSI needs `-p:ProductVersion` (wixproj default `0.3.1` is stale)
 - **CI impact:** none — Core tests unchanged; `release.yml` picks up new exe icon on next tag automatically
-- **Handoff:** Mac agent pushes after each session; Windows operator verifies one step at a time per `windows-operator-steps.mdc`
+- **2026-07-20:** W-01-S14 Windows MSI verify **passed** (build VM) — Kiosa left-strip dialog art, white progress banner, version on finish; BMP layout fix `656c350`.
+- **2026-07-20:** W-01-S12 Windows verify **passed** (build VM) — tray monochrome + status dots, Task Manager **Kiosa Print Relay**, MSI fresh install **0.4.3**; MSI harvest uses `artifacts/publish` not `artifacts/app`; same-version upgrade can leave stale DLLs — uninstall first or bump version.
 
 ---
 
@@ -286,6 +304,6 @@ _(none)_
 ## Blockers / notes
 
 - **2026-07-19:** Physical sign-off on print-test PC — A6 Landscape, A5 Portrait, A5 Landscape **pass**; `relay.log` shows correct `page_width_mm` / `page_size_source: html`. CR80 not tested on hardware (printer cannot print CR80 stock).
-- Runs **in parallel** with Sprint 3 (signing) and Sprint 4 (Kiosa icons)
+- Runs **in parallel** with Sprint 3 (signing) and Sprint 4 (Kiosa icons + MSI installer branding)
 - Should complete **before** W-01-S10 physical sign-off matrix if print size was blocking confidence
 - Full plan: [`docs/plans/sprint-5-bug-003-dynamic-page-size.md`](docs/plans/sprint-5-bug-003-dynamic-page-size.md)

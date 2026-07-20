@@ -38,7 +38,7 @@ Cursor agents: rules in [`.cursor/rules/`](.cursor/rules/) mirror the platform r
 | M2 — Tray UI, settings, diagnostics | **Shipped** (W-01-S07, W-01-S08) |
 | **Sprint 2** — Unsigned MSI + release CI | **Closed** (W-01-S09) |
 | **Sprint 3** — SignPath OSS signing CI | **Blocked** (W-01-S11 — CI wired; SignPath declined 2026-07-18; reapply or paid signing) |
-| **Sprint 4** — Kiosa brand icons | **Active** (W-01-S12 — tray + exe + Start Menu; parallel to Sprint 3) |
+| **Sprint 4** — Kiosa brand icons + MSI installer branding | **Active** (W-01-S12, W-01-S14 — parallel to Sprint 3) |
 
 ## Repository layout
 

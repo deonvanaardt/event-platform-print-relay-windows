@@ -34,6 +34,30 @@ Chronological record of **implementation-time** decisions for the Windows print 
 
 ## Log
 
+## 2026-07-20 — WiX dialog/banner BMP layout fix (W-01-S14)
+
+**Status:** accepted  
+**Context:** Windows MSI verify showed license left panel as blank teal (no icon) and finish/progress dialogs with text overlapping a centred logo — full-canvas `#115E59` + centred icon does not match how `WixUI_Minimal` composites `WixUIDialogBmp` / `WixUIBannerBmp`.  
+**Decision:** Regenerate BMPs per stock WiX layout: dialog **493×312** = white right side for text overlay + **164×312** teal branding strip on the left with ~118px icon centred in that strip; banner **493×58** = white with ~50px icon on the **right** (progress text overlays the banner). Use `-depth 24` BMP3 output.  
+**Alternatives considered:** Custom WiX dialog XML (rejected — backlog stays on `WixUI_Minimal`); full-teal dialog with smaller centred icon (rejected — icon still outside 164px strip).  
+**Consequences:** `scripts/generate-app-icons.sh`, committed `wix-*.bmp`; operator must rebuild MSI and reinstall.
+
+## 2026-07-20 — WiX installer BMP branding (W-01-S14)
+
+**Status:** superseded — see layout fix entry above (2026-07-20)  
+**Context:** Sprint 4 FR-002 required Kiosa-branded `WixUI_Minimal` banner/dialog images and version text on the finish dialog; stock WiX artwork remained after W-01-S12.  
+**Decision:** Extend `scripts/generate-app-icons.sh` to emit committed 493×58 and 493×312 BMP3 files under `installer/EventPlatform.PrintRelay.Installer/Assets/brand/` — solid `#115E59` background (from `kiosa-logo-icon.svg`) with centred/resized Kiosa icon via ImageMagick; wire `WixUIBannerBmp` / `WixUIDialogBmp` in `Package.wxs`. Show `$(var.ProductVersion)` in `WIXUI_EXITDIALOGOPTIONALTEXT` on the finish dialog (no custom welcome dialog — stays within `WixUI_Minimal`).  
+**Alternatives considered:** Custom WiX welcome dialog fragment for version on welcome (deferred — finish text meets backlog “welcome and/or finish”); runtime-generated BMPs on Windows CI (rejected — Mac script + committed assets matches `app.ico` pattern).  
+**Consequences:** `wix-banner.bmp`, `wix-dialog.bmp`, `Package.wxs`, `docs/INSTALLER.md` W-01-S14 checklist; Windows MSI interactive install verify required before story closure.
+
+## 2026-07-20 — Kiosa brand icons + product rename (W-01-S12)
+
+**Status:** accepted  
+**Context:** Sprint 4 FR-001 required Kiosa icons (tray, exe, forms, Start Menu) and operator-facing rename from "Event Platform" to Kiosa (ARP, Task Manager, UI strings).  
+**Decision:** Copy `kiosa-logo-icon.svg` from `kiosa-marketing/brand-pack` into `Assets/brand/`; generate committed `app.ico` (16/32/48/256) and `tray/base-32.png` via `scripts/generate-app-icons.sh` (rsvg-convert + ImageMagick). Set `<ApplicationIcon>` plus `AssemblyTitle`/`Product`/`Company` metadata for Task Manager display name **Kiosa Print Relay**. `RelayAppIcons` draws PRD §7.1 status-dot overlays (green/amber/red) on a **monochrome icon-only** tray base (`kiosa-tray-icon.svg`, no amber accent per brand pack §3) — full-colour icon remains on exe and form title bars. Status dot sized ~10px on 32px base with white outline for contrast (Windows tray verify 2026-07-20). Central `RelayProductName.DisplayName` constant for App strings; WiX `Package/@Name`, `Manufacturer`, Start Menu folder/shortcut, and `ARPPRODUCTICON` updated to match. **Exe filename stays `EventPlatform.PrintRelay.exe`** (HKCU Run key and MSI upgrade path unchanged).  
+**Alternatives considered:** Separate icon file per tray state (rejected — overlay on one base per sprint plan); exe rename to `Kiosa.PrintRelay.exe` (deferred — breaking for registry/scripts).  
+**Consequences:** `RelayAppIcons.cs`, `RelayProductName.cs`, `Package.wxs`, operator UI strings; Windows verify Task Manager friendly name on hardware.
+
 ## 2026-07-19 — Two Windows machines: build VM vs print-test PC
 
 **Status:** accepted  
