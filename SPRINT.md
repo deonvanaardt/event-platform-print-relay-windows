@@ -185,7 +185,7 @@ _(none yet — mark W-01-S11 Done after signed release + Windows acceptance)_
 **W-01-S12 (installed app icons):**
 - [x] Add Start Menu / Add/Remove Programs icon + Kiosa naming checks to `docs/INSTALLER.md`
 - [x] `ARPPRODUCTICON` in `Package.wxs` from `app.ico`
-- [ ] Windows: rebuild MSI, install, confirm Start Menu shortcut icon and ARP name; upgrade over existing install
+- [x] Windows: rebuild MSI, install, confirm Start Menu shortcut icon and ARP name; fresh install at 0.4.3 (2026-07-20 build VM)
 
 **W-01-S14 (installer UI branding):**
 - [ ] Extend `scripts/generate-app-icons.sh` to produce WiX BMPs: `wix-banner.bmp` (493×58), `wix-dialog.bmp` (493×312) from brand pack colours + Kiosa icon
@@ -210,7 +210,7 @@ _(none)_
 
 ## Done
 
-- **W-01-S12** — Kiosa brand icons + product rename: assets, tray overlays, `RelayAppIcons`, `RelayProductName`, WiX ARP/Start Menu, assembly metadata (2026-07-20; Windows MSI/tray verify pending)
+- **W-01-S12** — Kiosa brand icons + product rename: assets, tray overlays (monochrome base + status dot), `RelayAppIcons`, `RelayProductName`, WiX ARP/Start Menu, assembly metadata; Windows verify passed build VM 2026-07-20 (app **0.4.3**)
 
 ## Out of scope this sprint
 
@@ -225,7 +225,7 @@ _(none)_
 - **Installer branding:** reuse `app.ico` for `ARPPRODUCTICON`; generate WiX banner (493×58) and dialog (493×312) BMPs from brand pack in Session 3
 - **Installer version:** `ProductVersion` flows from App csproj — CI via `release.yml`; local MSI needs `-p:ProductVersion` (wixproj default `0.3.1` is stale)
 - **CI impact:** none — Core tests unchanged; `release.yml` picks up new exe icon on next tag automatically
-- **Handoff:** Mac agent pushes after each session; Windows operator verifies one step at a time per `windows-operator-steps.mdc`
+- **2026-07-20:** W-01-S12 Windows verify **passed** (build VM) — tray monochrome + status dots, Task Manager **Kiosa Print Relay**, MSI fresh install **0.4.3**; MSI harvest uses `artifacts/publish` not `artifacts/app`; same-version upgrade can leave stale DLLs — uninstall first or bump version.
 
 ---
 
