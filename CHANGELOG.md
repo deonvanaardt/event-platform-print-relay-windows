@@ -16,6 +16,10 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 - Kiosa brand icons — tray status-dot overlays, exe/form icons, Start Menu and ARP icon via `app.ico` (W-01-S12, Sprint 4, FR-001)
 - Product rename to **Kiosa Print Relay** — operator UI, installer metadata, Task Manager display name; exe filename unchanged for upgrade compatibility (W-01-S12)
 
+### Changed
+
+- App version **0.4.3** — MSI upgrade path after Kiosa branding (avoids stale DLLs on same-version reinstall)
+
 ### Not yet built
 
 - Installer version on MSI welcome/finish UI + Kiosa WiX banner/dialog branding (W-01-S14, Sprint 4, FR-002)
