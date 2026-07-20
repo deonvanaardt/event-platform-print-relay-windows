@@ -57,8 +57,8 @@ internal static class RelayAppIcons
                 _ => ConnectedColor,
             };
 
-            // Monochrome tray base (brand pack §3) — slightly larger dot for 16–32px readability.
-            var dotSize = Math.Max(8, (baseBitmap.Width * 10) / 32);
+            // Monochrome tray base (brand pack §3) — status dot sized for tray readability.
+            var dotSize = Math.Max(10, (baseBitmap.Width * 14) / 32);
             var dotX = baseBitmap.Width - dotSize;
             var dotY = baseBitmap.Height - dotSize;
 
