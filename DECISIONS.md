@@ -34,6 +34,14 @@ Chronological record of **implementation-time** decisions for the Windows print 
 
 ## Log
 
+## 2026-07-20 — WiX installer BMP branding (W-01-S14)
+
+**Status:** accepted  
+**Context:** Sprint 4 FR-002 required Kiosa-branded `WixUI_Minimal` banner/dialog images and version text on the finish dialog; stock WiX artwork remained after W-01-S12.  
+**Decision:** Extend `scripts/generate-app-icons.sh` to emit committed 493×58 and 493×312 BMP3 files under `installer/EventPlatform.PrintRelay.Installer/Assets/brand/` — solid `#115E59` background (from `kiosa-logo-icon.svg`) with centred/resized Kiosa icon via ImageMagick; wire `WixUIBannerBmp` / `WixUIDialogBmp` in `Package.wxs`. Show `$(var.ProductVersion)` in `WIXUI_EXITDIALOGOPTIONALTEXT` on the finish dialog (no custom welcome dialog — stays within `WixUI_Minimal`).  
+**Alternatives considered:** Custom WiX welcome dialog fragment for version on welcome (deferred — finish text meets backlog “welcome and/or finish”); runtime-generated BMPs on Windows CI (rejected — Mac script + committed assets matches `app.ico` pattern).  
+**Consequences:** `wix-banner.bmp`, `wix-dialog.bmp`, `Package.wxs`, `docs/INSTALLER.md` W-01-S14 checklist; Windows MSI interactive install verify required before story closure.
+
 ## 2026-07-20 — Kiosa brand icons + product rename (W-01-S12)
 
 **Status:** accepted  

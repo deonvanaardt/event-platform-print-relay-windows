@@ -28,6 +28,8 @@
 
   <ItemGroup>
     <Content Include="license.rtf" />
+    <Content Include="Assets\brand\wix-banner.bmp" />
+    <Content Include="Assets\brand\wix-dialog.bmp" />
   </ItemGroup>
 
   <Target Name="ValidatePublishDir" BeforeTargets="HarvestDirectory">

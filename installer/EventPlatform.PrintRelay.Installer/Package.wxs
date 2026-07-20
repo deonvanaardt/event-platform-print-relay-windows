@@ -16,11 +16,14 @@
     <Icon Id="AppIcon" SourceFile="..\..\src\EventPlatform.PrintRelay.App\Assets\brand\app.ico" />
     <Property Id="ARPPRODUCTICON" Value="AppIcon" />
 
+    <WixVariable Id="WixUIBannerBmp" Value="Assets\brand\wix-banner.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="Assets\brand\wix-dialog.bmp" />
+
     <WixVariable Id="WixUILicenseRtf" Value="license.rtf" />
 
     <Property
       Id="WIXUI_EXITDIALOGOPTIONALTEXT"
-      Value="Kiosa Print Relay was installed successfully. You can start it now to enter your desk setup code and choose a printer." />
+      Value="Kiosa Print Relay version $(var.ProductVersion) was installed successfully. You can start it now to enter your desk setup code and choose a printer." />
     <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Start Kiosa Print Relay now" />
     <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOX" Value="1" />
 

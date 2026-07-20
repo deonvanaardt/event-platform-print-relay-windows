@@ -188,12 +188,12 @@ _(none yet — mark W-01-S11 Done after signed release + Windows acceptance)_
 - [x] Windows: rebuild MSI, install, confirm Start Menu shortcut icon and ARP name; fresh install at 0.4.3 (2026-07-20 build VM)
 
 **W-01-S14 (installer UI branding):**
-- [ ] Extend `scripts/generate-app-icons.sh` to produce WiX BMPs: `wix-banner.bmp` (493×58), `wix-dialog.bmp` (493×312) from brand pack colours + Kiosa icon
-- [ ] Commit BMPs under `installer/EventPlatform.PrintRelay.Installer/Assets/brand/`
-- [ ] Update `Package.wxs`: `WixUIBannerBmp`, `WixUIDialogBmp`, version text on welcome/finish (`ARPPRODUCTICON` shipped in W-01-S12)
-- [ ] Show `$(var.ProductVersion)` on welcome and/or finish dialog (version text alongside branded UI)
-- [ ] Document local MSI build: pass `-p:ProductVersion` from App csproj (CI already does via `release.yml`)
-- [ ] Add installer branding + version checks to `docs/INSTALLER.md` acceptance checklist
+- [x] Extend `scripts/generate-app-icons.sh` to produce WiX BMPs: `wix-banner.bmp` (493×58), `wix-dialog.bmp` (493×312) from brand pack colours + Kiosa icon
+- [x] Commit BMPs under `installer/EventPlatform.PrintRelay.Installer/Assets/brand/`
+- [x] Update `Package.wxs`: `WixUIBannerBmp`, `WixUIDialogBmp`, version text on welcome/finish (`ARPPRODUCTICON` shipped in W-01-S12)
+- [x] Show `$(var.ProductVersion)` on welcome and/or finish dialog (version text alongside branded UI)
+- [x] Document local MSI build: pass `-p:ProductVersion` from App csproj (CI already does via `release.yml`)
+- [x] Add installer branding + version checks to `docs/INSTALLER.md` acceptance checklist
 
 **Closure:**
 - [ ] Windows: interactive install — welcome/finish show Kiosa banner/dialog (not stock WiX); ARP icon is Kiosa; version matches `build-info.txt`
@@ -206,7 +206,7 @@ _(none yet — mark W-01-S11 Done after signed release + Windows acceptance)_
 
 ## In progress
 
-_(none)_
+- **W-01-S14** — MSI installer branding: Mac implementation complete; **Windows MSI interactive install verify pending**
 
 ## Done
 

@@ -7,6 +7,8 @@
 # Outputs (committed to repo — Windows CI does not need SVG tooling):
 #   src/EventPlatform.PrintRelay.App/Assets/brand/app.ico (16, 32, 48, 256)
 #   src/EventPlatform.PrintRelay.App/Assets/brand/tray/base-32.png (monochrome icon-only — tray overlays)
+#   installer/EventPlatform.PrintRelay.Installer/Assets/brand/wix-banner.bmp (493×58, 24-bit)
+#   installer/EventPlatform.PrintRelay.Installer/Assets/brand/wix-dialog.bmp (493×312, 24-bit)
 #
 # Sources (copied from kiosa-marketing/brand-pack/ into Assets/brand/):
 #   kiosa-logo-icon.svg — app.ico / exe / forms
@@ -19,6 +21,9 @@ BRAND_DIR="$ROOT/src/EventPlatform.PrintRelay.App/Assets/brand"
 ICON_SVG="$BRAND_DIR/kiosa-logo-icon.svg"
 TRAY_SVG="$BRAND_DIR/kiosa-tray-icon.svg"
 TRAY_DIR="$BRAND_DIR/tray"
+WIX_BRAND_DIR="$ROOT/installer/EventPlatform.PrintRelay.Installer/Assets/brand"
+# Kiosa logo icon background (kiosa-logo-icon.svg) — solid, no gradients per brand pack §3
+WIX_BG_COLOR='#115E59'
 TMP_DIR="$(mktemp -d)"
 
 cleanup() {
@@ -46,7 +51,7 @@ if [[ ! -f "$TRAY_SVG" ]]; then
   exit 1
 fi
 
-mkdir -p "$TRAY_DIR"
+mkdir -p "$TRAY_DIR" "$WIX_BRAND_DIR"
 
 for size in 16 32 48 256; do
   rsvg-convert -w "$size" -h "$size" "$ICON_SVG" -o "$TMP_DIR/icon-${size}.png"
@@ -56,6 +61,22 @@ rsvg-convert -w 32 -h 32 "$TRAY_SVG" -o "$TRAY_DIR/base-32.png"
 
 magick "$TMP_DIR/icon-16.png" "$TMP_DIR/icon-32.png" "$TMP_DIR/icon-48.png" "$TMP_DIR/icon-256.png" "$BRAND_DIR/app.ico"
 
+# WiX WixUI_Minimal assets — 24-bit BMP (BMP3) required by WiX
+WIX_BANNER="$WIX_BRAND_DIR/wix-banner.bmp"
+WIX_DIALOG="$WIX_BRAND_DIR/wix-dialog.bmp"
+
+magick -size 493x58 "xc:$WIX_BG_COLOR" \
+  \( "$TMP_DIR/icon-48.png" -resize 44x44 \) \
+  -gravity west -geometry +16+0 -composite \
+  -type TrueColor BMP3:"$WIX_BANNER"
+
+magick -size 493x312 "xc:$WIX_BG_COLOR" \
+  \( "$TMP_DIR/icon-256.png" -resize 200x200 \) \
+  -gravity center -composite \
+  -type TrueColor BMP3:"$WIX_DIALOG"
+
 echo "Generated:"
 echo "  $BRAND_DIR/app.ico"
 echo "  $TRAY_DIR/base-32.png"
+echo "  $WIX_BANNER"
+echo "  $WIX_DIALOG"

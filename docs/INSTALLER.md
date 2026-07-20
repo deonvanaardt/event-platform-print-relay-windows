@@ -147,6 +147,22 @@ Mark **W-01-S12** Done in `SPRINT.md` when all boxes pass.
 
 ---
 
+## W-01-S14 acceptance checklist (MSI installer branding)
+
+Run after rebuilding MSI with `-p:ProductVersion` matching App csproj (see [Build locally](#build-locally-windows)). Uninstall a same-version install first if upgrading during dev.
+
+- [ ] **Welcome** screen: left dialog panel shows Kiosa teal background and icon (not stock WiX red/grey artwork)
+- [ ] **License** and **progress** screens: top banner strip shows Kiosa branding (not stock WiX banner)
+- [ ] **Finish** screen: Kiosa dialog panel; success text includes **version** matching App csproj / `build-info.txt` (e.g. `Kiosa Print Relay version 0.4.3 was installed successfully…`)
+- [ ] Finish screen **Start Kiosa Print Relay now** checkbox still works (checked by default; launches tray app on Finish)
+- [ ] Settings → Apps: **Kiosa Print Relay** still shows Kiosa icon (W-01-S12 regression)
+- [ ] Upgrade install over previous MSI preserves settings; finish text shows new version
+- [ ] Regenerate assets: `bash scripts/generate-app-icons.sh` on Mac reproduces `installer/.../Assets/brand/wix-*.bmp`
+
+Mark **W-01-S14** Done in `SPRINT.md` when all boxes pass.
+
+---
+
 ## W-01-S11 acceptance checklist (signed release)
 
 Run after SignPath OSS approval, GitHub secrets configured, and tag `v0.4.0` pushed:
