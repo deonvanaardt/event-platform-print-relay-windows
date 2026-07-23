@@ -310,7 +310,7 @@ _(none)_
 
 ---
 
-# Sprint 6 — Pairing code setup (W-01-S15)
+# Sprint 6 — Pairing code setup (W-01-S15) — **CLOSED**
 
 **Dates:** 2026-07-23 → 2026-07-23  
 **Epic:** [W-01 — Windows print relay MVP](BACKLOG.md#w-01--windows-print-relay-mvp)  

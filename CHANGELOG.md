@@ -11,28 +11,45 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 
 ## [Unreleased]
 
-### Added
-
-- Pairing code setup — 8-char Crockford code exchange via `POST /api/v1/print-desks/pair`; Core layer (`PairingCodeFormat`, `PairingExchangeClient`, `DeskSetupValidation`) and setup wizard UX with collapsible Platform URL (W-01-S15)
-- Kiosa brand icons — tray status-dot overlays, exe/form icons, Start Menu and ARP icon via `app.ico` (W-01-S12, Sprint 4, FR-001)
-- Product rename to **Kiosa Print Relay** — operator UI, installer metadata, Task Manager display name; exe filename unchanged for upgrade compatibility (W-01-S12)
-- MSI installer branding — Kiosa WiX banner/dialog BMPs (`WixUI_Minimal` layout), product version on finish dialog (W-01-S14, Sprint 4, FR-002)
-
-### Changed
-
-- App version **1.1.0** — pairing code setup (primary path); `DESK-` legacy decode retained for dev laptops
-- Setup wizard advanced panel — fixed Platform URL textbox height (was invisible with `AutoSize` + `Dock.Fill`)
-- App version **0.4.3** — MSI upgrade path after Kiosa branding (avoids stale DLLs on same-version reinstall)
-
-### Fixed
-
-- Setup wizard advanced panel — Platform URL textbox invisible (`AutoSize` + `Dock.Fill`); fixed height so Vercel preview/staging URL is editable (W-01-S15)
-
 ### Not yet built
 
 - First signed GitHub Release — blocked on signing provider (SignPath OSS declined 2026-07-18; reapply or paid signing) + Windows verify
 - Physical sign-off Win 10 + 11 (W-01-S10)
 - Full list: [BACKLOG.md](BACKLOG.md)
+
+---
+
+## 1.1.0 — 2026-07-23 — Sprint 6 — Pairing code setup
+
+**Stories:** W-01-S15
+
+### Added
+
+- Pairing code setup — 8-char Crockford code exchange via `POST /api/v1/print-desks/pair`; Core layer (`PairingCodeFormat`, `PairingExchangeClient`, `DeskSetupValidation`) and setup wizard UX with collapsible Platform URL (W-01-S15)
+
+### Changed
+
+- App version **1.1.0** — pairing code setup (primary path); `DESK-` legacy decode retained for dev laptops
+
+### Fixed
+
+- Setup wizard advanced panel — Platform URL textbox invisible (`AutoSize` + `Dock.Fill`); fixed height so Vercel preview/staging URL is editable (W-01-S15)
+
+---
+
+## 0.4.3 — 2026-07-20 — Sprint 4 — Kiosa brand icons + MSI branding
+
+**Stories:** W-01-S12, W-01-S14
+
+### Added
+
+- Kiosa brand icons — tray status-dot overlays, exe/form icons, Start Menu and ARP icon via `app.ico` (W-01-S12, FR-001)
+- Product rename to **Kiosa Print Relay** — operator UI, installer metadata, Task Manager display name; exe filename unchanged for upgrade compatibility (W-01-S12)
+- MSI installer branding — Kiosa WiX banner/dialog BMPs (`WixUI_Minimal` layout), product version on finish dialog (W-01-S14, FR-002)
+
+### Changed
+
+- App version **0.4.3** — MSI upgrade path after Kiosa branding (avoids stale DLLs on same-version reinstall)
 
 ---
 
