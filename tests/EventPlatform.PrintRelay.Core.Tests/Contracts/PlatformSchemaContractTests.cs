@@ -28,6 +28,7 @@ public sealed class PlatformSchemaContractTests
     [InlineData("desk-setup-code.v1.json", "fixtures/desk-setup-code.v1.valid.json")]
     [InlineData("pending-job.response.json", "fixtures/pending-response.valid.json")]
     [InlineData("pending-job.response.json", "fixtures/pending-response.empty.json")]
+    [InlineData("pair-exchange.response.json", "fixtures/pair-exchange.response.valid.json")]
     public void Fixture_validates_against_pinned_schema(string schemaFile, string fixtureFile)
     {
         var schema = LoadSchema(schemaFile);

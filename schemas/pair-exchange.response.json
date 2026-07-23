@@ -1,0 +1,32 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.emp.dev/print-relay/pair-exchange.response.json",
+  "title": "PairingExchangeResponse",
+  "description": "Success response from POST /api/v1/print-desks/pair after exchanging an 8-character pairing code.",
+  "type": "object",
+  "required": ["secret", "api_url", "desk_name", "desk_id"],
+  "additionalProperties": false,
+  "properties": {
+    "secret": {
+      "type": "string",
+      "pattern": "^relay_",
+      "minLength": 7,
+      "description": "Stable desk relay bearer token until organiser regenerates secret or revokes desk."
+    },
+    "api_url": {
+      "type": "string",
+      "format": "uri",
+      "description": "Platform origin for all /api/print-queue/* calls."
+    },
+    "desk_name": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Human-readable desk label for relay UI."
+    },
+    "desk_id": {
+      "type": "string",
+      "format": "uuid",
+      "description": "Desk UUID for diagnostics correlation."
+    }
+  }
+}

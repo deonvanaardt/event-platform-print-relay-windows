@@ -307,3 +307,80 @@ _(none)_
 - Runs **in parallel** with Sprint 3 (signing) and Sprint 4 (Kiosa icons + MSI installer branding)
 - Should complete **before** W-01-S10 physical sign-off matrix if print size was blocking confidence
 - Full plan: [`docs/plans/sprint-5-bug-003-dynamic-page-size.md`](docs/plans/sprint-5-bug-003-dynamic-page-size.md)
+
+---
+
+# Sprint 6 — Pairing code setup (W-01-S15) — **CLOSED**
+
+**Dates:** 2026-07-23 → 2026-07-23  
+**Epic:** [W-01 — Windows print relay MVP](BACKLOG.md#w-01--windows-print-relay-mvp)  
+**Platform:** S18-S04 / FR-009 (pairing APIs + admin UI shipped)  
+**Story:** **W-01-S15** — Pairing code setup (exchange API)  
+**Handoff:** platform `printrelay/WINDOWS_PAIRING_HANDOFF.md` (copy to `docs/WINDOWS_PAIRING_HANDOFF.md` in Session 1)  
+**Plan:** [W-01-S15 pairing setup](.cursor/plans/w-01-s15_pairing_setup_5bf06f5c.plan.md)
+
+## Goal
+
+Replace `DESK-` setup code paste with **8-character pairing codes** from Kiosa admin. Windows calls `POST /api/v1/print-desks/pair`, persists returned credentials, then polls as today.
+
+**Exit:** Print-test PC — create desk → enter pairing code → sample print → job **Printed**. App version **≥ 1.1.0**. **Met** on build VM against Vercel preview (2026-07-23).
+
+**Why now:** Platform admin no longer issues `DESK-` codes; Windows users cannot set up from admin UI alone until this ships.
+
+## In scope (Sprint 6)
+
+- [x] **W-01-S15** — Pairing code setup (two sessions — see below)
+
+### Session 1 — Core + schemas + xUnit (Mac agent)
+
+**Goal:** Pairing exchange logic in Core; CI green. Wizard unchanged — operators still need `DESK-` until Session 2.
+
+- [x] Copy `WINDOWS_PAIRING_HANDOFF.md` → `docs/WINDOWS_PAIRING_HANDOFF.md` (story ID **W-01-S15**)
+- [x] `PairingCodeFormat` — Crockford 8-char alphabet, normalize, validate
+- [x] `PairingExchangeClient` — `POST /api/v1/print-desks/pair`; map 400/429/5xx to operator messages
+- [x] `DeskSetupValidation` — route `DESK-` (legacy) vs pairing; verify via `GET /api/print-queue/pending`
+- [x] Optional `desk_id` on `RelaySettings`
+- [x] `schemas/pair-exchange.response.json` + fixture; bump `platform-pin.json`
+- [x] xUnit: format, exchange client, validation routing, settings round-trip, contract test
+- [x] `INTEGRATION.md` §4 pairing stub
+
+**Windows verify:** none (Core-only; exe behaviour unchanged).
+
+### Session 2 — Wizard + release + Windows E2E (Mac agent + Windows operator)
+
+**Goal:** Operators pair from admin UI. Story Done.
+
+- [x] `SetupWizardForm` — 8-char input, pairing labels, collapsible Platform URL (default `https://app.kiosa.io`)
+- [x] Wire `DeskSetupValidation` → save `RelaySettings` including `desk_id`
+- [x] Bump app version to **1.1.0**
+- [x] `CHANGELOG.md`, `STAGING_INTEGRATION.md`, `README.md` compatibility matrix, `DECISIONS.md`
+- [x] Windows E2E: create desk → enter code → tray Connected → sample print → Printed
+
+## Stretch (if time remains)
+
+- [ ] Uppercase-as-you-type on pairing code field
+- [ ] Platform repo: update `printrelay/INTEGRATION.md` W-01-S11 → W-01-S15 cross-ref
+
+## In progress
+
+_(none)_
+
+## Done
+
+- **W-01-S15** — Pairing code setup: Core exchange + wizard 1.1.0; Windows verify on build VM + Vercel preview (`8b695a0`, 2026-07-23)
+
+## Out of scope this sprint
+
+- QR scan pairing (platform stretch)
+- MSI platform URL bake-in (`appsettings.Production.json`)
+- SignPath signing (Sprint 3 / W-01-S11)
+- Removing `DESK-` legacy decode (keep for dev laptops)
+
+## Blockers / notes
+
+- **Story ID:** Windows **W-01-S15** (platform handoff doc says W-01-S11 — that ID is SignPath signing in this repo)
+- **Session 1 ships no operator-visible change** — safe to merge before Session 2
+- **Staging:** Session 2 wizard needs Platform URL set to staging/preview host (not `app.kiosa.io`); layout fix `8b695a0` makes URL field visible
+- **2026-07-23:** Windows E2E **passed** on build VM — Vercel preview pairing + sample print → **Printed** (app **1.1.0**, `8b695a0`)
+- **Platform dependency:** S18-S04 deployed; pairing code from Print desks admin panel
+- Runs **in parallel** with Sprint 3 (SignPath — blocked) and any Sprint 4 stretch items

@@ -1,6 +1,7 @@
 using EventPlatform.PrintRelay.App;
 using EventPlatform.PrintRelay.App.Printing;
 using EventPlatform.PrintRelay.App.Tray;
+using EventPlatform.PrintRelay.Core;
 using EventPlatform.PrintRelay.Core.Setup;
 using EventPlatform.PrintRelay.Core.SetupCode;
 using EventPlatform.PrintRelay.Core.Settings;
@@ -14,7 +15,10 @@ internal sealed class SetupWizardForm : Form
 
     private readonly Panel _step1Panel;
     private readonly Panel _step2Panel;
-    private TextBox _setupCodeTextBox = null!;
+    private TextBox _pairingCodeTextBox = null!;
+    private TextBox _platformUrlTextBox = null!;
+    private Panel _advancedPanel = null!;
+    private LinkLabel _advancedLinkLabel = null!;
     private Label _errorLabel = null!;
     private Button _continueButton = null!;
     private Label _deskNameLabel = null!;
@@ -22,6 +26,7 @@ internal sealed class SetupWizardForm : Form
     private Button _finishButton = null!;
 
     private DeskSetupCodePayload? _validatedPayload;
+    private string? _validatedDeskId;
 
     public SetupWizardForm(HttpClient http, string settingsPath)
     {
@@ -73,7 +78,7 @@ internal sealed class SetupWizardForm : Form
     {
         var step1Title = new Label
         {
-            Text = "Paste your desk setup code",
+            Text = "Enter your pairing code",
             AutoSize = true,
             Dock = DockStyle.Top,
             Font = new Font(Font, FontStyle.Bold),
@@ -99,17 +104,85 @@ internal sealed class SetupWizardForm : Form
             Visible = false,
         };
 
-        _setupCodeTextBox = new TextBox
+        _pairingCodeTextBox = new TextBox
         {
-            Multiline = true,
-            ScrollBars = ScrollBars.Vertical,
-            Dock = DockStyle.Fill,
+            Dock = DockStyle.Top,
+            Margin = new Padding(0, 0, 0, 8),
         };
 
-        _step1Panel.Controls.Add(_setupCodeTextBox);
+        var helperLabel = new Label
+        {
+            Text = "Enter the 8-character code from Kiosa Print desks.",
+            AutoSize = true,
+            Dock = DockStyle.Top,
+            Padding = new Padding(0, 0, 0, 8),
+        };
+
+        var pairingCaption = new Label
+        {
+            Text = "Pairing code:",
+            AutoSize = true,
+            Dock = DockStyle.Top,
+            Padding = new Padding(0, 0, 0, 4),
+        };
+
+        _platformUrlTextBox = new TextBox
+        {
+            Text = RelayConstants.DefaultPlatformUrl,
+            Dock = DockStyle.Top,
+            Height = 23,
+            Margin = new Padding(0, 4, 0, 0),
+        };
+
+        var platformUrlCaption = new Label
+        {
+            Text = "Platform URL:",
+            AutoSize = true,
+            Dock = DockStyle.Top,
+        };
+
+        _advancedPanel = new Panel
+        {
+            Dock = DockStyle.Top,
+            Height = 56,
+            Padding = new Padding(0, 8, 0, 0),
+            Visible = false,
+        };
+        _advancedPanel.Controls.Add(_platformUrlTextBox);
+        _advancedPanel.Controls.Add(platformUrlCaption);
+
+        _advancedLinkLabel = new LinkLabel
+        {
+            Text = "Advanced settings",
+            AutoSize = true,
+            Dock = DockStyle.Top,
+            Padding = new Padding(0, 8, 0, 0),
+            LinkBehavior = LinkBehavior.HoverUnderline,
+        };
+        _advancedLinkLabel.LinkClicked += AdvancedLinkLabel_LinkClicked;
+
+        var step1Body = new Panel
+        {
+            Dock = DockStyle.Fill,
+        };
+        step1Body.Controls.Add(_advancedPanel);
+        step1Body.Controls.Add(_advancedLinkLabel);
+        step1Body.Controls.Add(_pairingCodeTextBox);
+        step1Body.Controls.Add(pairingCaption);
+        step1Body.Controls.Add(helperLabel);
+
+        _step1Panel.Controls.Add(step1Body);
         _step1Panel.Controls.Add(_errorLabel);
         _step1Panel.Controls.Add(step1Footer);
         _step1Panel.Controls.Add(step1Title);
+    }
+
+    private void AdvancedLinkLabel_LinkClicked(object? sender, LinkLabelLinkClickedEventArgs e)
+    {
+        _advancedPanel.Visible = !_advancedPanel.Visible;
+        _advancedLinkLabel.Text = _advancedPanel.Visible
+            ? "Hide advanced settings"
+            : "Advanced settings";
     }
 
     private void BuildStep2()
@@ -230,19 +303,21 @@ internal sealed class SetupWizardForm : Form
 
         try
         {
-            var result = await SetupCodeValidation.ValidateAsync(
-                _setupCodeTextBox.Text,
+            var result = await DeskSetupValidation.ValidateAsync(
+                _pairingCodeTextBox.Text,
+                _platformUrlTextBox.Text.Trim(),
                 _http,
                 CancellationToken.None).ConfigureAwait(true);
 
             if (!result.Success)
             {
-                ShowError(result.OperatorMessage ?? SetupValidationMessages.InvalidSetupCode);
+                ShowError(result.OperatorMessage ?? SetupValidationMessages.InvalidPairingCode);
                 SetStep1Enabled(true);
                 return;
             }
 
             _validatedPayload = result.Payload;
+            _validatedDeskId = result.DeskId;
             ShowStep2();
         }
         catch (Exception)
@@ -280,6 +355,7 @@ internal sealed class SetupWizardForm : Form
                 ApiUrl = _validatedPayload.ApiUrl,
                 DeskName = _validatedPayload.DeskName,
                 PrinterName = printerName,
+                DeskId = _validatedDeskId,
             };
 
             await RelaySettingsStore.SaveAsync(settings, _settingsPath).ConfigureAwait(true);
@@ -325,7 +401,9 @@ internal sealed class SetupWizardForm : Form
 
     private void SetStep1Enabled(bool enabled)
     {
-        _setupCodeTextBox.Enabled = enabled;
+        _pairingCodeTextBox.Enabled = enabled;
+        _platformUrlTextBox.Enabled = enabled;
+        _advancedLinkLabel.Enabled = enabled;
         _continueButton.Enabled = enabled;
     }
 
