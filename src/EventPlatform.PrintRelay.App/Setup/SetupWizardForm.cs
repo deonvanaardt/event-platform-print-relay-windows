@@ -129,7 +129,8 @@ internal sealed class SetupWizardForm : Form
         _platformUrlTextBox = new TextBox
         {
             Text = RelayConstants.DefaultPlatformUrl,
-            Dock = DockStyle.Fill,
+            Dock = DockStyle.Top,
+            Height = 23,
             Margin = new Padding(0, 4, 0, 0),
         };
 
@@ -143,8 +144,7 @@ internal sealed class SetupWizardForm : Form
         _advancedPanel = new Panel
         {
             Dock = DockStyle.Top,
-            AutoSize = true,
-            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+            Height = 56,
             Padding = new Padding(0, 8, 0, 0),
             Visible = false,
         };

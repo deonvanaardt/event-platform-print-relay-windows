@@ -21,6 +21,7 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 ### Changed
 
 - App version **1.1.0** — pairing code setup (primary path); `DESK-` legacy decode retained for dev laptops
+- Setup wizard advanced panel — fixed Platform URL textbox height (was invisible with `AutoSize` + `Dock.Fill`)
 - App version **0.4.3** — MSI upgrade path after Kiosa branding (avoids stale DLLs on same-version reinstall)
 
 ### Not yet built
