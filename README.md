@@ -105,7 +105,12 @@ Pinned schemas: [`schemas/`](schemas/) · platform commit in [`schemas/platform-
 
 ## Platform compatibility
 
-Document minimum platform version per release. First production build requires platform staging with `badge_html` on `GET /api/print-queue/pending`.
+| Print Relay version | Platform | Setup method |
+|---------------------|----------|--------------|
+| **&lt; 1.1.0** | Any | `DESK-` setup code only |
+| **≥ 1.1.0** | ≥ Sprint 18 deploy | 8-char pairing code (primary); `DESK-` legacy for dev laptops |
+
+First production build requires platform staging with `badge_html` on `GET /api/print-queue/pending`. Pairing exchange: [`INTEGRATION.md`](INTEGRATION.md) §4 · [`docs/WINDOWS_PAIRING_HANDOFF.md`](docs/WINDOWS_PAIRING_HANDOFF.md).
 
 ## License
 

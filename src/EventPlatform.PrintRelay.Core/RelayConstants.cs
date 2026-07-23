@@ -16,6 +16,9 @@ public static class RelayConstants
     public const string SetupCodePrefix = "DESK-";
     public const int SetupCodeVersion = 1;
 
+    /// <summary>Default Kiosa platform origin for pairing exchange (production).</summary>
+    public const string DefaultPlatformUrl = "https://app.kiosa.io";
+
     /// <summary>CR80 badge width (platform <c>cr80</c> preset).</summary>
     public const double Cr80WidthMm = 85.6;
 

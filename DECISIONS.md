@@ -34,6 +34,14 @@ Chronological record of **implementation-time** decisions for the Windows print 
 
 ## Log
 
+## 2026-07-23 — Pairing code setup wizard (W-01-S15 Session 2)
+
+**Status:** accepted  
+**Context:** Session 1 added Core pairing exchange; operators still saw `DESK-` setup wizard until App wired `DeskSetupValidation`.  
+**Decision:** Update `SetupWizardForm` for 8-char pairing code input, collapsible **Advanced settings** with Platform URL defaulting to `RelayConstants.DefaultPlatformUrl` (`https://app.kiosa.io`). Wizard calls `DeskSetupValidation`; persist `desk_id` on `RelaySettings`. Bump app to **1.1.0**. Legacy `DESK-` codes still accepted in the same field (no `MaxLength`).  
+**Alternatives considered:** Separate legacy wizard step — rejected; routing stays in Core. MSI-baked platform URL — deferred (out of scope).  
+**Consequences:** `SetupWizardForm.cs`, `RelayConstants.DefaultPlatformUrl`, version 1.1.0, staging doc + README compatibility matrix.
+
 ## 2026-07-23 — Pairing code setup Core layer (W-01-S15 Session 1)
 
 **Status:** accepted  

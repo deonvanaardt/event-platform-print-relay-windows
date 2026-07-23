@@ -13,12 +13,14 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 
 ### Added
 
+- Pairing code setup — 8-char Crockford code exchange via `POST /api/v1/print-desks/pair`; Core layer (`PairingCodeFormat`, `PairingExchangeClient`, `DeskSetupValidation`) and setup wizard UX with collapsible Platform URL (W-01-S15)
 - Kiosa brand icons — tray status-dot overlays, exe/form icons, Start Menu and ARP icon via `app.ico` (W-01-S12, Sprint 4, FR-001)
 - Product rename to **Kiosa Print Relay** — operator UI, installer metadata, Task Manager display name; exe filename unchanged for upgrade compatibility (W-01-S12)
 - MSI installer branding — Kiosa WiX banner/dialog BMPs (`WixUI_Minimal` layout), product version on finish dialog (W-01-S14, Sprint 4, FR-002)
 
 ### Changed
 
+- App version **1.1.0** — pairing code setup (primary path); `DESK-` legacy decode retained for dev laptops
 - App version **0.4.3** — MSI upgrade path after Kiosa branding (avoids stale DLLs on same-version reinstall)
 
 ### Not yet built

@@ -350,10 +350,10 @@ Replace `DESK-` setup code paste with **8-character pairing codes** from Kiosa a
 
 **Goal:** Operators pair from admin UI. Story Done.
 
-- [ ] `SetupWizardForm` — 8-char input, pairing labels, collapsible Platform URL (default `https://app.kiosa.io`)
-- [ ] Wire `DeskSetupValidation` → save `RelaySettings` including `desk_id`
-- [ ] Bump app version to **1.1.0**
-- [ ] `CHANGELOG.md`, `STAGING_INTEGRATION.md`, `README.md` compatibility matrix, `DECISIONS.md`
+- [x] `SetupWizardForm` — 8-char input, pairing labels, collapsible Platform URL (default `https://app.kiosa.io`)
+- [x] Wire `DeskSetupValidation` → save `RelaySettings` including `desk_id`
+- [x] Bump app version to **1.1.0**
+- [x] `CHANGELOG.md`, `STAGING_INTEGRATION.md`, `README.md` compatibility matrix, `DECISIONS.md`
 - [ ] Windows E2E: create desk → enter code → tray Connected → sample print → Printed
 
 ## Stretch (if time remains)
