@@ -1,11 +1,12 @@
 {
   "platform_repo": "deonvanaardt/event-management-platform",
-  "commit_sha": "306cc0693d80f9a5db524edba1b8a986174d1d04",
-  "pinned_at": "2026-07-01",
+  "commit_sha": "1cda3c95de4f5e200eb418517a6be927a19a27a9",
+  "pinned_at": "2026-07-23",
   "schema_paths": [
     "schemas/pending-job.response.json",
     "schemas/badge-render-input.json",
-    "schemas/desk-setup-code.v1.json"
+    "schemas/desk-setup-code.v1.json",
+    "schemas/pair-exchange.response.json"
   ],
-  "notes": "Bump commit_sha when platform changes print-relay contracts (PRD §26). Re-copy schemas/ and run contract tests before release."
+  "notes": "Bump commit_sha when platform changes print-relay contracts (PRD §26). Re-copy schemas/ and run contract tests before release. pair-exchange.response.json authored in Windows repo until platform exports it (S18-S04 / W-01-S15)."
 }

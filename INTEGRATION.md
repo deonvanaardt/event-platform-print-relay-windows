@@ -55,6 +55,40 @@ DESK-<base64url(JSON)>
 
 Decoded payload validated against [`schemas/desk-setup-code.v1.json`](schemas/desk-setup-code.v1.json).
 
+> **Superseded for new setups (Sprint 18 / FR-009):** Admin UI now issues **pairing codes** only (§4). Keep `DESK-` decode in the Windows app for backward compat with dev laptops configured before pairing shipped.
+
+### 4. Pairing code exchange (primary setup path — Sprint 18 / FR-009)
+
+Short codes for field ops. Admin creates codes via Kiosa Print desks panel; relay exchanges without admin login.
+
+| Property | Value |
+|----------|--------|
+| Length | 8 characters |
+| Alphabet | `23456789ABCDEFGHJKMNPQRSTVWXYZ` (Crockford Base32) |
+| Case | Case-insensitive; normalize to uppercase before exchange |
+| Endpoint | `POST {platform}/api/v1/print-desks/pair` with `{ "code": "<normalized>" }` |
+
+**Success (200):** `secret`, `api_url`, `desk_name`, `desk_id` — validated against [`schemas/pair-exchange.response.json`](schemas/pair-exchange.response.json).
+
+After exchange, verify via `GET {api_url}/api/print-queue/pending` with `Authorization: Bearer {secret}`.
+
+**Operator errors:**
+
+| HTTP | Operator message |
+|------|------------------|
+| 400 | This pairing code is invalid, expired, or already used. Ask your organiser for a new code. |
+| 429 | Too many attempts — wait a minute and try again. |
+| 5xx / network | Could not connect — check your internet connection and try again. |
+
+**Version matrix:**
+
+| Print Relay | Platform | Setup method |
+|-------------|----------|--------------|
+| &lt; 1.1.0 | Any | `DESK-` setup code only |
+| ≥ 1.1.0 | ≥ Sprint 18 deploy | 8-char pairing code (primary) |
+
+Full handoff: [`docs/WINDOWS_PAIRING_HANDOFF.md`](docs/WINDOWS_PAIRING_HANDOFF.md).
+
 ---
 
 ## Integration checklist (ordered)
@@ -97,6 +131,7 @@ Decoded payload validated against [`schemas/desk-setup-code.v1.json`](schemas/de
 | Renderer bugfix | Yes | No |
 | `badge_html` field | Yes (required) | First production build after staging |
 | Setup code `v: 2` | Yes + Windows update | Yes — coordinated |
+| Pairing exchange schema | Yes (S18-S04) | Yes + bump `platform-pin.json` |
 | Schema breaking change | PRD §26 | Yes + bump `platform-pin.json` |
 
 ---

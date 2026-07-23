@@ -34,6 +34,14 @@ Chronological record of **implementation-time** decisions for the Windows print 
 
 ## Log
 
+## 2026-07-23 — Pairing code setup Core layer (W-01-S15 Session 1)
+
+**Status:** accepted  
+**Context:** Platform S18-S04 ships 8-char pairing codes; Windows must exchange via `POST /api/v1/print-desks/pair` before polling. Session 1 adds Core logic only — wizard unchanged until Session 2.  
+**Decision:** Add `PairingCodeFormat`, `PairingExchangeClient`, and `DeskSetupValidation` routing (`DESK-` legacy vs pairing). Extend `SetupValidationResult.DeskId` and optional `RelaySettings.DeskId`. Author `schemas/pair-exchange.response.json` locally until platform exports it.  
+**Alternatives considered:** Replace `SetupCodeValidation` outright — rejected to keep Session 1 diff small and App wizard untouched.  
+**Consequences:** `src/EventPlatform.PrintRelay.Core/Pairing/`, `DeskSetupValidation.cs`, schema pin bump, xUnit on macOS CI. No operator-visible change until Session 2.
+
 ## 2026-07-20 — WiX dialog/banner BMP layout fix (W-01-S14)
 
 **Status:** accepted  

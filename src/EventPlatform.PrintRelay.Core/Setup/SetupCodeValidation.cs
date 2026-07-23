@@ -7,6 +7,15 @@ public static class SetupValidationMessages
 {
     public const string InvalidSetupCode = "Invalid setup code — contact your event organiser.";
 
+    public const string InvalidPairingCode =
+        "Enter a valid 8-character pairing code from Kiosa.";
+
+    public const string PairingCodeExpiredOrUsed =
+        "This pairing code is invalid, expired, or already used. Ask your organiser for a new code.";
+
+    public const string TooManyAttempts =
+        "Too many attempts — wait a minute and try again.";
+
     public const string CouldNotConnect =
         "Could not connect — check your internet connection and try again.";
 }
@@ -19,8 +28,10 @@ public sealed record SetupValidationResult
 
     public DeskSetupCodePayload? Payload { get; init; }
 
-    public static SetupValidationResult Succeeded(DeskSetupCodePayload payload) =>
-        new() { Success = true, Payload = payload };
+    public string? DeskId { get; init; }
+
+    public static SetupValidationResult Succeeded(DeskSetupCodePayload payload, string? deskId = null) =>
+        new() { Success = true, Payload = payload, DeskId = deskId };
 
     public static SetupValidationResult Failed(string operatorMessage) =>
         new() { Success = false, OperatorMessage = operatorMessage };

@@ -199,6 +199,37 @@ public sealed class RelaySettingsStoreTests
             Assert.Equal(settings.ApiUrl, loaded.ApiUrl);
             Assert.Equal(settings.DeskName, loaded.DeskName);
             Assert.Equal(settings.PrinterName, loaded.PrinterName);
+            Assert.Null(loaded.DeskId);
+        }
+        finally
+        {
+            if (File.Exists(path))
+            {
+                File.Delete(path);
+            }
+        }
+    }
+
+    [Fact]
+    public async Task Save_and_load_roundtrip_with_desk_id()
+    {
+        var path = Path.Combine(Path.GetTempPath(), $"relay-settings-{Guid.NewGuid():N}.json");
+        var settings = new RelaySettings
+        {
+            Secret = "relay_test",
+            ApiUrl = "https://app.example.com",
+            DeskName = "Main entrance",
+            PrinterName = "Microsoft Print to PDF",
+            DeskId = "44444444-4444-4444-8444-444444444444",
+        };
+
+        try
+        {
+            await RelaySettingsStore.SaveAsync(settings, path);
+            var loaded = await RelaySettingsStore.LoadAsync(path);
+
+            Assert.NotNull(loaded);
+            Assert.Equal(settings.DeskId, loaded.DeskId);
         }
         finally
         {

@@ -1,8 +1,8 @@
 using System.Text.Json.Serialization;
 
-namespace EventPlatform.PrintRelay.Core.Settings;
+namespace EventPlatform.PrintRelay.Core.Pairing;
 
-public sealed record RelaySettings
+public sealed record PairingExchangeResult
 {
     [JsonPropertyName("secret")]
     public required string Secret { get; init; }
@@ -13,9 +13,6 @@ public sealed record RelaySettings
     [JsonPropertyName("desk_name")]
     public required string DeskName { get; init; }
 
-    [JsonPropertyName("printer_name")]
-    public required string PrinterName { get; init; }
-
     [JsonPropertyName("desk_id")]
-    public string? DeskId { get; init; }
+    public required string DeskId { get; init; }
 }

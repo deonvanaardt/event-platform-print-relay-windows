@@ -11,6 +11,7 @@ Draft-07 JSON Schema artifacts vendored from the Event Platform monorepo for cro
 | [`pending-job.response.json`](pending-job.response.json) | `GET /api/print-queue/pending` response `{ jobs: [...] }` |
 | [`badge-render-input.json`](badge-render-input.json) | `badge_document` on each job (`$ref` from pending response) |
 | [`desk-setup-code.v1.json`](desk-setup-code.v1.json) | Decoded setup code payload (`v: 1`) — not the `DESK-` wire string |
+| [`pair-exchange.response.json`](pair-exchange.response.json) | `POST /api/v1/print-desks/pair` success response |
 
 ## Wire format
 
@@ -31,6 +32,7 @@ Admin **Copy setup code** produces `DESK-<base64url(JSON)>`. Decode per [`docs/P
 | [`fixtures/desk-setup-code.v1.valid.json`](fixtures/desk-setup-code.v1.valid.json) | Valid decoded setup payload |
 | [`fixtures/pending-response.valid.json`](fixtures/pending-response.valid.json) | Single queued job with `badge_document` + `badge_html` |
 | [`fixtures/pending-response.empty.json`](fixtures/pending-response.empty.json) | Empty queue |
+| [`fixtures/pair-exchange.response.valid.json`](fixtures/pair-exchange.response.valid.json) | Pairing exchange success response |
 
 ## Related
 

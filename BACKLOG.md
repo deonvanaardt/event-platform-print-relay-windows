@@ -36,6 +36,7 @@ Sprint-ready stories for the **event-platform-print-relay-windows** repository. 
 | W-01-S12 | Kiosa brand icons (M2 polish) | Kiosa icon from `kiosa-marketing/brand-pack`; tray overlays; exe + Start Menu |
 | W-01-S13 | Dynamic badge page size (BUG-003) | ✅ Done — `@page` / `badge_document` resolver; physical sign-off A6 + A5 (2026-07-19) |
 | W-01-S14 | MSI installer branding (M3 polish) | Kiosa WiX banner/dialog BMPs, ARP icon, version on welcome/finish |
+| W-01-S15 | Pairing code setup (S18-S04) | 8-char code → `POST /api/v1/print-desks/pair`; wizard UX; ≥ 1.1.0 |
 
 ### W-01-S03 — JSON Schema pinning + contract tests
 
@@ -171,6 +172,25 @@ Sprint-ready stories for the **event-platform-print-relay-windows** repository. 
   - `relay.log` records resolved width, height, and source per print job.
   - xUnit coverage for resolver on macOS CI.
 - **Out of scope:** Node relay BUG-011 fix (platform repo); MSI rebuild; printer driver scaling overrides.
+
+### W-01-S15 — Pairing code setup (S18-S04)
+
+- **Origin:** Platform S18-S04 / FR-009 · handoff `docs/WINDOWS_PAIRING_HANDOFF.md`
+- **Platform dependency:** `POST /api/v1/print-desks/pair` (S18-S04-B); admin pairing UI (S18-S04-C)
+- **Dependencies:** W-01-S05 (setup wizard exists); W-01-S03 (schema pinning pattern)
+- **Plan:** Sprint 6 in `SPRINT.md` · [pairing plan](.cursor/plans/w-01-s15_pairing_setup_5bf06f5c.plan.md)
+- **Acceptance:**
+  - Setup wizard accepts **8-character** pairing code (Crockford alphabet `23456789ABCDEFGHJKMNPQRSTVWXYZ`, case-insensitive).
+  - On Continue: `POST {platform}/api/v1/print-desks/pair` with `{ "code": "<normalized>" }`.
+  - On 200: persist `secret`, `api_url`, `desk_name`, `desk_id`; verify via `GET /api/print-queue/pending`.
+  - Plain-English errors for 400 / 429 / network per platform handoff.
+  - Collapsible Platform URL field defaulting to `https://app.kiosa.io` (staging uses preview host).
+  - Tray shows `desk_name` from exchange response.
+  - App version **≥ 1.1.0**; version matrix in `INTEGRATION.md`.
+  - xUnit on macOS CI for format, exchange client, validation routing, contract test.
+  - Windows E2E: create desk → enter code → sample print → job **Printed**.
+  - **Optional:** Keep `DESK-` decode branch for legacy dev laptops.
+- **Out of scope:** QR scan pairing; MSI platform URL bake-in; removing `DESK-` legacy path.
 
 ---
 
