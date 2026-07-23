@@ -312,7 +312,7 @@ _(none)_
 
 # Sprint 6 — Pairing code setup (W-01-S15)
 
-**Dates:** 2026-07-23 → TBD  
+**Dates:** 2026-07-23 → 2026-07-23  
 **Epic:** [W-01 — Windows print relay MVP](BACKLOG.md#w-01--windows-print-relay-mvp)  
 **Platform:** S18-S04 / FR-009 (pairing APIs + admin UI shipped)  
 **Story:** **W-01-S15** — Pairing code setup (exchange API)  
@@ -323,13 +323,13 @@ _(none)_
 
 Replace `DESK-` setup code paste with **8-character pairing codes** from Kiosa admin. Windows calls `POST /api/v1/print-desks/pair`, persists returned credentials, then polls as today.
 
-**Exit:** Print-test PC — create desk → enter pairing code → sample print → job **Printed**. App version **≥ 1.1.0**.
+**Exit:** Print-test PC — create desk → enter pairing code → sample print → job **Printed**. App version **≥ 1.1.0**. **Met** on build VM against Vercel preview (2026-07-23).
 
 **Why now:** Platform admin no longer issues `DESK-` codes; Windows users cannot set up from admin UI alone until this ships.
 
 ## In scope (Sprint 6)
 
-- [ ] **W-01-S15** — Pairing code setup (two sessions — see below)
+- [x] **W-01-S15** — Pairing code setup (two sessions — see below)
 
 ### Session 1 — Core + schemas + xUnit (Mac agent)
 
@@ -354,7 +354,7 @@ Replace `DESK-` setup code paste with **8-character pairing codes** from Kiosa a
 - [x] Wire `DeskSetupValidation` → save `RelaySettings` including `desk_id`
 - [x] Bump app version to **1.1.0**
 - [x] `CHANGELOG.md`, `STAGING_INTEGRATION.md`, `README.md` compatibility matrix, `DECISIONS.md`
-- [ ] Windows E2E: create desk → enter code → tray Connected → sample print → Printed
+- [x] Windows E2E: create desk → enter code → tray Connected → sample print → Printed
 
 ## Stretch (if time remains)
 
@@ -363,11 +363,11 @@ Replace `DESK-` setup code paste with **8-character pairing codes** from Kiosa a
 
 ## In progress
 
-- **W-01-S15** — Session 2 (wizard + Windows E2E)
+_(none)_
 
 ## Done
 
-_(none yet — mark W-01-S15 Done after Session 2 Windows E2E)_
+- **W-01-S15** — Pairing code setup: Core exchange + wizard 1.1.0; Windows verify on build VM + Vercel preview (`8b695a0`, 2026-07-23)
 
 ## Out of scope this sprint
 
@@ -380,6 +380,7 @@ _(none yet — mark W-01-S15 Done after Session 2 Windows E2E)_
 
 - **Story ID:** Windows **W-01-S15** (platform handoff doc says W-01-S11 — that ID is SignPath signing in this repo)
 - **Session 1 ships no operator-visible change** — safe to merge before Session 2
-- **Staging:** Session 2 wizard needs Platform URL set to staging/preview host (not `app.kiosa.io`)
+- **Staging:** Session 2 wizard needs Platform URL set to staging/preview host (not `app.kiosa.io`); layout fix `8b695a0` makes URL field visible
+- **2026-07-23:** Windows E2E **passed** on build VM — Vercel preview pairing + sample print → **Printed** (app **1.1.0**, `8b695a0`)
 - **Platform dependency:** S18-S04 deployed; pairing code from Print desks admin panel
 - Runs **in parallel** with Sprint 3 (SignPath — blocked) and any Sprint 4 stretch items

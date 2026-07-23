@@ -36,7 +36,7 @@ Sprint-ready stories for the **event-platform-print-relay-windows** repository. 
 | W-01-S12 | Kiosa brand icons (M2 polish) | Kiosa icon from `kiosa-marketing/brand-pack`; tray overlays; exe + Start Menu |
 | W-01-S13 | Dynamic badge page size (BUG-003) | ✅ Done — `@page` / `badge_document` resolver; physical sign-off A6 + A5 (2026-07-19) |
 | W-01-S14 | MSI installer branding (M3 polish) | Kiosa WiX banner/dialog BMPs, ARP icon, version on welcome/finish |
-| W-01-S15 | Pairing code setup (S18-S04) | 8-char code → `POST /api/v1/print-desks/pair`; wizard UX; ≥ 1.1.0 |
+| W-01-S15 | Pairing code setup (S18-S04) | ✅ Done — 8-char pairing wizard 1.1.0; Vercel preview E2E 2026-07-23 |
 
 ### W-01-S03 — JSON Schema pinning + contract tests
 

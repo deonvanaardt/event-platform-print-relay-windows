@@ -24,6 +24,10 @@ Story IDs link to [BACKLOG.md](BACKLOG.md). The agent maintains this file per `.
 - Setup wizard advanced panel — fixed Platform URL textbox height (was invisible with `AutoSize` + `Dock.Fill`)
 - App version **0.4.3** — MSI upgrade path after Kiosa branding (avoids stale DLLs on same-version reinstall)
 
+### Fixed
+
+- Setup wizard advanced panel — Platform URL textbox invisible (`AutoSize` + `Dock.Fill`); fixed height so Vercel preview/staging URL is editable (W-01-S15)
+
 ### Not yet built
 
 - First signed GitHub Release — blocked on signing provider (SignPath OSS declined 2026-07-18; reapply or paid signing) + Windows verify
